@@ -35,17 +35,15 @@ services:
     command: ["odoo", "--config=/etc/odoo/odoo.conf"]
 
   nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./ssl:/etc/nginx/ssl
-    depends_on:
-      - odoo
+    image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
 
 volumes:
   odoo-web-data:
