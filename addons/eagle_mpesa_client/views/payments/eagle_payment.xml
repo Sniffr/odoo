@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--===============Eagle Payments SEARCH===================-->
+    <record id="eagle_payment_search" model="ir.ui.view">
+        <field name="name">eagle.payment.search</field>
+        <field name="model">eagle.payment</field>
+        <field name="arch" type="xml">
+            <search string="Eagle Payment">
+                <field name="name" />
+                <field name="employee_id" />
+                <field name="work_phone" />
+                <field name="id_type" />
+                <field name="identification_id" />
+                <field name="state" />
+                <filter string="State" name="txn_state"
+                    context="{'group_by':'state'}"></filter>
+
+                <filter string="Employee" name="employee"
+                    context="{'group_by':'employee_id'}"></filter>
+                <filter string="Phone" name="work_phone"
+                    context="{'group_by':'work_phone'}"></filter>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]" />
+                <filter string="Completed" name="completed" domain="[('state', '=', 'done')]" />
+                <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancel')]" />
+                <filter string="Failed" name="failed" domain="[('state', '=', 'failed')]" />
+                <separator/>
+                <filter string="Archived" name="active" domain="[('active', '=', False)]" />
+
+
+            </search>
+        </field>
+    </record>
+
+    <!--===============Eagle Payments FORM VIEW===================-->
+    <record id="eagle_payment_form" model="ir.ui.view">
+        <field name="name">eagle.payment.form</field>
+        <field name="model">eagle.payment</field>
+        <field name="arch" type="xml">
+            <form string="Eagle Payments" create="0">
+                <header>
+                    <!-- <button name="validate_numbers" type="object" string="Validate Number" class="btn-warning" invisible="phone_validity == 'valid'" /> -->
+                    <button name="submit_request" type="object" string="Submit Request" class="btn-warning" invisible="state != 'draft'"  groups="eagle_mpesa_client.group_kpayment_approver_batch_confirm"/>
+                    <button name="approve_request" type="object" string="Approve Request" class="btn-success" invisible="state != 'submitted'"  groups="eagle_mpesa_client.group_kpayment_approver_batch_pre_approve" />
+                    <button name="send_funds" type="object" string="Send Funds" class="btn-success" invisible="state != 'approved'" groups="eagle_mpesa_client.group_kpayment_approver_batch_approve"/>
+                    <button name="cancel_request" type="object" string="Cancel Request" class="btn-danger" invisible="state != 'submitted'" groups="eagle_mpesa_client.group_kpayment_user" />
+                    <button name="make_payment_authenticate" type="object" string="Make Payment" class="btn-success" invisible="phone_validity != 'valid' or state != 'draft' or payment_type != 'pettycash_payment'" />
+                    <button name="create_expense" type="object" string="Create Expense" class="btn-primary" invisible="state != 'done' or payment_type != 'pettycash_payment' or expense_id" />
+
+                    <button name="cancel_payment" type="object" string="Cancel Payment" class="btn-danger" invisible="phone_validity != 'valid' or state != 'draft' or payment_type != 'pettycash_payment'" />
+                    <field name="state"
+                        widget="statusbar" />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" position="inside">
+                        <button type="object" name="view_expense" icon="fa-check"
+                            invisible="not expense_id">
+                            <field name="expense_id" invisible="1" /> Expense </button>
+                        
+                    </div>
+                    <div class="oe_title">
+
+                        <span class="o_form_label">Payment</span>
+                        <h1>
+                            <field name="name" readonly="1" force_save="1" />
+                        </h1>
+
+                    </div>
+                    <br />
+
+                    <group>
+                        <group>
+                            <field name="state" invisible="1" />
+                            <field name="disburse_to" readonly="1"/>
+                            <field name="employee_id" readonly="1" invisible="1"/>
+                            <field name="partner_id" readonly="1" invisible="payment_type != 'casual_payment'"/>
+                            <!-- <field name="work_phone" readonly="phone_validity == 'valid' or state != 'draft'" invisible="payment_type != 'casual_payment'"/> -->
+                            <field name="phone" readonly="phone_validity == 'valid' or state != 'draft'" required="1"/>
+                            <!-- <field name="partner_id"  invisible="payment_type == 'casual_payment'" required="payment_type == 'pettycash_payment'" readonly="state != 'draft'"/> -->
+                            <field name="wallet_id" invisible="1" readonly="1"/>
+                            <field name="field_payment" invisible="1" force_save="1"/>
+                            <field name="pettycash_payment" invisible="1" force_save="1"/>
+                            <field name="id_type" readonly="state != 'draft'"  invisible="payment_type != 'casual_payment'"/>
+                            <field name="expense_category_id"  invisible="payment_type != 'pettycash_payment'" readonly="state!='draft'" required="payment_type == 'pettycash_payment'"/>
+                        </group>
+                        <group>
+                            <field name="payment_type" invisible="1"/>
+
+                        <field name="phone_validity"
+                                widget="badge" readonly="1"
+                                decoration-success="phone_validity == 'valid'"
+                                decoration-danger="phone_validity == 'invalid'"
+                            />
+                            <field name="amount" readonly="state != 'draft'" options="{'currency_field': 'currency_id'}" widget="monetary" />
+                            <field name="charges" readonly="1" options="{'currency_field': 'currency_id'}" widget="monetary"  />
+                            <field name="fail_reason" invisible="state != 'cancel'" style="color:red;" readonly="1" />
+                            <field name="currency_id" invisible="1" readonly="1" />
+                            <field name="test_recipient_email" readonly="state == 'approved'" invisible="1"/>
+                            <field name="identification_id" readonly="state != 'draft'"  invisible="payment_type != 'casual_payment'"/>
+
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" >
+                            <field name="notes"   readonly="state!='draft'" required="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!--Chatter-->
+                 <chatter />
+            </form>
+        </field>
+    </record>
+
+
+    <!--============== Eagle Payments TREE VIEW===================-->
+    <record id="eagle_payment_list" model="ir.ui.view">
+        <field name="name">eagle.payment.list</field>
+        <field name="model">eagle.payment</field>
+        <field name="arch" type="xml">
+            <list string="Eagle Payment" create="1">
+                <header>
+                    <!-- <button name="validate_numbers" type="object" string="Validate Number(s)" class="btn-warning"/>
+                    <button name="create_payment_batch" type="object" string="Create Payment Batch" class="btn-success"  /> -->
+
+                </header>
+                
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="phone" />
+                <field name="phone_validity"
+                    widget="badge" readonly="1"
+                    decoration-success="phone_validity == 'valid'"
+                    decoration-danger="phone_validity == 'invalid'"
+                 />
+                <field name="id_type" />
+                <field name="identification_id" required="1" />
+
+
+                <field name="currency_id" column_invisible="1" />
+
+                <field name="amount" readonly="1" sum="Total"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary" />
+
+                <field name="currency_id" optional="hide" readonly="1" />
+                <field name="charges" sum="Total Charged" optional="hide"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary"  readonly="1" />
+                <field name="total" sum="Total"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary"  readonly="1" />
+                <field name="create_date" string="Date"  />
+                <field name="create_uid" string="Created By" optional="hide"/>
+                <field name="state"
+                    widget="badge" readonly="1"
+                    decoration-success="state == 'done'"
+                    decoration-danger="state in ['cancel','failed']"
+                    decoration-warning="state in ['pending']"
+                    decoration-primary="state == 'approved'"
+                    decoration-info="state == 'submitted'"
+                />
+            </list>
+        </field>
+    </record>
+
+     <!--============== Eagle Payments Petty Cash TREE VIEW===================-->
+     <record id="eagle_pettycash_payment_list" model="ir.ui.view">
+        <field name="name">eagle.payment.list</field>
+        <field name="model">eagle.payment</field>
+        <field name="arch" type="xml">
+            <list string="Eagle Payment" create="1">
+                <header>
+                </header>
+                
+                <field name="name" />
+                <field name="partner_id" readonly="1" force_save="1" />
+                <field name="phone" />
+                <field name="phone_validity"
+                    widget="badge" readonly="1"
+                    decoration-success="phone_validity == 'valid'"
+                    decoration-danger="phone_validity == 'invalid'"
+                 />
+                <field name="id_type" />
+                <field name="identification_id" />
+                <field name="currency_id" column_invisible="1" />
+                <field name="amount" readonly="1" sum="Total"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary" />
+                <field name="currency_id" optional="hide" readonly="1" />
+                <field name="charges" sum="Total Charged" optional="hide"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary"  readonly="1" />
+                <field name="total" sum="Total"
+                    options="{'currency_field': 'currency_id'}"
+                    widget="monetary"  readonly="1" />
+                <field name="create_date" string="Date"  />
+                <field name="create_uid" string="Created By" optional="hide"/>
+                <field name="state"
+                    widget="badge" readonly="1"
+                    decoration-success="state == 'done'"
+                    decoration-danger="state in ['cancel','failed']"
+                    decoration-warning="state == 'pending'"
+                    decoration-primary="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!--===========================Eagle Payments ACTION WINDOW========================-->
+    <record id="eagle_payment_action" model="ir.actions.act_window">
+        <field name="name">Casual Payments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">eagle.payment</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="view_id" ref="eagle_mpesa_client.eagle_payment_list" />
+        <field name="search_view_id" ref="eagle_payment_search" />
+        <field name="domain">[('field_payment', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_idcontent_smiling_face">
+                Create new Eagle Payment
+            </p>
+        </field>
+    </record>
+     <record id="eagle_withdrawal_action" model="ir.actions.act_window">
+        <field name="name">Withdrawals</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">eagle.payment</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="view_id" ref="eagle_mpesa_client.eagle_payment_list" />
+        <field name="search_view_id" ref="eagle_payment_search" />
+        <field name="domain">[('field_payment', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_idcontent_smiling_face">
+                Create new Eagle Payment
+            </p>
+        </field>
+    </record>
+
+     <record id="field_agents_eagle_payment_action" model="ir.actions.act_window">
+        <field name="name">Field Agent Payments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">eagle.payment</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="view_id" ref="eagle_mpesa_client.eagle_payment_list" />
+        <field name="search_view_id" ref="eagle_payment_search" />
+        <field name="domain">[('field_payment', '=', True)]</field>
+        <field name="context">{'default_field_payment': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_idcontent_smiling_face">
+                Create new Eagle Payment
+            </p>
+        </field>
+    </record>
+
+    <record id="eagle_pettycash_payment_action" model="ir.actions.act_window">
+        <field name="name">PettyCash Payments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">eagle.payment</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="view_id" ref="eagle_mpesa_client.eagle_pettycash_payment_list" />
+        <field name="search_view_id" ref="eagle_payment_search" />
+        <field name="domain">[('pettycash_payment', '=', True)]</field>
+        <field name="context">{'default_pettycash_payment': True,'default_payment_type':'pettycash_payment'}</field>
+        <field name="help" type="html">
+            <p class="o_view_idcontent_smiling_face">
+                Create new PettyCash Payment
+            </p>
+        </field>
+    </record>
+    
+
+
+</odoo>

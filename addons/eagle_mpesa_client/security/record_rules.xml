@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="eagle_payment_rule" model="ir.rule">
+        <field name="name">Eagle Payment User Rule</field>
+        <field ref="eagle_mpesa_client.model_eagle_payment" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids),('create_uid','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="eagle_payment_accountant_rule" model="ir.rule">
+        <field name="name">Eagle Payment Accountant Rule</field>
+        <field ref="eagle_mpesa_client.model_eagle_payment" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4, ref('eagle_mpesa_client.group_kpayment_accountant'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="payment_batch_rule" model="ir.rule">
+        <field name="name">Payment Batch User Rule</field>
+        <field ref="eagle_mpesa_client.model_payment_batch" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids),('create_uid','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="payment_batch_rule" model="ir.rule">
+        <field name="name">Payment Batch Acct Rule</field>
+        <field ref="eagle_mpesa_client.model_payment_batch" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4, ref('eagle_mpesa_client.group_kpayment_accountant'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+     <record id="user_wallet_rule" model="ir.rule">
+        <field name="name">User Wallet User Rule</field>
+        <field ref="eagle_mpesa_client.model_user_wallet" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids),('user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="user_wallet__acct_rule" model="ir.rule">
+        <field name="name">User Wallet Acct Rule</field>
+        <field ref="eagle_mpesa_client.model_user_wallet" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4, ref('eagle_mpesa_client.group_kpayment_accountant'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="funds_request_rule" model="ir.rule">
+        <field name="name">Funds Request User Rule</field>
+        <field ref="eagle_mpesa_client.model_funds_request" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids),('wallet_id.user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="funds_request_acct_rule" model="ir.rule">
+        <field name="name">Funds Request Acct Rule</field>
+        <field ref="eagle_mpesa_client.model_funds_request" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4, ref('eagle_mpesa_client.group_kpayment_accountant'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+     <record id="account_request_rule" model="ir.rule">
+        <field name="name">Account Request Rule</field>
+        <field ref="eagle_mpesa_client.model_account_request" name="model_id" />
+        <field name="domain_force">[('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    
+   
+</odoo>

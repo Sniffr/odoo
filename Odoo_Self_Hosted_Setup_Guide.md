@@ -145,9 +145,12 @@ workers = 4
 max_cron_threads = 2
 
 ; Multi-tenancy settings
-dbfilter = ^%d$
+dbfilter = ^.*$
 list_db = True
 proxy_mode = True
+
+; Addons path
+addons_path = /mnt/extra-addons
 
 ; Logging
 log_level = info
@@ -187,7 +190,7 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'" always;
     
     # Proxy settings
     proxy_read_timeout 720s;
@@ -305,7 +308,7 @@ workers = 4
 max_cron_threads = 2
 
 ; Multi-tenancy settings
-dbfilter = ^%d$
+dbfilter = ^.*$
 list_db = True
 proxy_mode = True
 
@@ -924,6 +927,88 @@ df -h
 
 # Check Odoo processes
 ps aux | grep odoo
+```
+
+#### 5. Access Denied Error on Database Creation
+
+**Problem**: `odoo.exceptions.AccessDenied: Access Denied` when creating databases
+
+**Solution**: 
+1. Check that `admin_passwd` in `odoo.conf` is set to a real password (not placeholder)
+2. Use the same password when prompted for master password
+3. Restart Odoo after changing the password
+
+```bash
+# Update odoo.conf
+admin_passwd = your_actual_password_here
+
+# Restart Odoo
+docker-compose restart odoo
+```
+
+#### 6. Empty Page with "Your Logo" and "Manage Databases"
+
+**Problem**: After database creation, seeing empty page instead of Odoo interface
+
+**Causes & Solutions**:
+
+1. **Database not initialized**: Run initialization command
+```bash
+docker-compose run --rm odoo odoo -d database_name -i base --stop-after-init
+```
+
+2. **dbfilter rejecting database**: Update dbfilter in `odoo.conf`
+```ini
+dbfilter = ^.*$  # More permissive filter
+```
+
+3. **CSP blocking JavaScript**: Update Nginx CSP header
+```nginx
+add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'" always;
+```
+
+#### 7. Custom Modules Not Appearing in Apps List
+
+**Problem**: Custom modules in addons folder not showing in Apps menu
+
+**Solutions**:
+
+1. **Add addons_path to odoo.conf**:
+```ini
+addons_path = /mnt/extra-addons
+```
+
+2. **Check module manifest file**:
+```python
+{
+    'name': 'Your Module Name',
+    'installable': True,        # Required
+    'application': True,        # Required for Apps menu
+    'auto_install': False,      # Optional
+    'category': 'Your Category', # Not 'Hidden'
+    # ... other fields
+}
+```
+
+3. **Update module list**:
+```bash
+# Stop Odoo
+docker-compose stop odoo
+
+# Update modules
+docker-compose run --rm odoo odoo -d database_name --update=all --stop-after-init
+
+# Start Odoo
+docker-compose up -d
+```
+
+4. **Verify module structure**:
+```bash
+# Check that __init__.py exists
+find addons -name "__init__.py"
+
+# Check manifest syntax
+python3 -c "import ast; ast.parse(open('addons/your_module/__manifest__.py').read())"
 ```
 
 ### Log Analysis

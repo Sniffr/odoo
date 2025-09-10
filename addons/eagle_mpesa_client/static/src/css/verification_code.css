@@ -1,0 +1,10 @@
+
+  .o_field_verification_code{
+    display: flex;
+    justify-content: center;
+  }
+
+  .verification_code{
+    height: 40px;
+  }
+

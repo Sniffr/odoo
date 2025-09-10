@@ -1,0 +1,53 @@
+:root {
+  --main-color: #10b981;
+}
+.o-checkbox.form-check {
+  width: 100%;
+}
+
+.o-checkbox.form-check input {
+  border: 1px solid var(--main-color);
+}
+
+.oe_cart h4 {
+  color: var(--main-color);
+  margin-bottom: 10px;
+}
+
+.o_website_sale_checkout .btn:disabled {
+  background-color: #a7a7a7;
+  border-color: #909295;
+}
+
+#o_eagle_submit_loader {
+  display: none;
+  background-color: var(--main-color) !important;
+  border-color: var(--main-color);
+}
+
+#invalidMtnNum,
+#invalidAirtelNum,
+#invalidMpesaNum,
+#InvalidOption {
+  font-family: "Abel", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: red;
+}
+
+#o_eagle_submit_button.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: default;
+  background-color: #a7a7a7;
+  border-color: #909295;
+}
+
+#odoo_payment_btn {
+  display: none;
+}
+
+#o_eagle_submit_button {
+  background-color: #ff4f4f;
+  border-color: #ff4f4f;
+}

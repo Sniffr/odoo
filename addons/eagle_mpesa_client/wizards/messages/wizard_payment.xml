@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wizard_payment_form" model="ir.ui.view">
+        <field name="name">wizard.payment.form</field>
+        <field name="model">wizard.payment</field>
+        <field name="arch" type="xml">
+            <form string="Payment Transaction">
+               
+
+                <sheet>
+                <p class="text-center" invisible="not sent_code"><field name="message" readonly="1"/></p>
+                        <p class="text-center" invisible="not sent_code">
+                            <field name="account_peppol_verification_code" widget="verification_code" />
+                            <field name="sent_code" invisible="1"/>
+                        </p>
+                    
+                </sheet>
+                
+                <footer>
+                    <button name="action_send"
+                        string="Send" type="object" data-hotkey="q"
+                        class="btn-primary" invisible="sent_code">
+                    </button>
+                    <button name="action_validate"
+                        string="Validate" type="object" data-hotkey="q"
+                        class="btn-success" invisible="not sent_code">
+                    </button>
+                    <button
+                        string="Discard" special="cancel"
+                        class="btn-secondary">
+                    </button>
+
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="wizard_payment_action" model="ir.actions.act_window">
+        <field name="name">Validate Batch</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wizard.payment</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="wizard_payment_form" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new Batch Validation
+            </p>
+        </field>
+    </record>
+
+    <record id="single_wizard_payment_form" model="ir.ui.view">
+        <field name="name">single.wizard.payment.form</field>
+        <field name="model">single.wizard.payment</field>
+        <field name="arch" type="xml">
+            <form string="Single Wizard Payment">
+               
+
+                <sheet>
+                <p class="text-center" invisible="not sent_code"><field name="message" readonly="1"/></p>
+                        <p class="text-center" invisible="not sent_code">
+                            <field name="account_peppol_verification_code" widget="verification_code" />
+                            <field name="sent_code" invisible="1"/>
+                        </p>
+                    
+                </sheet>
+                
+                <footer>
+                    <button name="action_send"
+                        string="Send" type="object" data-hotkey="q"
+                        class="btn-primary" invisible="sent_code">
+                    </button>
+                    <button name="action_validate"
+                        string="Validate" type="object" data-hotkey="q"
+                        class="btn-success" invisible="not sent_code">
+                    </button>
+                    <button
+                        string="Discard" special="cancel"
+                        class="btn-secondary">
+                    </button>
+
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="single_wizard_payment_action" model="ir.actions.act_window">
+        <field name="name">Validate Payment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">single.wizard.payment</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="single_wizard_payment_form" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new validate payment.
+            </p>
+        </field>
+    </record>
+
+
+</odoo>

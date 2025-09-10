@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="eagle_payments.MpesaPayPopup" owl="1">
+        <Dialog title="this.props.isTillPayment ? 'Mpesa PayBill Payment' : 'Mpesa Payment'" footer="false">
+            <div class="container p-3">
+                <div t-if="!this.props.isTillPayment">
+                    <h5 style="text-align:left;margin-bottom:5px;margin-top:12px;">Phone N0.:</h5>
+                    <input type="number" style="width:100%" placeholder="0700000***" class="form-control" id="phone" />
+                </div>
+                <div>
+                    <h5 style="text-align:left;margin-bottom:5px;margin-top:12px;">Amount in KESH:</h5>
+                    <input type="number" t-model.number="state.totalAmount" disabled="" style="width:100%" placeholder="Minimum Amount is 500 KESH" class="form-control" id="amount" />
+                </div>
+                <div id="success_message">
+                    <div t-if="this.props.isTillPayment" style='background-color:#fffec5;color: #b39100; font-weight:800; padding: 20px;margin-top: 10px;'> STATUS: Transaction In Progress(TIP)</div>
+                </div>
+            </div>
+
+            <footer class="modal-footer mt-3 d-flex justify-content-end gap-2">
+                <button t-if="!this.props.isTillPayment" class="btn btn-lg btn-primary" id="makePay" t-on-click="makePayment">Make Payment</button>
+                <button class="btn btn-lg btn-secondary" style="display:none;" id="createOrder" t-on-click="createOrder">Create Order</button>
+                <button t-if="!this.props.isTillPayment" class="btn btn-lg btn-secondary d-none" id="validate_payment" t-on-click="validatePayment">Validate Payment</button>
+                <button class="btn btn-lg btn-secondary d-none" id="validate_till_payment" t-on-click="validateTillPayment">Validate Payment</button>
+                <button class="btn btn-lg btn-secondary" t-on-click="cancel">Cancel</button>
+            </footer>
+        </Dialog>
+
+    </t>
+
+</templates>

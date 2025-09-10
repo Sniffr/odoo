@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<templates>
+    <t t-name="eagle_web_payments.transactionDetails" t-inherit="payment.transactionDetails" t-inherit-mode="primary">
+        <!-- <xpath expr="//a[hasclass('alert-link')]" position="replace">
+           <p>Lubwama</p>
+        </xpath> -->
+
+        <xpath expr="//a[@t-att-href='landing_route']" position="replace">
+            <h1>jjsjs</h1>
+        </xpath>
+      
+    </t>
+</templates>

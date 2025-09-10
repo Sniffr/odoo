@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Eagle Mobile Money Payments - Odoo Integration</title>
+
+</head>
+
+<body style="font-family: 'Inter', sans-serif; background-color: #667eea; min-height: 100vh; margin: 0; padding: 20px;">
+    <div class="container-fluid">
+        <div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 2rem auto; overflow: hidden; max-width: 1200px;">
+            <!-- Logo Section -->
+            <div style="padding: 2rem; background-color: #f8f9fa; border-bottom: 1px solid #e9ecef;">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <img src="images/kola_logo.png" class="img-fluid" alt="Kola Tech Logo" height="60" width="120" loading="lazy" style="margin-right: 1rem;" />
+                        <img src="images/silver_partner.png" class="img-fluid" alt="Odoo Silver Partner" height="60" width="120" loading="lazy" />
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <img src="images/logo3.png" class="img-fluid" alt="Odoo Logo" height="40" loading="lazy" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div style="background-color: #3a963f; color: white; padding: 4rem 2rem; text-align: center; position: relative; overflow: hidden;">
+                <div style="position: relative; z-index: 2;">
+                    <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; font-family: 'Inter', sans-serif;">
+                        <span style="color: #9effff;">Eagle Mpesa</span>
+                        <span style="color: #9effff;">Payments</span>
+                    </h1>
+                    <p style="font-size: 1.25rem; font-weight: 400; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; font-family: 'Inter', sans-serif;">
+                        Seamlessly integrate M-PESA and mobile money payments into your Odoo system.
+                        Accept payments through POS, e-commerce, and invoices with real-time processing and automatic reconciliation.
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <a href="#installation" style="background-color: #1a4480; border: none; border-radius: 50px; padding: 12px 30px; color: white; font-weight: 600; text-decoration: none; display: inline-block; margin-right: 1rem; font-family: 'Inter', sans-serif;">
+                            <i class="fas fa-download" style="margin-right: 0.5rem;"></i>Get Started
+                        </a>
+                        <a href="#support" style="border: 2px solid white; background: transparent; border-radius: 50px; padding: 10px 28px; color: white; font-weight: 600; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif;">
+                            <i class="fas fa-headset" style="margin-right: 0.5rem;"></i>Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation Guide Section -->
+            <div style="padding: 5rem 2rem;" id="installation">
+                <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; color: #333333; text-align: center; margin-bottom: 1rem; font-family: 'Inter', sans-serif;">Installation Guide</h2>
+                <p style="font-size: 1.1rem; color: #535456; text-align: center; margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; font-family: 'Inter', sans-serif;">
+                    Follow these simple steps to get your Eagle Mobile Money Payment system up and running in your Odoo environment.
+                </p>
+
+                <!-- Step 0: Install Required Python Packages -->
+                <div style="background-color: #e6f7ff; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); border-left: 5px solid #3a963f; border: 1px solid #b3e0ff;">
+                    <h4 style="color: #1a4480; font-weight: 700; margin-bottom: 1rem;">Install Required Python Packages</h4>
+                    <p style="margin-bottom: 0.5rem;">Before using Eagle Payments, make sure you have the following Python packages installed:</p>
+                    <pre style="background: #f8f9fa; border-radius: 8px; padding: 16px; font-size: 1rem; color: #222; margin-bottom: 0;">
+pip install cryptography
+                    </pre>
+                </div>
+
+                <!-- Step 1: Install Modules -->
+                <div style="background-color: #ffecec; border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid #2b5fb2; border: 1px solid #e9ecef;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #2b5fb2; color: white; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-weight: 700; font-size: 30px; margin-bottom: 16px; line-height: 1;justify-content:center;padding-top: 10px;padding-left: 16px;"><span style="justify-content:center;"><span style="font-family:'Font Awesome 6 Free'; font-weight:900;font-size:32px;">1</span></div>
+                    <h3 style="font-size: 24px; font-weight: 600; color: #333333; margin-bottom: 16px; font-family: 'Inter', sans-serif;">Install Required Modules</h3>
+                    <p style="margin-bottom: 24px; color: #535456; font-size: 16px; line-height: 1.5; font-family: 'Inter', sans-serif;">Install all three essential modules for Eagle Mobile Money integration:</p>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div style="background-color: white; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e9ecef; min-height: 250px;">
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background-color: #2b5fb2; color: white; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; margin: 0 auto 24px auto; font-size: 32px; line-height: 1;">
+                                    <!-- <span style="font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 32px;">&#xf019;</span> -->
+                                </div>
+                                <h5 style="font-weight: 600; margin-bottom: 8px; font-size: 18px; color: #333333;">eagle_mpesa_client</h5>
+                                <p style="color: #6c757d; font-size: 14px; margin: 0; line-height: 1.4;">Core client functionality</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="background-color: white; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e9ecef; min-height: 250px;">
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background-color: #28a745; color: white; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; margin: 0 auto 24px auto; font-size: 32px; line-height: 1;">
+                                    <!-- <span style="font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 32px;">&#xf09d;</span> -->
+                                </div>
+                                <h5 style="font-weight: 600; margin-bottom: 8px; font-size: 18px; color: #333333;">eagle_web_payments</h5>
+                                <p style="color: #6c757d; font-size: 14px; margin: 0; line-height: 1.4;">E-commerce & sales payments</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="background-color: white; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e9ecef; min-height: 250px;">
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background-color: #ffc107; color: #333333; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; margin: 0 auto 24px auto; font-size: 32px; line-height: 1;">
+                                    <!-- <span style="font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 32px;">&#xf1e6;</span> -->
+                                </div>
+                                <h5 style="font-weight: 600; margin-bottom: 8px; font-size: 18px; color: #333333;">eagle_payments</h5>
+                                <p style="color: #6c757d; font-size: 14px; margin: 0; line-height: 1.4;">POS M-PESA integration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: User Rights -->
+                <div style="background-color: rgb(178, 254, 247); border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid #28a745; border: 1px solid #e9ecef;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #28a745; color: white; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-weight: 700; font-size: 30px; margin-bottom: 16px; line-height: 1;justify-content:center;padding-top: 10px;padding-left: 16px;">2</div>
+                    <h3 style="font-size: 24px; font-weight: 600; color: #333333; margin-bottom: 16px; font-family: 'Inter', sans-serif;">Configure User Rights</h3>
+                    <p style="margin-bottom: 16px; color: #535456; font-size: 16px; line-height: 1.5; font-family: 'Inter', sans-serif;">Ensure you have Managing Director rights under the Eagle groups for proper access control:</p>
+
+                    <div style="background-color: rgba(23, 162, 184, 0.1); border: 1px solid #17a2b8; border-radius: 8px; padding: 16px; font-family: 'Inter', sans-serif;">
+                        <span style="color: #17a2b8; margin-right: 8px; font-family: 'Font Awesome 6 Free'; font-weight: 900;">&#xf05a;</span>
+                        <strong style="color: #333333;">Important:</strong> <span style="color: #535456;">Navigate to Settings → Users & Companies → Users → Select your user → Groups tab → Eagle section → Check "Managing Director"</span>
+                    </div>
+                </div>
+
+                <!-- Step 3: Account Request -->
+                <div style="background-color: rgb(245, 246, 175); border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid #ffc107; border: 1px solid #e9ecef;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #ffc107; color: #333333; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-weight: 700; font-size: 30px; margin-bottom: 16px; line-height: 1;justify-content:center;padding-top: 10px;padding-left: 16px;">3</div>
+                    <h3 style="font-size: 24px; font-weight: 600; color: #333333; margin-bottom: 16px; font-family: 'Inter', sans-serif;">Create Account Request</h3>
+                    <p style="margin-bottom: 24px; color: #535456; font-size: 16px; line-height: 1.5; font-family: 'Inter', sans-serif;">Submit an account request with your preferred account number and wait for approval:</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style="margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;">
+                                    <span style="color: #28a745; margin-right: 16px; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 16px;">&#xf058;</span>
+                                    <span style="font-family: 'Inter', sans-serif; color: #333333;">Go to Mpesa Payments → Account Requests</span>
+                                </li>
+                                <li style="margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;">
+                                    <span style="color: #28a745; margin-right: 16px; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 16px;">&#xf058;</span>
+                                    <span style="font-family: 'Inter', sans-serif; color: #333333;">Click "Create" new request</span>
+                                </li>
+                                <li style="margin-bottom: 16px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;">
+                                    <span style="color: #28a745; margin-right: 16px; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 16px;">&#xf058;</span>
+                                    <span style="font-family: 'Inter', sans-serif; color: #333333;">Enter preferred account number</span>
+                                </li>
+                                <li style="display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center;">
+                                    <span style="color: #28a745; margin-right: 16px; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 16px;">&#xf058;</span>
+                                    <span style="font-family: 'Inter', sans-serif; color: #333333;">Submit for approval</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="background-color: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e9ecef;">
+                                <img src="images/account_request_screenshot.png" class="img-fluid" alt="Account Request Form"
+                                     style="max-width: 100%; border: 2px solid #e9ecef; border-radius: 8px; display: block;" />
+                                <p style="font-size: 14px; color: #6c757d; margin-top: 16px; margin-bottom: 0; font-family: 'Inter', sans-serif;">Account Request Form</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: POS Configuration -->
+                <div style="background-color: rgb(175, 254, 209); border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid #dc3545; border: 1px solid #e9ecef;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #dc3545; color: white; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-weight: 700; font-size: 30px; margin-bottom: 16px; line-height: 1;justify-content:center;padding-top: 10px;padding-left: 16px;">4</div>
+                    <h3 style="font-size: 24px; font-weight: 600; color: #333333; margin-bottom: 16px; font-family: 'Inter', sans-serif;">Configure Point of Sale Payment Methods</h3>
+                    <p style="margin-bottom: 24px; color: #535456; font-size: 16px; line-height: 1.5; font-family: 'Inter', sans-serif;">Set up your POS payment methods by marking them as either Paybill or M-PESA for STK Push:</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="background-color: rgba(255, 193, 7, 0.1); border: 1px solid #ffc107; border-radius: 8px; padding: 16px; font-family: 'Inter', sans-serif;">
+                                <h6 style="font-weight: 600; margin-bottom: 16px; color: #333333;">
+                                    <span style="color: #ffc107; margin-right: 8px; font-family: 'Font Awesome 6 Free'; font-weight: 900;">&#xf013;</span>Configuration Steps:
+                                </h6>
+                                <ol style="margin-bottom: 0; padding-left: 20px;">
+                                    <li style="margin-bottom: 8px; color: #333333;">Go to Point of Sale → Configuration → Payment Methods</li>
+                                    <li style="margin-bottom: 8px; color: #333333;">Select your Eagle payment method</li>
+                                    <li style="margin-bottom: 8px; color: #333333;">Choose payment type:
+                                        <ul style="margin-top: 8px; padding-left: 20px;">
+                                            <li style="color: #333333;"><strong>Paybill:</strong> For business number payments</li>
+                                            <li style="color: #333333;"><strong>M-PESA STK Push:</strong> For direct mobile transactions</li>
+                                        </ul>
+                                    </li>
+                                    <li style="color: #333333;">Save configuration</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <div style="background-color: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border: 1px solid #e9ecef;">
+                                <img src="images/pos_payment_config_screenshot.png" class="img-fluid" alt="POS Payment Configuration"
+                                     style="max-width: 100%; border: 2px solid #e9ecef; border-radius: 8px; display: block;" />
+                                <p style="font-size: 14px; color: #6c757d; margin-top: 16px; margin-bottom: 0; font-family: 'Inter', sans-serif;">POS Payment Method Configuration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Start Collecting -->
+                <div style="background: #a0b8ff; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid #17a2b8;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #17a2b8; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem;padding-left: 16px;padding-top: 10px;">5</div>
+                    <h3 style="font-size: 1.5rem; font-weight: 600; color: #333333; margin-bottom: 1rem;">Start Collecting Payments</h3>
+                    <p style="margin-bottom: 1.5rem; color: #535456;">Once your account request is approved and payment methods are configured, you can start collecting money through:</p>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); height: 100%; border: 2px solid #17a2b8;">
+                                <div style="background-color: #17a2b8; color: white; padding: 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 14px 14px 0 0;">
+                                    <h5 style="margin: 0; font-weight: 600;"><i class="fas fa-globe" style="margin-right: 0.5rem;"></i>E-commerce Site</h5>
+                                </div>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    <li style="margin-bottom: 0.75rem; display: flex; align-items: center;">
+                                        <i class="fas fa-shopping-cart" style="color: #17a2b8; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>Online checkout integration</span>
+                                    </li>
+                                    <li style="margin-bottom: 0.75rem; display: flex; align-items: center;">
+                                        <i class="fas fa-mobile-alt" style="color: #17a2b8; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>Mobile money options</span>
+                                    </li>
+                                    <li style="display: flex; align-items: center;">
+                                        <i class="fas fa-lock" style="color: #17a2b8; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>Secure payment processing</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); height: 100%; border: 2px solid #28a745;">
+                                <div style="background-color: #28a745; color: white; padding: 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 14px 14px 0 0;">
+                                    <h5 style="margin: 0; font-weight: 600;"><i class="fas fa-cash-register" style="margin-right: 0.5rem;"></i>Point of Sale</h5>
+                                </div>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    <li style="margin-bottom: 0.75rem; display: flex; align-items: center;">
+                                        <i class="fas fa-store" style="color: #28a745; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>STK Push Payments</span>
+                                    </li>
+                                    <li style="margin-bottom: 0.75rem; display: flex; align-items: center;">
+                                        <i class="fas fa-qr-code" style="color: #28a745; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>PayBill Payments</span>
+                                    </li>
+                                    <li style="display: flex; align-items: center;">
+                                        <i class="fas fa-receipt" style="color: #28a745; margin-right: 0.75rem; width: 20px;"></i>
+                                        <span>Till Number Payments</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div style="background-color: rgba(40, 167, 69, 0.1); border: 1px solid #28a745; border-radius: 16px; padding: 2rem; text-align: center; margin: 2rem auto; max-width: 800px;">
+                    <h4 style="color: #28a745; font-weight: 600; margin-bottom: 1rem;">
+                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>Setup Complete!
+                    </h4>
+                    <p style="margin: 0; color: #535456; font-size: 1.1rem;">
+                        Congratulations! Your Eagle Mobile Money Payment system is now ready to process payments.
+                        You can start accepting mobile money payments through both your e-commerce platform and point of sale system.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Key Features Section - moved to the end -->
+            <div style="padding: 5rem 2rem;">
+                <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; color: #333333; text-align: center; margin-bottom: 1rem; font-family: 'Inter', sans-serif;">
+                    Key <span style="color: #2b5fb2;">Features</span>
+                </h2>
+                <p style="font-size: 1.1rem; color: #535456; text-align: center; margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; font-family: 'Inter', sans-serif;">
+                    Enhance your payment experience with integrated mobile money functionality in Odoo. Our module allows customers to pay effortlessly via popular mobile money services directly from your Odoo system.
+                </p>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); height: 100%;">
+                            <img alt="M-PESA Integration" class="img-fluid" loading="lazy" src="images/mpesa.png"
+                                 style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; margin-bottom: 1rem;" />
+                            <h5 style="color: #2b5fb2; font-weight: 600; text-align: center;">M-PESA Payment Integration</h5>
+                            <p style="text-align: center; color: #535456; margin: 0;">Seamless integration with M-PESA for secure mobile payments</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); height: 100%;">
+                            <img alt="M-PESA POS Payment" class="img-fluid" loading="lazy" src="images/mpesa_pos_payment.png"
+                                 style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; margin-bottom: 1rem;" />
+                            <h5 style="color: #2b5fb2; font-weight: 600; text-align: center;">M-PESA Payments in Point of Sale</h5>
+                            <p style="text-align: center; color: #535456; margin: 0;">Accept M-PESA payments directly in your POS system</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Support Section -->
+            <div style="background-color: #2b5fb2; color: white; padding: 4rem 2rem; margin-top: 4rem; border-radius: 16px; position: relative; overflow: hidden;" id="support">
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('images/support-bg.png'); background-size: cover; background-position: center; opacity: 0.1;"></div>
+                <div style="position: relative; z-index: 2;">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3 col-md-4 text-center mb-4 mb-lg-0">
+                            <div style="width: 120px; height: 120px; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <i class="fas fa-headset" style="font-size: 3rem; color: #9effff;"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-8">
+                            <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 1.5rem; color: white; font-family: 'Inter', sans-serif;">
+                                Support <span style="color: #9effff; font-weight: 800;">and</span> Maintenance
+                            </h2>
+                            <p style="font-size: 1.1rem; line-height: 1.6; margin: 0; opacity: 0.95;">
+                                Our team is dedicated to ensuring your Eagle Mobile Money Payment system runs smoothly and efficiently.
+                                We offer comprehensive support and maintenance services, including 24/7 customer support, regular updates,
+                                prompt bug fixes, and customization assistance. If you have any questions or need assistance,
+                                please don't hesitate to reach out to us at <strong style="color: #9effff;">support@kolapro.com</strong>.
+                                We're here to provide a seamless and reliable experience for your business.
+                            </p>
+                            <div style="margin-top: 2rem;">
+                                <a href="mailto:support@kolapro.com" style="background-color: #9effff; color: #2b5fb2; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s ease;">
+                                    <i class="fas fa-envelope" style="margin-right: 0.5rem;"></i>Contact Support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</body>
+
+</html>

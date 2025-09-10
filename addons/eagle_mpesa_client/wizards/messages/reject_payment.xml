@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="reject_payment_form" model="ir.ui.view">
+        <field name="name">reject.payment.form</field>
+        <field name="model">reject.payment</field>
+        <field name="arch" type="xml">
+            <form string="Reject/Cancel Payment Batch">
+               
+
+                <sheet>
+                        
+                    <group>
+
+                      
+                        <group >
+                           
+                            <field name="cancel_reason_id" required="1"  />
+                        </group>
+                        <group>
+                           
+                            <field name="payment_batch_id" readonly="1" />
+                            
+                        </group>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button name="reject"
+                        string="Reject" type="object" data-hotkey="q"
+                        class="btn-primary" >
+                    </button>
+                   
+                    <button
+                        string="Discard" special="cancel"
+                        class="btn-secondary">
+                    </button>
+
+                </footer>
+
+            </form>
+        </field>
+    </record>
+    <record id="cancel_payment_form" model="ir.ui.view">
+        <field name="name">cancel.payment.form</field>
+        <field name="model">cancel.payment</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Payment">
+               
+
+                <sheet>
+                        
+                    <group>
+
+                      
+                        <group >
+                           
+                            <field name="cancel_reason_id" required="1"  />
+                        </group>
+                        <group>
+                           
+                            <field name="eagle_payment_id" readonly="1" />
+                            
+                        </group>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button name="reject"
+                        string="Reject" type="object" data-hotkey="q"
+                        class="btn-primary" >
+                    </button>
+                   
+                    <button
+                        string="Discard" special="cancel"
+                        class="btn-secondary">
+                    </button>
+
+                </footer>
+
+            </form>
+        </field>
+    </record>
+    <record id="reject_funds_request_form" model="ir.ui.view">
+        <field name="name">reject.funds.request.form</field>
+        <field name="model">reject.funds.request</field>
+        <field name="arch" type="xml">
+            <form string="Reject Funds Request">
+               
+
+                <sheet>
+                        
+                    <group>
+
+                      
+                        <group >
+                           
+                            <field name="cancel_reason_id" required="1"  />
+                        </group>
+                        <group>
+                           
+                            <field name="funds_request_id" readonly="1" />
+                            
+                        </group>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button name="reject"
+                        string="Reject" type="object" data-hotkey="q"
+                        class="btn-primary" >
+                    </button>
+                   
+                    <button
+                        string="Discard" special="cancel"
+                        class="btn-secondary">
+                    </button>
+
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+
+    
+
+</odoo>

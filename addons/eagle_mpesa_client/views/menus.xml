@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+          <!-- TOP -->
+            <!--  -->
+    <menuitem id="menu_eale_wallet_root" name="Mpesa Payments" action="wallet_transaction_action"
+        sequence="-9"  groups="eagle_mpesa_client.group_kpayment_user" web_icon="eagle_mpesa_client,static/img/FishEagle.png"/>
+     <menuitem id="menu_eale_wallet_root2" name="Wallet" action="user_wallet_action"
+        parent="menu_eale_wallet_root" sequence="3" />
+     <menuitem id="menu_eagle_wallet_deposits" name="Deposits" action="wallet_transaction_action" 
+        parent="menu_eale_wallet_root" sequence="1" />
+     <menuitem id="menu_eale_account_request" name="Account Request" action="action_account_request" 
+        parent="menu_eale_wallet_root" sequence="4" />
+     <menuitem id="eagle_withdrawal_payments_menu_field" name="Withdrawals" action="eagle_withdrawal_action" groups="eagle_mpesa_client.group_kpayment_user" 
+       parent="menu_eale_wallet_root" sequence="2" />
+    <!-- <menuitem id="menu_funds_requests" name="Funds Requests" action="funds_request_action" groups="eagle_mpesa_client.group_kpayment_user" 
+         parent="menu_eale_wallet_root" sequence="2" /> -->
+    <!-- <menuitem id="menu_payment_batches" name="Payment Batches" action="payment_batch_action" groups="eagle_mpesa_client.group_kpayment_accountant" 
+         parent="menu_eale_wallet_root" sequence="2" /> -->
+         
+     <!-- <menuitem id="eagle_payments_menu_casuals" name="Casual Payments" action="eagle_payment_action" groups="eagle_mpesa_client.group_kpayment_accountant"
+          parent="menu_eale_wallet_root" sequence="4" />
+     <menuitem id="eagle_payments_menu_field" name="Field Payments" action="" groups="eagle_mpesa_client.group_kpayment_user" 
+       parent="menu_eale_wallet_root" sequence="5" />
+     <menuitem id="eagle_pettycash_payments_menu_field" name="PettyCash Payments" action="eagle_pettycash_payment_action" groups="eagle_mpesa_client.group_kpayment_user" 
+       parent="menu_eale_wallet_root" sequence="6" /> -->
+
+
+     <!-- <menuitem id="eagle_payments_menu" name="Eagle Payments" action="eagle_payment_action"
+          sequence="100" parent="hr_payroll.menu_hr_payroll_payslips" /> -->
+     <menuitem id="menu_eagle_base_configuration"  
+          parent="menu_eale_wallet_root" groups="base.group_no_one"
+          name="Configuration" sequence="10" />
+  
+     <menuitem id="menu_eagle_general_settings" name="Settings"
+          parent="menu_eagle_base_configuration" sequence="0"
+          action="action_eagle_config_settings"
+         />
+</odoo> 

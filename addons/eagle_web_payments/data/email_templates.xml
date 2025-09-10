@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_user_payment_notification" model="mail.template">
+            <field name="name">New User Payment</field>
+            <field name="model_id" ref="model_payment_transaction" />
+            <field name="subject">{{ object.company_id.name }}: New Payment</field>
+            <field name="email_from">{{ object.company_id.email_formatted or 'admin@kolapro.com' }}</field>
+            <!-- <field name="email_to">{{ object.email }}</field> -->
+            <!-- <field name="email_to">zijjaaggreyofficial@gmail.com</field> -->
+            <field name="body_html" type="html">
+
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="padding-top:16px; padding-bottom:16px;background-color:#f1f1f1;font-family:Verdana,Arial,sans-serif;color:#454748;width:60%;border-collapse:separate">
+                        <tbody>
+                            <tr>
+                                <td align="center">
+                                    <font color="#888888"></font>
+                                    <font color="#888888"></font>
+                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="590" style="padding:24px;background-color:white;color:#454748;border-collapse:separate">
+                                        <tbody>
+
+                                            <tr>
+                                                <td align="center" style="min-width:590px">
+                                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:white;padding:0;border-collapse:separate">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td valign="middle">
+                                                                    <span style="font-size:10px">New Payment</span>
+                                                                    <br />
+                                                                    <span style="font-size:20px;font-weight:bold;">New User Payment</span>
+                                                                </td>
+                                                                <td valign="middle" align="right">
+                                                                    <img style="padding:0px;margin:0px;height:32px"  t-attf-src="/logo.png?company={{1}}" alt="East African Community" class="CToWUd" data-bit="iit" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="2" style="text-align:center">
+                                                                    <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0;margin:4px 0px 32px 0px" />
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            Hello,
+                                            <br />
+                                            <p>A new subscription has been made on Kolaapps.</p>
+                                            <ul>
+                                                <t t-set="not_available">N/A</t>
+                                                <li>
+                                                    Customer:
+                                                    <t t-out="object.partner_id.name or not_available" />
+                                                </li>
+                                                <li>
+                                                    Company:
+                                                    <t t-out="object.create_uid.company_id.name or not_available" />
+                                                </li>
+                                                <li>
+                                                    Amount:
+                                                    <t t-out="object.amount or not_available" />
+                                                </li>
+                                                <li>
+                                                    Payment Method:
+                                                    <t t-out="object.payment_method_id.name or not_available" />
+                                                </li>
+                                            </ul>
+                                            <!-- <p>If this is you, please enter the following code to complete the verification process:</p> -->
+
+                                            <div style="margin: 16px 0px 16px 0px; text-align: center;">
+                                                <span t-out="object.reference" style="background-color:#faf9fa; border: 1px solid #dad8de; padding: 8px 16px 8px 16px; font-size: 24px; color: #875A7B; border-radius: 5px;" />
+                                            </div>
+                                            <!-- <small>Please note that this code expires in 3 minutes.</small> -->
+
+                                            <br></br>
+                                            Thank You.
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </field>
+            <field name="auto_delete" eval="True" />
+        </record>
+    </data>
+</odoo>
