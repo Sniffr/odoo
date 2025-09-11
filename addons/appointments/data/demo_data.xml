@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="demo_staff_1" model="res.partner">
+            <field name="name">Dr. Sarah Johnson</field>
+            <field name="is_bookable">True</field>
+            <field name="specialization">General Medicine and Family Care</field>
+            <field name="available_hours">Monday-Friday: 9:00 AM - 5:00 PM</field>
+            <field name="email">sarah.johnson@example.com</field>
+            <field name="phone">+1-555-0101</field>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="demo_staff_2" model="res.partner">
+            <field name="name">Dr. Michael Chen</field>
+            <field name="is_bookable">True</field>
+            <field name="specialization">Cardiology and Heart Health</field>
+            <field name="available_hours">Tuesday-Thursday: 10:00 AM - 6:00 PM</field>
+            <field name="email">michael.chen@example.com</field>
+            <field name="phone">+1-555-0102</field>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="demo_staff_3" model="res.partner">
+            <field name="name">Dr. Emily Rodriguez</field>
+            <field name="is_bookable">True</field>
+            <field name="specialization">Pediatrics and Child Care</field>
+            <field name="available_hours">Monday, Wednesday, Friday: 8:00 AM - 4:00 PM</field>
+            <field name="email">emily.rodriguez@example.com</field>
+            <field name="phone">+1-555-0103</field>
+            <field name="is_company">False</field>
+        </record>
+
+        <record id="demo_staff_4" model="res.partner">
+            <field name="name">John Admin</field>
+            <field name="is_bookable">False</field>
+            <field name="email">john.admin@example.com</field>
+            <field name="is_company">False</field>
+        </record>
+    </data>
+</odoo>

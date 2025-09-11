@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="staff_list_template" name="Bookable Staff List" page="True" website="True">
+            <t t-call="website.layout">
+                <t t-set="title">Our Staff</t>
+                <div id="wrap" class="container mt-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="text-center mb-4">Meet Our Bookable Staff</h1>
+                            <p class="text-center lead mb-5">Book an appointment with any of our qualified staff members.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <t t-if="not staff_members">
+                            <div class="col-12 text-center">
+                                <h3>No bookable staff members available at the moment.</h3>
+                                <p>Please check back later.</p>
+                            </div>
+                        </t>
+                        <t t-foreach="staff_members" t-as="staff" t-key="staff.id">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title" t-esc="staff.name"/>
+                                        <p class="card-text" t-esc="staff.email"/>
+                                        <a t-att-href="'/appointments/staff/' + str(staff.id)" class="btn btn-primary">View Profile</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="staff_profile_template" name="Staff Member Profile" page="True" website="True">
+            <t t-call="website.layout">
+                <t t-set="title" t-esc="staff_member.name"/>
+                <div id="wrap" class="container mt-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 t-esc="staff_member.name"/>
+                            <p t-esc="staff_member.email"/>
+                            <a href="/appointments/staff" class="btn btn-secondary">Back to Staff List</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
