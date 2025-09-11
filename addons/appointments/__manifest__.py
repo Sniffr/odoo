@@ -1,5 +1,5 @@
 {
-    'name': 'Appointments',
+    'name': 'Custom Appointments',
     'version': '1.0.0',
     'category': 'Website/Website',
     'summary': 'Appointment booking system with staff management',
