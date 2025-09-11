@@ -25,13 +25,10 @@
     'website': 'https://app.devin.ai',
     'depends': ['base', 'website', 'hr'],
     'data': [
-        'views/staff_member_views.xml',
         'security/ir.model.access.csv',
-        'views/website_templates.xml',
-        'data/demo_data.xml',
+        'views/staff_member_views.xml',
     ],
     'demo': [
-        'data/demo_data.xml',
     ],
     'installable': True,
     'application': False,
