@@ -597,12 +597,12 @@ class MyModel(models.Model):
         <field name="name">my.model.tree</field>
         <field name="model">my.model</field>
         <field name="arch" type="xml">
-            <tree string="My Models">
+            <list string="My Models">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="amount"/>
                 <field name="date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -636,7 +636,7 @@ class MyModel(models.Model):
     <record id="action_my_model" model="ir.actions.act_window">
         <field name="name">My Models</field>
         <field name="res_model">my.model</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>
 ```
