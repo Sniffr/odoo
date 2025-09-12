@@ -10,8 +10,8 @@
             <field name="service_id" ref="service_business_consultation"/>
             <field name="staff_member_id" ref="staff_john_smith"/>
             <field name="branch_id" ref="branch_main_office"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=1)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=1)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
             <field name="state">confirmed</field>
             <field name="description">Initial business strategy consultation to discuss growth opportunities and market analysis.</field>
             <field name="price">200.00</field>
@@ -25,8 +25,8 @@
             <field name="service_id" ref="service_technical_consultation"/>
             <field name="staff_member_id" ref="staff_sarah_johnson"/>
             <field name="branch_id" ref="branch_main_office"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=2)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=2)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=2)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=2)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
             <field name="state">confirmed</field>
             <field name="description">Technical consultation for software architecture and system design.</field>
             <field name="price">150.00</field>
@@ -40,8 +40,8 @@
             <field name="service_id" ref="service_team_training"/>
             <field name="staff_member_id" ref="staff_mike_davis"/>
             <field name="branch_id" ref="branch_downtown"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=3)).replace(hour=10, minute=0, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=3)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=3)).replace(hour=10, minute=0, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=3)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
             <field name="state">confirmed</field>
             <field name="description">Comprehensive team training workshop for project management and collaboration tools.</field>
             <field name="price">500.00</field>
@@ -55,8 +55,8 @@
             <field name="service_id" ref="service_phone_support"/>
             <field name="staff_member_id" ref="staff_john_smith"/>
             <field name="branch_id" ref="branch_main_office"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=1)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=1)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0)"/>
             <field name="state">in_progress</field>
             <field name="description">Quick phone support session for account setup and configuration.</field>
             <field name="price">75.00</field>
@@ -70,8 +70,8 @@
             <field name="service_id" ref="service_onsite_support"/>
             <field name="staff_member_id" ref="staff_mike_davis"/>
             <field name="branch_id" ref="branch_downtown"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=5)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=5)).replace(hour=12, minute=0, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=5)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=5)).replace(hour=12, minute=0, second=0, microsecond=0)"/>
             <field name="state">draft</field>
             <field name="description">On-site technical support for server maintenance and system updates.</field>
             <field name="price">300.00</field>
@@ -85,8 +85,8 @@
             <field name="service_id" ref="service_business_consultation"/>
             <field name="staff_member_id" ref="staff_sarah_johnson"/>
             <field name="branch_id" ref="branch_main_office"/>
-            <field name="start" eval="(datetime.now() + timedelta(days=4)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
-            <field name="stop" eval="(datetime.now() + timedelta(days=4)).replace(hour=13, minute=0, second=0, microsecond=0)"/>
+            <field name="start" eval="(DateTime.now() + timedelta(days=4)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
+            <field name="stop" eval="(DateTime.now() + timedelta(days=4)).replace(hour=13, minute=0, second=0, microsecond=0)"/>
             <field name="state">completed</field>
             <field name="description">Marketing strategy consultation for digital transformation.</field>
             <field name="price">200.00</field>
