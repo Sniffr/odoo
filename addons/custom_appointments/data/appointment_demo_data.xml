@@ -8,8 +8,8 @@
             <field name="customer_email">john.doe@example.com</field>
             <field name="customer_phone">+1-555-1001</field>
             <field name="service_id" ref="service_business_consultation"/>
-            <field name="staff_member_id" ref="staff_john_smith"/>
-            <field name="branch_id" ref="branch_main_office"/>
+            <field name="staff_member_id" ref="staff_john"/>
+            <field name="branch_id" ref="branch_main"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=1)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
             <field name="state">confirmed</field>
@@ -23,8 +23,8 @@
             <field name="customer_email">jane.smith@techcorp.com</field>
             <field name="customer_phone">+1-555-1002</field>
             <field name="service_id" ref="service_technical_consultation"/>
-            <field name="staff_member_id" ref="staff_sarah_johnson"/>
-            <field name="branch_id" ref="branch_main_office"/>
+            <field name="staff_member_id" ref="staff_sarah"/>
+            <field name="branch_id" ref="branch_main"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=2)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=2)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
             <field name="state">confirmed</field>
@@ -38,7 +38,7 @@
             <field name="customer_email">training@abccompany.com</field>
             <field name="customer_phone">+1-555-1003</field>
             <field name="service_id" ref="service_team_training"/>
-            <field name="staff_member_id" ref="staff_mike_davis"/>
+            <field name="staff_member_id" ref="staff_mike"/>
             <field name="branch_id" ref="branch_downtown"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=3)).replace(hour=10, minute=0, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=3)).replace(hour=14, minute=0, second=0, microsecond=0)"/>
@@ -53,8 +53,8 @@
             <field name="customer_email">robert.j@email.com</field>
             <field name="customer_phone">+1-555-1004</field>
             <field name="service_id" ref="service_phone_support"/>
-            <field name="staff_member_id" ref="staff_john_smith"/>
-            <field name="branch_id" ref="branch_main_office"/>
+            <field name="staff_member_id" ref="staff_john"/>
+            <field name="branch_id" ref="branch_main"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=1)).replace(hour=15, minute=30, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0)"/>
             <field name="state">in_progress</field>
@@ -68,7 +68,7 @@
             <field name="customer_email">support@xyzcorp.com</field>
             <field name="customer_phone">+1-555-1005</field>
             <field name="service_id" ref="service_onsite_support"/>
-            <field name="staff_member_id" ref="staff_mike_davis"/>
+            <field name="staff_member_id" ref="staff_mike"/>
             <field name="branch_id" ref="branch_downtown"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=5)).replace(hour=9, minute=0, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=5)).replace(hour=12, minute=0, second=0, microsecond=0)"/>
@@ -83,8 +83,8 @@
             <field name="customer_email">sarah.wilson@marketing.com</field>
             <field name="customer_phone">+1-555-1006</field>
             <field name="service_id" ref="service_business_consultation"/>
-            <field name="staff_member_id" ref="staff_sarah_johnson"/>
-            <field name="branch_id" ref="branch_main_office"/>
+            <field name="staff_member_id" ref="staff_sarah"/>
+            <field name="branch_id" ref="branch_main"/>
             <field name="start" eval="(DateTime.now() + timedelta(days=4)).replace(hour=11, minute=0, second=0, microsecond=0)"/>
             <field name="stop" eval="(DateTime.now() + timedelta(days=4)).replace(hour=13, minute=0, second=0, microsecond=0)"/>
             <field name="state">completed</field>
