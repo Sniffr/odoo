@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Branch List View -->
+    <record id="branch_list_view" model="ir.ui.view">
+        <field name="name">custom.branch.list</field>
+        <field name="model">custom.branch</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="staff_count"/>
+                <field name="is_main_branch"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Branch Form View -->
+    <record id="branch_form_view" model="ir.ui.view">
+        <field name="name">custom.branch.form</field>
+        <field name="model">custom.branch</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                        <button type="object" name="action_view_staff" class="oe_stat_button" icon="fa-users">
+                            <field name="staff_count" widget="statinfo" string="Staff"/>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="is_main_branch"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="website"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Address">
+                            <group>
+                                <group>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="city"/>
+                                </group>
+                                <group>
+                                    <field name="state_id"/>
+                                    <field name="country_id"/>
+                                    <field name="zip"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Operating Hours">
+                            <group>
+                                <group string="Weekdays">
+                                    <label for="monday_open" string="Monday"/>
+                                    <div class="o_row">
+                                        <field name="monday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="monday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                    <label for="tuesday_open" string="Tuesday"/>
+                                    <div class="o_row">
+                                        <field name="tuesday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="tuesday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                    <label for="wednesday_open" string="Wednesday"/>
+                                    <div class="o_row">
+                                        <field name="wednesday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="wednesday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                    <label for="thursday_open" string="Thursday"/>
+                                    <div class="o_row">
+                                        <field name="thursday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="thursday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                    <label for="friday_open" string="Friday"/>
+                                    <div class="o_row">
+                                        <field name="friday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="friday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                </group>
+                                <group string="Weekend">
+                                    <label for="saturday_open" string="Saturday"/>
+                                    <div class="o_row">
+                                        <field name="saturday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="saturday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                    <label for="sunday_open" string="Sunday"/>
+                                    <div class="o_row">
+                                        <field name="sunday_open" widget="float_time" class="oe_inline"/>
+                                        <span class="oe_inline"> - </span>
+                                        <field name="sunday_close" widget="float_time" class="oe_inline"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Staff Members">
+                            <field name="staff_member_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="specialization"/>
+                                    <field name="is_bookable"/>
+                                    <field name="hourly_rate"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Branch Action -->
+    <record id="branch_action" model="ir.actions.act_window">
+        <field name="name">Branches</field>
+        <field name="res_model">custom.branch</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first branch!
+            </p>
+            <p>
+                Manage your company branches and locations.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="branches_menu" 
+              name="Branches" 
+              parent="appointments_main_menu"
+              action="branch_action"
+              sequence="20"/>
+</odoo>

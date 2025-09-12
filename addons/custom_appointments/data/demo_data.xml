@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo Branches -->
+    <record id="branch_main" model="custom.branch">
+        <field name="name">Main Office</field>
+        <field name="code">MAIN</field>
+        <field name="street">123 Business Street</field>
+        <field name="city">Business City</field>
+        <field name="phone">+1-555-0123</field>
+        <field name="email">main@company.com</field>
+        <field name="is_main_branch">True</field>
+    </record>
+    
+    <record id="branch_downtown" model="custom.branch">
+        <field name="name">Downtown Branch</field>
+        <field name="code">DOWN</field>
+        <field name="street">456 Downtown Ave</field>
+        <field name="city">Business City</field>
+        <field name="phone">+1-555-0124</field>
+        <field name="email">downtown@company.com</field>
+        <field name="is_main_branch">False</field>
+    </record>
+
+    <!-- Demo Staff Members -->
+    <record id="staff_john" model="custom.staff.member">
+        <field name="name">John Smith</field>
+        <field name="email">john.smith@company.com</field>
+        <field name="phone">+1-555-0101</field>
+        <field name="specialization">Senior Consultant</field>
+        <field name="branch_id" ref="branch_main"/>
+        <field name="is_bookable">True</field>
+        <field name="hourly_rate">150.0</field>
+        <field name="start_time">9.0</field>
+        <field name="end_time">17.0</field>
+    </record>
+    
+    <record id="staff_sarah" model="custom.staff.member">
+        <field name="name">Sarah Johnson</field>
+        <field name="email">sarah.johnson@company.com</field>
+        <field name="phone">+1-555-0102</field>
+        <field name="specialization">Project Manager</field>
+        <field name="branch_id" ref="branch_main"/>
+        <field name="is_bookable">True</field>
+        <field name="hourly_rate">120.0</field>
+        <field name="start_time">8.0</field>
+        <field name="end_time">16.0</field>
+    </record>
+    
+    <record id="staff_mike" model="custom.staff.member">
+        <field name="name">Mike Davis</field>
+        <field name="email">mike.davis@company.com</field>
+        <field name="phone">+1-555-0103</field>
+        <field name="specialization">Technical Specialist</field>
+        <field name="branch_id" ref="branch_downtown"/>
+        <field name="is_bookable">True</field>
+        <field name="hourly_rate">130.0</field>
+        <field name="start_time">10.0</field>
+        <field name="end_time">18.0</field>
+        <field name="saturday_available">True</field>
+    </record>
+</odoo>

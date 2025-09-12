@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Staff Member List View -->
+    <record id="staff_member_list_view" model="ir.ui.view">
+        <field name="name">custom.staff.member.list</field>
+        <field name="model">custom.staff.member</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="specialization"/>
+                <field name="branch_id"/>
+                <field name="is_bookable"/>
+                <field name="hourly_rate"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Staff Member Form View -->
+    <record id="staff_member_form_view" model="ir.ui.view">
+        <field name="name">custom.staff.member.form</field>
+        <field name="model">custom.staff.member</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="specialization"/>
+                            <field name="branch_id"/>
+                        </group>
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="is_bookable"/>
+                            <field name="hourly_rate"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Availability">
+                            <group>
+                                <group string="Working Days">
+                                    <field name="monday_available"/>
+                                    <field name="tuesday_available"/>
+                                    <field name="wednesday_available"/>
+                                    <field name="thursday_available"/>
+                                    <field name="friday_available"/>
+                                    <field name="saturday_available"/>
+                                    <field name="sunday_available"/>
+                                </group>
+                                <group string="Working Hours">
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Staff Member Action -->
+    <record id="staff_member_action" model="ir.actions.act_window">
+        <field name="name">Staff Members</field>
+        <field name="res_model">custom.staff.member</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first staff member!
+            </p>
+            <p>
+                Manage your staff members who can take appointments and bookings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="appointments_main_menu" 
+              name="Appointments" 
+              sequence="10"/>
+    
+    <menuitem id="staff_members_menu" 
+              name="Staff Members" 
+              parent="appointments_main_menu"
+              action="staff_member_action"
+              sequence="10"/>
+</odoo>
