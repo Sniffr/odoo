@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Learning Records List Template -->
+    <template id="learning_records_template" name="Learning Records">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="text-center mb-4">Learning Records</h1>
+                            <p class="text-center text-muted mb-5">Track your learning journey</p>
+                            
+                            <div class="row">
+                                <t t-foreach="records" t-as="record">
+                                    <div class="col-md-6 col-lg-4 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <a t-attf-href="/learning/#{record.id}" class="text-decoration-none">
+                                                        <t t-esc="record.name"/>
+                                                    </a>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Category: <span class="badge badge-secondary"><t t-esc="record.category.title()"/></span>
+                                                    </small>
+                                                </p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Level: <span class="badge badge-info"><t t-esc="record.difficulty.title()"/></span>
+                                                    </small>
+                                                </p>
+                                                <p class="card-text" t-if="record.description">
+                                                    <t t-esc="record.description[:100]"/>
+                                                    <span t-if="len(record.description) > 100">...</span>
+                                                </p>
+                                                <div class="mt-auto">
+                                                    <t t-if="record.is_completed">
+                                                        <span class="badge badge-success">✓ Completed</span>
+                                                        <small class="text-muted d-block">
+                                                            <t t-esc="record.completion_date"/>
+                                                        </small>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge badge-warning">In Progress</span>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            
+                            <t t-if="not records">
+                                <div class="text-center">
+                                    <h3>No learning records yet!</h3>
+                                    <p class="text-muted">Start by adding some learning records in the backend.</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Learning Record Detail Template -->
+    <template id="learning_record_detail_template" name="Learning Record Detail">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/learning">Learning Records</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page"><t t-esc="record.name"/></li>
+                                </ol>
+                            </nav>
+                            
+                            <h1><t t-esc="record.name"/></h1>
+                            
+                            <div class="mb-3">
+                                <span class="badge badge-secondary mr-2">
+                                    Category: <t t-esc="record.category.title()"/>
+                                </span>
+                                <span class="badge badge-info mr-2">
+                                    Level: <t t-esc="record.difficulty.title()"/>
+                                </span>
+                                <t t-if="record.is_completed">
+                                    <span class="badge badge-success">✓ Completed</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge badge-warning">In Progress</span>
+                                </t>
+                            </div>
+                            
+                            <t t-if="record.description">
+                                <h3>Description</h3>
+                                <p><t t-esc="record.description"/></p>
+                            </t>
+                            
+                            <t t-if="record.completion_date">
+                                <p><strong>Completed on:</strong> <t t-esc="record.completion_date"/></p>
+                            </t>
+                            
+                            <t t-if="record.notes">
+                                <h3>Notes</h3>
+                                <div t-field="record.notes"/>
+                            </t>
+                            
+                            <div class="mt-4">
+                                <a href="/learning" class="btn btn-secondary">← Back to Learning Records</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="learning_record_tree_view" model="ir.ui.view">
+        <field name="name">learning.record.tree</field>
+        <field name="model">learning.record</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="difficulty"/>
+                <field name="is_completed"/>
+                <field name="completion_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="learning_record_form_view" model="ir.ui.view">
+        <field name="name">learning.record.form</field>
+        <field name="model">learning.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category"/>
+                            <field name="difficulty"/>
+                        </group>
+                        <group>
+                            <field name="is_completed"/>
+                            <field name="completion_date" invisible="is_completed == False"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="learning_record_action" model="ir.actions.act_window">
+        <field name="name">Learning Records</field>
+        <field name="res_model">learning.record</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first learning record!
+            </p>
+            <p>
+                Track your learning progress with this simple addon.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="learning_main_menu" 
+              name="Learning Tracker" 
+              sequence="10"/>
+    
+    <menuitem id="learning_records_menu" 
+              name="Learning Records" 
+              parent="learning_main_menu"
+              action="learning_record_action"
+              sequence="10"/>
+</odoo>

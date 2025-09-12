@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_learning_record_public,learning.record public,model_learning_record,,1,0,0,0
+access_learning_record_user,learning.record user,model_learning_record,base.group_user,1,1,1,1
