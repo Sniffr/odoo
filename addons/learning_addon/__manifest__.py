@@ -9,6 +9,8 @@
         - Adding data to the database
         - Displaying data on the website
         - Basic Odoo development concepts
+        
+        Compatible with Odoo 18.0
     ''',
     'author': 'Learning Developer',
     'depends': ['base', 'website'],
