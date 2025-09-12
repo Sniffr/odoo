@@ -78,10 +78,10 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
+    <!-- Menu Items - Integrated into Appointments -->
     <menuitem id="service_categories_menu" 
               name="Service Categories" 
-              parent="services_main_menu"
+              parent="appointments_main_menu"
               action="service_category_action"
-              sequence="20"/>
+              sequence="40"/>
 </odoo>

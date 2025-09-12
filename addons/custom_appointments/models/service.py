@@ -27,7 +27,7 @@ class CompanyService(models.Model):
     allowed_staff_ids = fields.Many2many('custom.staff.member', string='Allowed Staff Members')
     
     active = fields.Boolean(string='Active', default=True)
-    website_published = fields.Boolean(string='Published on Website', default=True)
+    published = fields.Boolean(string='Published', default=True)
     sequence = fields.Integer(string='Sequence', default=10)
     
     preparation_time = fields.Float(string='Preparation Time (Hours)', default=0.0)
@@ -56,7 +56,7 @@ class CompanyService(models.Model):
         domain = [
             ('active', '=', True),
             ('is_bookable', '=', True),
-            ('website_published', '=', True)
+            ('published', '=', True)
         ]
         if category_id:
             domain.append(('category_id', '=', category_id))
