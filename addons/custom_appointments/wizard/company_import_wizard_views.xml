@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Company Import Wizard Form -->
+    <record id="view_company_import_wizard_form" model="ir.ui.view">
+        <field name="name">company.import.wizard.form</field>
+        <field name="model">company.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Companies as Branches">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="import_mode" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="update_existing"/>
+                            <field name="set_main_branch"/>
+                        </group>
+                    </group>
+                    <group string="Companies to Import" invisible="import_mode == 'all'">
+                        <field name="company_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_import_companies" string="Import" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_company_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Companies</field>
+        <field name="res_model">company.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_company_import_wizard_form"/>
+    </record>
+</odoo>

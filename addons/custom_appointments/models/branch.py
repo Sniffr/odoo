@@ -7,6 +7,7 @@ class Branch(models.Model):
     _rec_name = 'name'
 
     name = fields.Char(string='Branch Name', required=True)
+    company_id = fields.Many2one('res.company', string='Company', help='Link to Company if available', ondelete='cascade')
     code = fields.Char(string='Branch Code', help='Short code for the branch')
     
     street = fields.Char(string='Street')
@@ -71,3 +72,43 @@ class Branch(models.Model):
             other_branches = self.search([('id', 'not in', self.ids), ('is_main_branch', '=', True)])
             other_branches.write({'is_main_branch': False})
         return super().write(vals)
+    
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        """Auto-populate fields when company is selected"""
+        if self.company_id:
+            self.name = self.company_id.name
+            self.street = self.company_id.street or ''
+            self.street2 = self.company_id.street2 or ''
+            self.city = self.company_id.city or ''
+            self.state_id = self.company_id.state_id
+            self.country_id = self.company_id.country_id
+            self.zip = self.company_id.zip or ''
+            self.phone = self.company_id.phone or ''
+            self.email = self.company_id.email or ''
+            self.website = self.company_id.website or ''
+
+    def action_sync_from_company(self):
+        """Action to sync individual branch from linked company"""
+        if self.company_id:
+            self.write({
+                'name': self.company_id.name,
+                'street': self.company_id.street or '',
+                'street2': self.company_id.street2 or '',
+                'city': self.company_id.city or '',
+                'state_id': self.company_id.state_id.id if self.company_id.state_id else False,
+                'country_id': self.company_id.country_id.id if self.company_id.country_id else False,
+                'zip': self.company_id.zip or '',
+                'phone': self.company_id.phone or '',
+                'email': self.company_id.email or '',
+                'website': self.company_id.website or '',
+            })
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Success',
+                    'message': f'Branch {self.name} synced from company data.',
+                    'type': 'success',
+                }
+            }
