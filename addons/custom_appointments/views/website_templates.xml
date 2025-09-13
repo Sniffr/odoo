@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Appointment Booking Page -->
+    <template id="appointment_booking_page" name="Book an Appointment">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="text-center mb-4">Book an Appointment</h1>
+                            <p class="text-center text-muted mb-5">Choose from our available services</p>
+                            
+                            <!-- Service Categories -->
+                            <t t-if="service_categories">
+                                <div class="row mb-4">
+                                    <t t-foreach="service_categories" t-as="category">
+                                        <div class="col-md-12 mb-4">
+                                            <h3 class="mb-3"><t t-esc="category.name"/></h3>
+                                            <div class="row">
+                                                <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
+                                                    <div class="col-md-6 col-lg-4 mb-4">
+                                                        <div class="card h-100">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">
+                                                                    <t t-esc="service.name"/>
+                                                                </h5>
+                                                                <p class="card-text">
+                                                                    <t t-if="service.description">
+                                                                        <t t-esc="service.description[:100]"/>
+                                                                        <span t-if="len(service.description) > 100">...</span>
+                                                                    </t>
+                                                                </p>
+                                                                <div class="mb-3">
+                                                                    <span class="badge badge-primary">
+                                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                                    </span>
+                                                                    <span class="badge badge-secondary ml-2">
+                                                                        <t t-esc="service.duration"/> hours
+                                                                    </span>
+                                                                </div>
+                                                                <div class="mt-auto">
+                                                                    <a t-attf-href="/appointments/service/#{service.id}" class="btn btn-primary">
+                                                                        Select Service
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            
+                            <!-- All Services (if no categories) -->
+                            <t t-if="not service_categories">
+                                <div class="row">
+                                    <t t-foreach="services" t-as="service">
+                                        <div class="col-md-6 col-lg-4 mb-4">
+                                            <div class="card h-100">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <t t-esc="service.name"/>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <t t-if="service.description">
+                                                            <t t-esc="service.description[:100]"/>
+                                                            <span t-if="len(service.description) > 100">...</span>
+                                                        </t>
+                                                    </p>
+                                                    <div class="mb-3">
+                                                        <span class="badge badge-primary">
+                                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                        </span>
+                                                        <span class="badge badge-secondary ml-2">
+                                                            <t t-esc="service.duration"/> hours
+                                                        </span>
+                                                    </div>
+                                                    <div class="mt-auto">
+                                                        <a t-attf-href="/appointments/service/#{service.id}" class="btn btn-primary">
+                                                            Select Service
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            
+                            <t t-if="not services">
+                                <div class="text-center">
+                                    <h3>No services available for booking</h3>
+                                    <p class="text-muted">Please check back later or contact us directly.</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Service Detail Page with Staff Selection -->
+    <template id="service_detail_page" name="Select Staff Member">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/appointments">Services</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page"><t t-esc="service.name"/></li>
+                                </ol>
+                            </nav>
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h1><t t-esc="service.name"/></h1>
+                                    
+                                    <div class="mb-4">
+                                        <span class="badge badge-primary mr-2">
+                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                        </span>
+                                        <span class="badge badge-secondary mr-2">
+                                            <t t-esc="service.duration"/> hours
+                                        </span>
+                                        <span class="badge badge-info">
+                                            <t t-esc="service.category_id.name"/>
+                                        </span>
+                                    </div>
+                                    
+                                    <t t-if="service.description">
+                                        <h3>Description</h3>
+                                        <p><t t-esc="service.description"/></p>
+                                    </t>
+                                    
+                                    <t t-if="service.customer_notes">
+                                        <h3>Important Information</h3>
+                                        <div class="alert alert-info">
+                                            <t t-esc="service.customer_notes"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Select Staff Member</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <t t-if="available_staff">
+                                                <t t-foreach="available_staff" t-as="staff">
+                                                    <div class="mb-3 p-3 border rounded">
+                                                        <h6><t t-esc="staff.name"/></h6>
+                                                        <t t-if="staff.specialization">
+                                                            <p class="text-muted mb-2">
+                                                                <small><t t-esc="staff.specialization"/></small>
+                                                            </p>
+                                                        </t>
+                                                        <p class="text-muted mb-2">
+                                                            <small><t t-esc="staff.branch_id.name"/></small>
+                                                        </p>
+                                                        <a t-attf-href="/appointments/book?service_id=#{service.id}&amp;staff_id=#{staff.id}" 
+                                                           class="btn btn-primary btn-sm">
+                                                            Book with <t t-esc="staff.name"/>
+                                                        </a>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                            
+                                            <t t-if="not available_staff">
+                                                <div class="text-center">
+                                                    <p class="text-muted">No staff members available for this service.</p>
+                                                    <a href="/appointments" class="btn btn-secondary">
+                                                        ← Back to Services
+                                                    </a>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Booking Form Page -->
+    <template id="booking_form_page" name="Book Appointment">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/appointments">Services</a></li>
+                                    <li class="breadcrumb-item"><a t-attf-href="/appointments/service/#{service.id}"><t t-esc="service.name"/></a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Book Appointment</li>
+                                </ol>
+                            </nav>
+                            
+                            <h1>Book Your Appointment</h1>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Service Details</h5>
+                                            <p><strong><t t-esc="service.name"/></strong></p>
+                                            <p>Duration: <t t-esc="service.duration"/> hours</p>
+                                            <p>Price: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Staff Member</h5>
+                                            <p><strong><t t-esc="staff.name"/></strong></p>
+                                            <t t-if="staff.specialization">
+                                                <p><t t-esc="staff.specialization"/></p>
+                                            </t>
+                                            <p>Location: <t t-esc="staff.branch_id.name"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <form method="post" action="/appointments/book" class="needs-validation" novalidate="true">
+                                <input type="hidden" name="service_id" t-att-value="service.id"/>
+                                <input type="hidden" name="staff_id" t-att-value="staff.id"/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <!-- Time Slot Selection -->
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Select Date &amp; Time</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <t t-foreach="available_slots.items()" t-as="date_slots">
+                                                <div class="col-md-6 col-lg-4 mb-3">
+                                                    <h6><t t-esc="date_slots[0]"/></h6>
+                                                    <t t-foreach="date_slots[1]" t-as="slot">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" 
+                                                                   name="appointment_datetime" 
+                                                                   t-att-value="slot['datetime']"
+                                                                   t-att-id="'slot_' + slot['datetime']"
+                                                                   required="true"/>
+                                                            <label class="form-check-label" t-att-for="'slot_' + slot['datetime']">
+                                                                <t t-esc="slot['time']"/>
+                                                            </label>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        
+                                        <t t-if="not available_slots">
+                                            <div class="alert alert-warning">
+                                                <p>No available time slots found for the next 30 days.</p>
+                                                <p>Please contact us directly to schedule your appointment.</p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                
+                                <!-- Customer Information -->
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Your Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_name">Full Name *</label>
+                                                    <input type="text" class="form-control" id="customer_name" 
+                                                           name="customer_name" required="true"/>
+                                                    <div class="invalid-feedback">
+                                                        Please provide your full name.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_email">Email Address *</label>
+                                                    <input type="email" class="form-control" id="customer_email" 
+                                                           name="customer_email" required="true"/>
+                                                    <div class="invalid-feedback">
+                                                        Please provide a valid email address.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_phone">Phone Number</label>
+                                                    <input type="tel" class="form-control" id="customer_phone" 
+                                                           name="customer_phone"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="notes">Additional Notes</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                                      placeholder="Any special requirements or notes for your appointment..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg" t-if="available_slots">
+                                        Book Appointment
+                                    </button>
+                                    <a href="/appointments" class="btn btn-secondary ml-2">
+                                        ← Back to Services
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Booking Success Page -->
+    <template id="booking_success_page" name="Booking Confirmed">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 text-center">
+                            <div class="alert alert-success">
+                                <h1 class="alert-heading">Appointment Booked Successfully!</h1>
+                                <p class="lead">Your appointment has been confirmed.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Appointment Details</h3>
+                                </div>
+                                <div class="card-body text-left">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Service:</strong> <t t-esc="service.name"/></p>
+                                            <p><strong>Staff Member:</strong> <t t-esc="staff.name"/></p>
+                                            <p><strong>Location:</strong> <t t-esc="staff.branch_id.name"/></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                            <p><strong>Duration:</strong> <t t-esc="service.duration"/> hours</p>
+                                            <p><strong>Price:</strong> <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p><strong>Customer:</strong> <t t-esc="appointment.customer_name"/></p>
+                                            <p><strong>Email:</strong> <t t-esc="appointment.customer_email"/></p>
+                                            <t t-if="appointment.customer_phone">
+                                                <p><strong>Phone:</strong> <t t-esc="appointment.customer_phone"/></p>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <t t-if="appointment.state == 'draft'">
+                                    <div class="alert alert-info">
+                                        <p><strong>Pending Approval:</strong> Your appointment is pending approval. We will contact you shortly to confirm.</p>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-success">
+                                        <p><strong>Confirmed:</strong> Your appointment is confirmed and has been added to our calendar.</p>
+                                    </div>
+                                </t>
+                                
+                                <a href="/appointments" class="btn btn-primary">
+                                    Book Another Appointment
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Booking Error Page -->
+    <template id="booking_error_page" name="Booking Error">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 text-center">
+                            <div class="alert alert-danger">
+                                <h1 class="alert-heading">Booking Error</h1>
+                                <p class="lead">We encountered an error while processing your appointment.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Error Details</h5>
+                                    <p><t t-esc="error"/></p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <a href="/appointments" class="btn btn-primary">
+                                    ← Back to Services
+                                </a>
+                                <p class="mt-3 text-muted">
+                                    If you continue to experience issues, please contact us directly.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
