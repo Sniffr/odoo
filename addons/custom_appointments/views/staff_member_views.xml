@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="employee_id"/>
                 <field name="specialization"/>
                 <field name="branch_id"/>
                 <field name="is_bookable"/>
@@ -24,6 +25,11 @@
         <field name="model">custom.staff.member</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_sync_from_employee" string="Sync from Employee" 
+                            type="object" class="btn-secondary"
+                            invisible="not employee_id"/>
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
@@ -84,6 +90,7 @@
             </p>
             <p>
                 Manage your staff members who can take appointments and bookings.
+                You can import existing employees using the "Import Employees" button.
             </p>
         </field>
     </record>
@@ -98,4 +105,19 @@
               parent="appointments_main_menu"
               action="staff_member_action"
               sequence="10"/>
+
+    <!-- Staff Member List View with Import Button -->
+    <record id="view_staff_member_list_with_import" model="ir.ui.view">
+        <field name="name">custom.staff.member.list.import</field>
+        <field name="model">custom.staff.member</field>
+        <field name="inherit_id" ref="staff_member_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="before">
+                <header>
+                    <button name="%(action_employee_import_wizard)d" string="Import Employees" 
+                            type="action" class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
 </odoo>
