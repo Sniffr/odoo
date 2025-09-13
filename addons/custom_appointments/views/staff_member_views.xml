@@ -5,11 +5,11 @@
         <field name="name">custom.staff.member.list</field>
         <field name="model">custom.staff.member</field>
         <field name="arch" type="xml">
-            <header>
-                <button name="%(action_employee_import_wizard)d" string="Import Employees" 
-                        type="action" class="btn-primary"/>
-            </header>
             <list>
+                <header>
+                    <button name="%(action_employee_import_wizard)d" string="Import Employees" 
+                            type="action" class="btn-primary"/>
+                </header>
                 <field name="name"/>
                 <field name="employee_id"/>
                 <field name="specialization"/>
