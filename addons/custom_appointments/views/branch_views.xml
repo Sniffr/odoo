@@ -6,6 +6,10 @@
         <field name="model">custom.branch</field>
         <field name="arch" type="xml">
             <list>
+                <header>
+                    <button name="%(action_company_import_wizard)d" string="Import Companies" 
+                            type="action" class="btn-primary"/>
+                </header>
                 <field name="name"/>
                 <field name="company_id"/>
                 <field name="code"/>
@@ -159,18 +163,4 @@
               action="branch_action"
               sequence="20"/>
 
-    <!-- Branch List View with Import Button -->
-    <record id="view_branch_list_with_import" model="ir.ui.view">
-        <field name="name">custom.branch.list.import</field>
-        <field name="model">custom.branch</field>
-        <field name="inherit_id" ref="branch_list_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//list" position="before">
-                <header>
-                    <button name="%(action_company_import_wizard)d" string="Import Companies" 
-                            type="action" class="btn-primary"/>
-                </header>
-            </xpath>
-        </field>
-    </record>
 </odoo>
