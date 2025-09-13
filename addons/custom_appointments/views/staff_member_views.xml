@@ -5,6 +5,10 @@
         <field name="name">custom.staff.member.list</field>
         <field name="model">custom.staff.member</field>
         <field name="arch" type="xml">
+            <header>
+                <button name="%(action_employee_import_wizard)d" string="Import Employees" 
+                        type="action" class="btn-primary"/>
+            </header>
             <list>
                 <field name="name"/>
                 <field name="employee_id"/>
@@ -106,18 +110,4 @@
               action="staff_member_action"
               sequence="10"/>
 
-    <!-- Staff Member List View with Import Button -->
-    <record id="view_staff_member_list_with_import" model="ir.ui.view">
-        <field name="name">custom.staff.member.list.import</field>
-        <field name="model">custom.staff.member</field>
-        <field name="inherit_id" ref="staff_member_list_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//list" position="before">
-                <header>
-                    <button name="%(action_employee_import_wizard)d" string="Import Employees" 
-                            type="action" class="btn-primary"/>
-                </header>
-            </xpath>
-        </field>
-    </record>
 </odoo>
