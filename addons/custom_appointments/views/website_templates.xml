@@ -652,7 +652,7 @@
 
                                     <!-- Customer Information Form -->
                                     <form id="booking-form" method="post" t-attf-action="/appointments/book?service_id={{service.id}}&amp;staff_id={{staff.id}}">
-                                        <t t-call="website.csrf_token"/>
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <input type="hidden" name="service_id" t-att-value="service.id"/>
                                         <input type="hidden" name="staff_id" t-att-value="staff.id"/>
                                         <input type="hidden" name="appointment_datetime" id="appointment_datetime"/>
