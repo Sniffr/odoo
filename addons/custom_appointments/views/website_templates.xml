@@ -509,7 +509,7 @@
                             const teamCards = document.querySelectorAll('.team-card');
                             teamCards.forEach(card => {
                                 const onclick = card.getAttribute('onclick');
-                                if (onclick && onclick.includes(selectedTeamMember)) {
+                                if (onclick &amp;&amp; onclick.includes(selectedTeamMember)) {
                                     selectTeamMember(card, selectedTeamMember);
                                 }
                             });
