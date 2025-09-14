@@ -443,22 +443,13 @@
                                 </t>
                             </div>
 
-                            <!-- Continue Button -->
-                            <div class="text-center mt-4">
-                                <button class="btn btn-lg" style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;" onclick="proceedToBooking()">
-                                    Continue to Booking
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Initialize JavaScript variables from template -->
                 <script>
                     // Initialize variables with simple values
-                    let selectedTeamMember = '<t t-if="selected_staff_id"><t t-esc="selected_staff_id"/></t><t t-else="">any</t>';
-                    let defaultStaffId = '<t t-if="staff_members"><t t-esc="staff_members[0].id"/></t><t t-else="">1</t>';
+                    let selectedTeamMember = 'any';
+                    let defaultStaffId = '1';
                     let selectedService = null;
+
 
                     function selectTeamMember(element, memberId) {
                         // Remove previous selection
