@@ -15,11 +15,19 @@
                                 <div class="row mb-4">
                                     <t t-foreach="service_categories" t-as="category">
                                         <div class="col-md-12 mb-4">
-                                            <h3 class="mb-3"><t t-esc="category.name"/></h3>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <t t-if="category.image">
+                                                    <img t-att-src="'/web/image/custom.service.category/%s/image/40x40' % category.id" class="rounded mr-3" style="width: 40px; height: 40px; object-fit: cover;" alt="Category Image"/>
+                                                </t>
+                                                <h3 class="mb-0"><t t-esc="category.name"/></h3>
+                                            </div>
                                             <div class="row">
                                                 <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
                                                     <div class="col-md-6 col-lg-4 mb-4">
                                                         <div class="card h-100">
+                                                            <t t-if="service.image">
+                                                                <img t-att-src="'/web/image/custom.service/%s/image/150x150' % service.id" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Service Image"/>
+                                                            </t>
                                                             <div class="card-body">
                                                                 <h5 class="card-title">
                                                                     <t t-esc="service.name"/>
@@ -59,6 +67,9 @@
                                     <t t-foreach="services" t-as="service">
                                         <div class="col-md-6 col-lg-4 mb-4">
                                             <div class="card h-100">
+                                                <t t-if="service.image">
+                                                    <img t-att-src="'/web/image/company.service/%s/image/150x150' % service.id" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Service Image"/>
+                                                </t>
                                                 <div class="card-body">
                                                     <h5 class="card-title">
                                                         <t t-esc="service.name"/>
@@ -154,12 +165,19 @@
                                             <t t-if="available_staff">
                                                 <t t-foreach="available_staff" t-as="staff">
                                                     <div class="mb-3 p-3 border rounded">
-                                                        <h6><t t-esc="staff.name"/></h6>
-                                                        <t t-if="staff.specialization">
-                                                            <p class="text-muted mb-2">
-                                                                <small><t t-esc="staff.specialization"/></small>
-                                                            </p>
-                                                        </t>
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <t t-if="staff.image">
+                                                                <img t-att-src="'/web/image/custom.staff.member/%s/image/50x50' % staff.id" class="rounded-circle mr-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Staff Photo"/>
+                                                            </t>
+                                                            <div>
+                                                                <h6 class="mb-0"><t t-esc="staff.name"/></h6>
+                                                                <t t-if="staff.specialization">
+                                                                    <p class="text-muted mb-0">
+                                                                        <small><t t-esc="staff.specialization"/></small>
+                                                                    </p>
+                                                                </t>
+                                                            </div>
+                                                        </div>
                                                         <p class="text-muted mb-2">
                                                             <small><t t-esc="staff.branch_id.name"/></small>
                                                         </p>
@@ -221,12 +239,19 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h5>Staff Member</h5>
-                                            <p><strong><t t-esc="staff.name"/></strong></p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <t t-if="staff.image">
+                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/60x60' % staff.id" class="rounded-circle mr-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Staff Photo"/>
+                                                </t>
+                                                <div>
+                                                    <h5 class="mb-0">Staff Member</h5>
+                                                    <p class="mb-0"><strong><t t-esc="staff.name"/></strong></p>
+                                                </div>
+                                            </div>
                                             <t t-if="staff.specialization">
-                                                <p><t t-esc="staff.specialization"/></p>
+                                                <p class="mb-1"><t t-esc="staff.specialization"/></p>
                                             </t>
-                                            <p>Location: <t t-esc="staff.branch_id.name"/></p>
+                                            <p class="mb-0">Location: <t t-esc="staff.branch_id.name"/></p>
                                         </div>
                                     </div>
                                 </div>

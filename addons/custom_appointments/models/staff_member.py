@@ -8,6 +8,7 @@ class StaffMember(models.Model):
 
     name = fields.Char(string='Full Name', required=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', help='Link to HR Employee if available', ondelete='cascade')
+    image = fields.Image(string='Photo', help='Staff member photo')
     email = fields.Char(string='Email')
     phone = fields.Char(string='Phone')
     branch_id = fields.Many2one('custom.branch', string='Branch', required=True)
@@ -61,6 +62,7 @@ class StaffMember(models.Model):
                 'employee_id': employee.id,
                 'branch_id': default_branch.id,
                 'specialization': employee.job_title or '',
+                'image': employee.image_1920 if employee.image_1920 else False,
                 'is_bookable': True,  # Default to bookable, can be changed manually
             }
             
@@ -85,6 +87,7 @@ class StaffMember(models.Model):
             self.email = self.employee_id.work_email or self.employee_id.private_email or ''
             self.phone = self.employee_id.work_phone or self.employee_id.mobile_phone or ''
             self.specialization = self.employee_id.job_title or ''
+            self.image = self.employee_id.image_1920 if self.employee_id.image_1920 else False
     
     def action_sync_from_employee(self):
         """Action to sync individual staff member from linked employee"""
@@ -94,6 +97,7 @@ class StaffMember(models.Model):
                 'email': self.employee_id.work_email or self.employee_id.private_email or '',
                 'phone': self.employee_id.work_phone or self.employee_id.mobile_phone or '',
                 'specialization': self.employee_id.job_title or '',
+                'image': self.employee_id.image_1920 if self.employee_id.image_1920 else False,
             })
             return {
                 'type': 'ir.actions.client',

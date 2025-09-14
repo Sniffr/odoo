@@ -9,6 +9,7 @@ class ServiceCategory(models.Model):
     name = fields.Char(string='Category Name', required=True)
     code = fields.Char(string='Category Code')
     description = fields.Text(string='Description')
+    image = fields.Image(string='Category Image', help='Image representing this category')
     color = fields.Integer(string='Color', help='Color for display purposes')
     
     service_ids = fields.One2many('company.service', 'category_id', string='Services')

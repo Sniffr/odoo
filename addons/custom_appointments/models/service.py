@@ -9,6 +9,7 @@ class CompanyService(models.Model):
     name = fields.Char(string='Service Name', required=True)
     code = fields.Char(string='Service Code')
     description = fields.Text(string='Description')
+    image = fields.Image(string='Service Image', help='Image representing this service')
     
     category_id = fields.Many2one('service.category', string='Category', required=True)
     
