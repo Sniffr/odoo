@@ -505,7 +505,7 @@
 
                     // Pre-select team member if provided
                     document.addEventListener('DOMContentLoaded', function() {
-                        if (selectedTeamMember && selectedTeamMember !== 'any') {
+                        if (selectedTeamMember &amp;&amp; selectedTeamMember !== 'any') {
                             const teamCards = document.querySelectorAll('.team-card');
                             teamCards.forEach(card => {
                                 const onclick = card.getAttribute('onclick');
