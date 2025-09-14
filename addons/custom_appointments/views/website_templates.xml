@@ -499,8 +499,8 @@
                             return;
                         }
                         
-                        const staffParam = selectedTeamMember === 'any' ? '<t t-esc="selected_staff_id or staff_members[0].id if staff_members else \'1\'"/>' : selectedTeamMember;
-                        window.location.href = `/appointments/book?service_id=${selectedService}&staff_id=${staffParam}`;
+                        const staffParam = selectedTeamMember === 'any' ? '<t t-esc="selected_staff_id or (staff_members and staff_members[0].id) or 1"/>' : selectedTeamMember;
+                        window.location.href = `/appointments/book?service_id=${selectedService}&amp;staff_id=${staffParam}`;
                     }
 
                     // Pre-select team member if provided
