@@ -302,7 +302,7 @@
                                     <t t-if="staff_members">
                                         <t t-foreach="staff_members" t-as="staff">
                                             <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                                                <div class="team-card text-center" style="cursor: pointer;" t-att-onclick="'selectTeamMember(this, \'' + str(staff.id) + '\')'">
+                                                <div class="team-card text-center" style="cursor: pointer;" t-att-onclick="'selectTeamMember(this, ' + str(staff.id) + ')'">
                                                     <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
                                                         <div class="card-body p-3">
                                                             <div class="team-avatar mb-2">
@@ -389,7 +389,7 @@
                                                 <!-- Services in Category -->
                                                 <div class="services-list">
                                                     <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
-                                                        <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectService(this, \'' + str(service.id) + '\')'">
+                                                        <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-8">
                                                                     <div class="d-flex align-items-start">
@@ -442,23 +442,31 @@
                                     </div>
                                 </t>
                             </div>
+                        </div>
+                    </div>
 
-                <!-- Initialize JavaScript variables from template -->
+                    <!-- Continue Button -->
+                    <div class="text-center mt-4 mb-5">
+                        <button class="btn btn-lg" 
+                                style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;"
+                                onclick="proceedToBooking()">
+                            Continue to Booking
+                        </button>
+                    </div>
+                </div>
+
+                <!-- JavaScript for Service Selection -->
                 <script>
-                    // Initialize variables with simple values
                     let selectedTeamMember = 'any';
                     let defaultStaffId = '1';
                     let selectedService = null;
 
-
                     function selectTeamMember(element, memberId) {
-                        // Remove previous selection
                         document.querySelectorAll('.team-card .card').forEach(card => {
                             card.style.borderColor = '';
                             card.style.background = '';
                         });
                         
-                        // Highlight selected team member
                         const card = element.querySelector('.card');
                         card.style.borderColor = '#ff69b4';
                         card.style.background = '#fff5f8';
@@ -467,7 +475,6 @@
                     }
 
                     function selectService(element, serviceId) {
-                        // Remove previous selection
                         document.querySelectorAll('.service-item').forEach(item => {
                             item.style.borderColor = '#e9ecef';
                             item.style.background = 'white';
@@ -475,15 +482,28 @@
                             if (radio) radio.checked = false;
                         });
                         
-                        // Highlight selected service
                         element.style.borderColor = '#ff69b4';
                         element.style.background = '#fff5f8';
                         
-                        // Check the radio button
                         const radio = element.querySelector('input[type="radio"]');
                         if (radio) radio.checked = true;
                         
                         selectedService = serviceId;
+                    }
+
+                    function searchServices(query) {
+                        const serviceItems = document.querySelectorAll('.service-item');
+                        serviceItems.forEach(item => {
+                            const serviceName = item.querySelector('h6').textContent.toLowerCase();
+                            const serviceDesc = item.querySelector('p').textContent.toLowerCase();
+                            const searchText = (serviceName + ' ' + serviceDesc).toLowerCase();
+                            
+                            if (searchText.includes(query.toLowerCase())) {
+                                item.parentElement.style.display = 'block';
+                            } else {
+                                item.parentElement.style.display = 'none';
+                            }
+                        });
                     }
 
                     function proceedToBooking() {
@@ -493,19 +513,15 @@
                         }
                         
                         const staffParam = selectedTeamMember === 'any' ? defaultStaffId : selectedTeamMember;
-                        window.location.href = `/appointments/book?service_id=${selectedService}&staff_id=${staffParam}`;
+                        window.location.href = '/appointments/book?service_id=' + selectedService + '&amp;staff_id=' + staffParam;
                     }
 
-                    // Pre-select team member if provided
                     document.addEventListener('DOMContentLoaded', function() {
-                        if (selectedTeamMember !== 'any') {
-                            const teamCards = document.querySelectorAll('.team-card');
-                            teamCards.forEach(card => {
-                                const onclick = card.getAttribute('onclick');
-                                if (onclick &amp;&amp; onclick.includes(selectedTeamMember)) {
-                                    selectTeamMember(card, selectedTeamMember);
-                                }
-                            });
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const staffId = urlParams.get('staff_id');
+                        if (staffId) {
+                            selectedTeamMember = staffId;
+                            defaultStaffId = staffId;
                         }
                     });
                 </script>
@@ -635,7 +651,8 @@
                                     </div>
 
                                     <!-- Customer Information Form -->
-                                    <form id="booking-form" method="post">
+                                    <form id="booking-form" method="post" t-attf-action="/appointments/book?service_id={{service.id}}&amp;staff_id={{staff.id}}">
+                                        <t t-call="website.csrf_token"/>
                                         <input type="hidden" name="service_id" t-att-value="service.id"/>
                                         <input type="hidden" name="staff_id" t-att-value="staff.id"/>
                                         <input type="hidden" name="appointment_datetime" id="appointment_datetime"/>
