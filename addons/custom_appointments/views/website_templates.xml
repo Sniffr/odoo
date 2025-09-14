@@ -389,7 +389,7 @@
                                                 <!-- Services in Category -->
                                                 <div class="services-list">
                                                     <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
-                                                        <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectService(this, '<t t-esc="service.id"/>')">
+                                                        <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectService(this, \'' + str(service.id) + '\')'">
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-8">
                                                                     <div class="d-flex align-items-start">
