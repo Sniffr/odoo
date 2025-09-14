@@ -455,11 +455,9 @@
 
                 <!-- Initialize JavaScript variables from template -->
                 <script>
-                    // Initialize variables from template data
-                    <t t-set="default_staff_id" t-value="selected_staff_id or (staff_members and staff_members[0].id) or 1"/>
-                    <t t-set="initial_staff" t-value="selected_staff_id or 'any'"/>
-                    let selectedTeamMember = '<t t-esc="initial_staff"/>';
-                    let defaultStaffId = '<t t-esc="default_staff_id"/>';
+                    // Initialize variables with simple values
+                    let selectedTeamMember = '<t t-if="selected_staff_id"><t t-esc="selected_staff_id"/></t><t t-else="">any</t>';
+                    let defaultStaffId = '<t t-if="staff_members"><t t-esc="staff_members[0].id"/></t><t t-else="">1</t>';
                     let selectedService = null;
 
                     function selectTeamMember(element, memberId) {
