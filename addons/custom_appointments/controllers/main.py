@@ -8,35 +8,47 @@ class AppointmentController(http.Controller):
 
     @http.route('/appointments', type='http', auth='public', website=True)
     def appointment_booking(self, **kwargs):
-        """Main appointment booking page"""
+        """Main appointment booking page - Location and staff selection"""
+        staff_members = request.env['custom.staff.member'].sudo().search([
+            ('is_bookable', '=', True),
+            ('active', '=', True)
+        ], order='name')
+        
+        branches = request.env['res.company'].sudo().search([
+            ('active', '=', True)
+        ], order='name')
+        
+        return request.render('custom_appointments.appointment_booking_page', {
+            'staff_members': staff_members,
+            'branches': branches,
+        })
+
+    @http.route('/appointments/services', type='http', auth='public', website=True)
+    def service_selection(self, **kwargs):
+        """Professional service selection page"""
+        staff_id = kwargs.get('staff_id')
+        salon_id = kwargs.get('salon_id')
+        
         services = request.env['company.service'].sudo().get_available_services()
         service_categories = request.env['service.category'].sudo().search([
             ('active', '=', True)
         ], order='sequence, name')
         
-        return request.render('custom_appointments.appointment_booking_page', {
+        staff_members = request.env['custom.staff.member'].sudo().search([
+            ('is_bookable', '=', True),
+            ('active', '=', True)
+        ], order='name')
+        
+        selected_branch = None
+        if salon_id:
+            selected_branch = request.env['res.company'].sudo().browse(int(salon_id))
+        
+        return request.render('custom_appointments.service_selection_page', {
             'services': services,
             'service_categories': service_categories,
-        })
-
-    @http.route('/appointments/service/<int:service_id>', type='http', auth='public', website=True)
-    def service_detail(self, service_id, **kwargs):
-        """Service detail page with staff selection"""
-        service = request.env['company.service'].sudo().browse(service_id)
-        if not service.exists() or not service.is_bookable or not service.published:
-            return request.not_found()
-        
-        if service.requires_specific_staff and service.allowed_staff_ids:
-            available_staff = service.allowed_staff_ids.filtered(lambda s: s.is_bookable and s.active)
-        else:
-            available_staff = request.env['custom.staff.member'].sudo().search([
-                ('is_bookable', '=', True),
-                ('active', '=', True)
-            ])
-        
-        return request.render('custom_appointments.service_detail_page', {
-            'service': service,
-            'available_staff': available_staff,
+            'staff_members': staff_members,
+            'selected_staff_id': staff_id,
+            'selected_branch': selected_branch,
         })
 
     @http.route('/appointments/book', type='http', auth='public', website=True, methods=['GET', 'POST'])

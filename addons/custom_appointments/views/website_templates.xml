@@ -1,359 +1,997 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Main Appointment Booking Page -->
+    <!-- Professional Booking Interface - Location Selection -->
     <template id="appointment_booking_page" name="Book an Appointment">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h1 class="text-center mb-4">Book an Appointment</h1>
-                            <p class="text-center text-muted mb-5">Choose from our available services</p>
-                            
-                            <!-- Service Categories -->
-                            <t t-if="service_categories">
-                                <div class="row mb-4">
-                                    <t t-foreach="service_categories" t-as="category">
-                                        <div class="col-md-12 mb-4">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <t t-if="category.image">
-                                                    <img t-att-src="'/web/image/custom.service.category/%s/image/40x40' % category.id" class="rounded mr-3" style="width: 40px; height: 40px; object-fit: cover;" alt="Category Image"/>
-                                                </t>
-                                                <h3 class="mb-0"><t t-esc="category.name"/></h3>
-                                            </div>
-                                            <div class="row">
-                                                <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
-                                                    <div class="col-md-6 col-lg-4 mb-4">
-                                                        <div class="card h-100">
-                                                            <t t-if="service.image">
-                                                                <img t-att-src="'/web/image/custom.service/%s/image/150x150' % service.id" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Service Image"/>
-                                                            </t>
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">
-                                                                    <t t-esc="service.name"/>
-                                                                </h5>
-                                                                <p class="card-text">
-                                                                    <t t-if="service.description">
-                                                                        <t t-esc="service.description[:100]"/>
-                                                                        <span t-if="len(service.description) > 100">...</span>
-                                                                    </t>
-                                                                </p>
-                                                                <div class="mb-3">
-                                                                    <span class="badge badge-primary">
-                                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                                    </span>
-                                                                    <span class="badge badge-secondary ml-2">
-                                                                        <t t-esc="service.duration"/> hours
-                                                                    </span>
-                                                                </div>
-                                                                <div class="mt-auto">
-                                                                    <a t-attf-href="/appointments/service/#{service.id}" class="btn btn-primary">
-                                                                        Select Service
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </t>
-                                            </div>
-                                        </div>
-                                    </t>
-                                </div>
-                            </t>
-                            
-                            <!-- All Services (if no categories) -->
-                            <t t-if="not service_categories">
-                                <div class="row">
-                                    <t t-foreach="services" t-as="service">
-                                        <div class="col-md-6 col-lg-4 mb-4">
-                                            <div class="card h-100">
-                                                <t t-if="service.image">
-                                                    <img t-att-src="'/web/image/company.service/%s/image/150x150' % service.id" class="card-img-top" style="height: 150px; object-fit: cover;" alt="Service Image"/>
-                                                </t>
-                                                <div class="card-body">
-                                                    <h5 class="card-title">
-                                                        <t t-esc="service.name"/>
-                                                    </h5>
-                                                    <p class="card-text">
-                                                        <t t-if="service.description">
-                                                            <t t-esc="service.description[:100]"/>
-                                                            <span t-if="len(service.description) > 100">...</span>
-                                                        </t>
-                                                    </p>
-                                                    <div class="mb-3">
-                                                        <span class="badge badge-primary">
-                                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                        </span>
-                                                        <span class="badge badge-secondary ml-2">
-                                                            <t t-esc="service.duration"/> hours
-                                                        </span>
-                                                    </div>
-                                                    <div class="mt-auto">
-                                                        <a t-attf-href="/appointments/service/#{service.id}" class="btn btn-primary">
-                                                            Select Service
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </t>
-                                </div>
-                            </t>
-                            
-                            <t t-if="not services">
-                                <div class="text-center">
-                                    <h3>No services available for booking</h3>
-                                    <p class="text-muted">Please check back later or contact us directly.</p>
-                                </div>
-                            </t>
+                <!-- Hero Section with Company Branding -->
+                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 60px 0; margin-bottom: 40px;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="display-4 font-weight-bold text-dark mb-3">
+                                    <t t-esc="request.env.company.name or 'Professional Services'"/>
+                                </h1>
+                                <p class="lead text-muted mb-4">Book your appointment with our professional team</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button class="btn btn-lg" style="background: #ff69b4; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-weight: 600;">
+                                    Book Now
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </t>
-    </template>
 
-    <!-- Service Detail Page with Staff Selection -->
-    <template id="service_detail_page" name="Select Staff Member">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure oe_empty">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/appointments">Services</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page"><t t-esc="service.name"/></li>
-                                </ol>
-                            </nav>
-                            
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h1><t t-esc="service.name"/></h1>
-                                    
-                                    <div class="mb-4">
-                                        <span class="badge badge-primary mr-2">
-                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                        </span>
-                                        <span class="badge badge-secondary mr-2">
-                                            <t t-esc="service.duration"/> hours
-                                        </span>
-                                        <span class="badge badge-info">
-                                            <t t-esc="service.category_id.name"/>
-                                        </span>
+                        <!-- Left Panel - Location & Hours -->
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-4">
+                                    <!-- Map Placeholder -->
+                                    <div class="map-container mb-4" style="height: 200px; background: #f8f9fa; border-radius: 10px; position: relative; overflow: hidden;">
+                                        <div class="map-overlay d-flex align-items-center justify-content-center h-100">
+                                            <div class="text-center">
+                                                <i class="fa fa-map-marker-alt fa-3x text-primary mb-2"></i>
+                                                <p class="mb-0 text-muted">Interactive Map</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    
-                                    <t t-if="service.description">
-                                        <h3>Description</h3>
-                                        <p><t t-esc="service.description"/></p>
-                                    </t>
-                                    
-                                    <t t-if="service.customer_notes">
-                                        <h3>Important Information</h3>
-                                        <div class="alert alert-info">
-                                            <t t-esc="service.customer_notes"/>
-                                        </div>
-                                    </t>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5 class="mb-0">Select Staff Member</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <t t-if="available_staff">
-                                                <t t-foreach="available_staff" t-as="staff">
-                                                    <div class="mb-3 p-3 border rounded">
-                                                        <div class="d-flex align-items-center mb-2">
-                                                            <t t-if="staff.image">
-                                                                <img t-att-src="'/web/image/custom.staff.member/%s/image/50x50' % staff.id" class="rounded-circle mr-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Staff Photo"/>
-                                                            </t>
-                                                            <div>
-                                                                <h6 class="mb-0"><t t-esc="staff.name"/></h6>
-                                                                <t t-if="staff.specialization">
-                                                                    <p class="text-muted mb-0">
-                                                                        <small><t t-esc="staff.specialization"/></small>
-                                                                    </p>
-                                                                </t>
-                                                            </div>
-                                                        </div>
-                                                        <p class="text-muted mb-2">
-                                                            <small><t t-esc="staff.branch_id.name"/></small>
+
+                                    <!-- Location Details -->
+                                    <t t-if="branches">
+                                        <t t-foreach="branches" t-as="branch">
+                                            <div class="location-card mb-3 p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid #ff69b4;">
+                                                <div class="d-flex align-items-start">
+                                                    <i class="fa fa-map-marker-alt text-primary mt-1 mr-3"></i>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="font-weight-bold mb-1"><t t-esc="branch.name"/></h6>
+                                                        <p class="text-muted mb-1 small">
+                                                            <t t-esc="branch.street or ''"/>
+                                                            <t t-if="branch.street2"><br/><t t-esc="branch.street2"/></t>
+                                                            <br/><t t-esc="branch.city or ''"/> <t t-esc="branch.zip or ''"/>
                                                         </p>
-                                                        <a t-attf-href="/appointments/book?service_id=#{service.id}&amp;staff_id=#{staff.id}" 
-                                                           class="btn btn-primary btn-sm">
-                                                            Book with <t t-esc="staff.name"/>
-                                                        </a>
+                                                        <p class="text-muted mb-1 small">
+                                                            <i class="fa fa-phone mr-1"></i><t t-esc="branch.phone or 'Contact for details'"/>
+                                                        </p>
+                                                        <p class="text-muted mb-0 small">
+                                                            <i class="fa fa-envelope mr-1"></i><t t-esc="branch.email or 'Contact for details'"/>
+                                                        </p>
                                                     </div>
-                                                </t>
-                                            </t>
-                                            
-                                            <t t-if="not available_staff">
-                                                <div class="text-center">
-                                                    <p class="text-muted">No staff members available for this service.</p>
-                                                    <a href="/appointments" class="btn btn-secondary">
-                                                        ← Back to Services
-                                                    </a>
                                                 </div>
-                                            </t>
+                                            </div>
+                                        </t>
+                                    </t>
+
+                                    <!-- Business Hours -->
+                                    <div class="hours-section mt-4">
+                                        <h6 class="font-weight-bold mb-3">Business Hours</h6>
+                                        <div class="hours-list">
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span class="text-muted">Sunday</span>
+                                                <span class="text-muted">Closed</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Monday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Tuesday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Wednesday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Thursday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Friday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between py-1">
+                                                <span>Saturday</span>
+                                                <span>08:00AM - 08:00PM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Info -->
+                                    <div class="contact-section mt-4 pt-3" style="border-top: 1px solid #e9ecef;">
+                                        <div class="text-center">
+                                            <p class="mb-2">
+                                                <i class="fa fa-globe mr-2"></i>
+                                                <a href="#" class="text-decoration-none">www.yourwebsite.com</a>
+                                            </p>
+                                            <p class="text-muted small mb-0">
+                                                <i class="fa fa-info-circle mr-1"></i>
+                                                Where luxury meets excellence
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </t>
-    </template>
 
-    <!-- Booking Form Page -->
-    <template id="booking_form_page" name="Book Appointment">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure oe_empty">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8 offset-lg-2">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/appointments">Services</a></li>
-                                    <li class="breadcrumb-item"><a t-attf-href="/appointments/service/#{service.id}"><t t-esc="service.name"/></a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Book Appointment</li>
-                                </ol>
-                            </nav>
-                            
-                            <h1>Book Your Appointment</h1>
-                            
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Service Details</h5>
-                                            <p><strong><t t-esc="service.name"/></strong></p>
-                                            <p>Duration: <t t-esc="service.duration"/> hours</p>
-                                            <p>Price: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></p>
-                                        </div>
+                        <!-- Center Panel - Staff Selection -->
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-header bg-white border-0 pb-0" style="border-radius: 15px 15px 0 0;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="font-weight-bold mb-0">Our team</h5>
+                                        <span class="badge badge-light">1/2</span>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <t t-if="staff.image">
-                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/60x60' % staff.id" class="rounded-circle mr-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Staff Photo"/>
-                                                </t>
-                                                <div>
-                                                    <h5 class="mb-0">Staff Member</h5>
-                                                    <p class="mb-0"><strong><t t-esc="staff.name"/></strong></p>
-                                                </div>
-                                            </div>
-                                            <t t-if="staff.specialization">
-                                                <p class="mb-1"><t t-esc="staff.specialization"/></p>
-                                            </t>
-                                            <p class="mb-0">Location: <t t-esc="staff.branch_id.name"/></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <form method="post" action="/appointments/book" class="needs-validation" novalidate="true">
-                                <input type="hidden" name="service_id" t-att-value="service.id"/>
-                                <input type="hidden" name="staff_id" t-att-value="staff.id"/>
-                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                
-                                <!-- Time Slot Selection -->
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Select Date &amp; Time</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <t t-foreach="available_slots.items()" t-as="date_slots">
-                                                <div class="col-md-6 col-lg-4 mb-3">
-                                                    <h6><t t-esc="date_slots[0]"/></h6>
-                                                    <t t-foreach="date_slots[1]" t-as="slot">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
-                                                                   name="appointment_datetime" 
-                                                                   t-att-value="slot['datetime']"
-                                                                   t-att-id="'slot_' + slot['datetime']"
-                                                                   required="true"/>
-                                                            <label class="form-check-label" t-att-for="'slot_' + slot['datetime']">
-                                                                <t t-esc="slot['time']"/>
-                                                            </label>
-                                                        </div>
+                                <div class="card-body p-4">
+                                    <!-- Staff Grid -->
+                                    <div class="staff-grid">
+                                        <t t-if="staff_members">
+                                            <t t-foreach="staff_members" t-as="staff">
+                                                <div class="staff-card mb-3 p-3 text-center" style="background: #f8f9fa; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectStaff(this, '<t t-esc="staff.id"/>')">
+                                                    <div class="staff-image-container mb-3">
+                                                        <t t-if="staff.image">
+                                                            <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id" 
+                                                                 class="rounded-circle" 
+                                                                 style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" 
+                                                                 alt="Staff Photo"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" 
+                                                                 style="width: 80px; height: 80px; margin: 0 auto;">
+                                                                <i class="fa fa-user fa-2x text-white"></i>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                    <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
+                                                    <t t-if="staff.specialization">
+                                                        <p class="text-muted small mb-0"><t t-esc="staff.specialization"/></p>
                                                     </t>
                                                 </div>
                                             </t>
-                                        </div>
+                                        </t>
                                         
-                                        <t t-if="not available_slots">
-                                            <div class="alert alert-warning">
-                                                <p>No available time slots found for the next 30 days.</p>
-                                                <p>Please contact us directly to schedule your appointment.</p>
+                                        <t t-if="not staff_members">
+                                            <div class="text-center py-4">
+                                                <i class="fa fa-users fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted">No staff members available</p>
                                             </div>
                                         </t>
                                     </div>
                                 </div>
-                                
-                                <!-- Customer Information -->
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Your Information</h5>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel - Salon Locations -->
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-header bg-white border-0 pb-0" style="border-radius: 15px 15px 0 0;">
+                                    <h5 class="font-weight-bold mb-0">Our salons</h5>
+                                    <div class="mt-2">
+                                        <input type="text" class="form-control" placeholder="Search salons" style="border-radius: 20px; border: 1px solid #e9ecef;">
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="customer_name">Full Name *</label>
-                                                    <input type="text" class="form-control" id="customer_name" 
-                                                           name="customer_name" required="true"/>
-                                                    <div class="invalid-feedback">
-                                                        Please provide your full name.
+                                </div>
+                                <div class="card-body p-4">
+                                    <!-- Salon Cards -->
+                                    <t t-if="branches">
+                                        <t t-foreach="branches" t-as="branch">
+                                            <div class="salon-card mb-3 p-3" style="background: #f8f9fa; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectSalon(this, '<t t-esc="branch.id"/>')">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="salon-image mr-3">
+                                                        <t t-if="branch.image">
+                                                            <img t-att-src="'/web/image/res.company/%s/image/60x60' % branch.id" 
+                                                                 class="rounded" 
+                                                                 style="width: 50px; height: 50px; object-fit: cover;" 
+                                                                 alt="Salon Image"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="bg-primary rounded d-flex align-items-center justify-content-center" 
+                                                                 style="width: 50px; height: 50px;">
+                                                                <i class="fa fa-building text-white"></i>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="font-weight-bold mb-1">
+                                                            <t t-esc="branch.name"/>
+                                                        </h6>
+                                                        <p class="text-muted small mb-0">
+                                                            <t t-esc="branch.city or 'Location'"/>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="customer_email">Email Address *</label>
-                                                    <input type="email" class="form-control" id="customer_email" 
-                                                           name="customer_email" required="true"/>
-                                                    <div class="invalid-feedback">
-                                                        Please provide a valid email address.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="customer_phone">Phone Number</label>
-                                                    <input type="tel" class="form-control" id="customer_phone" 
-                                                           name="customer_phone"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="notes">Additional Notes</label>
-                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                                      placeholder="Any special requirements or notes for your appointment..."></textarea>
-                                        </div>
-                                    </div>
+                                        </t>
+                                    </t>
                                 </div>
-                                
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary btn-lg" t-if="available_slots">
-                                        Book Appointment
-                                    </button>
-                                    <a href="/appointments" class="btn btn-secondary ml-2">
-                                        ← Back to Services
-                                    </a>
-                                </div>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continue Button -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-lg" style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;" onclick="proceedToServices()">
+                                Continue to Services
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- JavaScript for interactions -->
+                <script>
+                    let selectedStaff = null;
+                    let selectedSalon = null;
+
+                    function selectStaff(element, staffId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.staff-card').forEach(card => {
+                            card.style.background = '#f8f9fa';
+                            card.style.border = 'none';
+                        });
+                        
+                        // Highlight selected
+                        element.style.background = '#ff69b4';
+                        element.style.color = 'white';
+                        selectedStaff = staffId;
+                    }
+
+                    function selectSalon(element, salonId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.salon-card').forEach(card => {
+                            card.style.background = '#f8f9fa';
+                            card.style.border = 'none';
+                        });
+                        
+                        // Highlight selected
+                        element.style.background = '#ff69b4';
+                        element.style.color = 'white';
+                        selectedSalon = salonId;
+                    }
+
+                    function proceedToServices() {
+                        if (selectedStaff &amp;&amp; selectedSalon) {
+                            window.location.href = '/appointments/services?staff_id=' + selectedStaff + '&amp;salon_id=' + selectedSalon;
+                        } else {
+                            alert('Please select both a staff member and salon location');
+                        }
+                    }
+                </script>
+            </div>
+        </t>
+    </template>
+
+    <!-- Professional Service Selection Page -->
+    <template id="service_selection_page" name="Select Services">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <!-- Hero Section -->
+                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="display-5 font-weight-bold text-dark mb-2">
+                                    <t t-esc="request.env.company.name or 'Professional Services'"/>
+                                    <t t-if="selected_branch"> - <t t-esc="selected_branch.name"/></t>
+                                </h1>
+                                <p class="text-muted mb-0">Select your preferred services</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600;">
+                                    Change salon
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <!-- Team Member Selection -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h2 class="font-weight-bold mb-3">SELECT TEAM MEMBER</h2>
+                            
+                            <div class="team-selection">
+                                <t t-if="staff_members">
+                                    <div class="row">
+                                        <!-- Any Team Member Option -->
+                                        <div class="col-md-6 col-lg-3 mb-3">
+                                            <div class="team-card" style="cursor: pointer; transition: all 0.3s ease;" onclick="selectTeamMember(this, 'any')">
+                                                <div class="card border-0 shadow-sm text-center" style="border-radius: 15px; padding: 20px;">
+                                                    <div class="team-placeholder mb-3" style="width: 120px; height: 120px; background: #f8f9fa; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                                        <i class="fa fa-users fa-3x text-muted"></i>
+                                                    </div>
+                                                    <h6 class="font-weight-bold mb-0">Any team member</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Individual Team Members -->
+                                        <t t-foreach="staff_members" t-as="staff">
+                                            <div class="col-md-6 col-lg-3 mb-3">
+                                                <div class="team-card" style="cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectTeamMember(this, \'' + str(staff.id) + '\')'">
+                                                    <div class="card border-0 shadow-sm text-center" style="border-radius: 15px; padding: 20px;">
+                                                        <t t-if="staff.image">
+                                                            <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id" 
+                                                                 class="rounded mb-3" 
+                                                                 style="width: 120px; height: 120px; object-fit: cover;" 
+                                                                 alt="Staff Photo"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="team-placeholder mb-3" style="width: 120px; height: 120px; background: #f8f9fa; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                                                <i class="fa fa-user fa-3x text-muted"></i>
+                                                            </div>
+                                                        </t>
+                                                        <h6 class="font-weight-bold mb-0"><t t-esc="staff.name"/></h6>
+                                                        <t t-if="staff.specialization">
+                                                            <p class="text-muted small mb-0"><t t-esc="staff.specialization"/></p>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-users fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No Team Members Available</h5>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Selection -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="font-weight-bold mb-3">SELECT A SERVICE</h2>
+                            
+                            <!-- Search Bar -->
+                            <div class="mb-4">
+                                <div class="search-container" style="max-width: 600px;">
+                                    <input type="text" class="form-control form-control-lg" placeholder="Search services" style="border-radius: 25px; border: 2px solid #e9ecef; padding: 15px 25px;">
+                                </div>
+                            </div>
+
+                            <!-- Service Categories -->
+                            <div class="service-categories mb-4">
+                                <t t-if="service_categories">
+                                    <t t-foreach="service_categories" t-as="category">
+                                        <div class="category-section mb-4">
+                                            <div class="category-header mb-3 p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid #ff69b4;">
+                                                <h5 class="font-weight-bold mb-0">
+                                                    <t t-if="category.image">
+                                                        <img t-att-src="'/web/image/service.category/%s/image/30x30' % category.id" class="rounded mr-2" style="width: 24px; height: 24px; object-fit: cover;" alt="Category Image"/>
+                                                    </t>
+                                                    <t t-esc="category.name"/>
+                                                </h5>
+                                            </div>
+                                            
+                                            <!-- Services in Category -->
+                                            <div class="services-list">
+                                                <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
+                                                    <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectService(this, '<t t-esc="service.id"/>')">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-8">
+                                                                <div class="d-flex align-items-start">
+                                                                    <t t-if="service.image">
+                                                                        <img t-att-src="'/web/image/company.service/%s/image/80x80' % service.id" 
+                                                                             class="rounded mr-3" 
+                                                                             style="width: 60px; height: 60px; object-fit: cover;" 
+                                                                             alt="Service Image"/>
+                                                                    </t>
+                                                                    <div class="flex-grow-1">
+                                                                        <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
+                                                                        <t t-if="service.description">
+                                                                            <p class="text-muted mb-2 small">
+                                                                                <t t-esc="service.description[:100]"/>
+                                                                                <t t-if="len(service.description) > 100">...</t>
+                                                                            </p>
+                                                                        </t>
+                                                                        <div class="service-meta">
+                                                                            <span class="badge badge-light mr-2">
+                                                                                <i class="fa fa-clock-o mr-1"></i>
+                                                                                <t t-esc="service.duration"/>h
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 text-right">
+                                                                <div class="service-price">
+                                                                    <h5 class="font-weight-bold text-primary mb-1">
+                                                                        from <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                                    </h5>
+                                                                    <div class="service-selection">
+                                                                        <input type="radio" name="selected_service" t-att-value="service.id" style="transform: scale(1.5);">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-5">
+                                        <i class="fa fa-list fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No Services Available</h5>
+                                        <p class="text-muted">Please contact us directly for service information.</p>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Continue Button -->
+                            <div class="text-center mt-4">
+                                <button class="btn btn-lg" style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;" onclick="proceedToBooking()">
+                                    Continue to Booking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection JavaScript -->
+                <script>
+                    let selectedTeamMember = '<t t-esc="selected_staff_id or \'any\'"/>';
+                    let selectedService = null;
+
+                    function selectTeamMember(element, memberId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.team-card .card').forEach(card => {
+                            card.style.borderColor = '';
+                            card.style.background = '';
+                        });
+                        
+                        // Highlight selected team member
+                        const card = element.querySelector('.card');
+                        card.style.borderColor = '#ff69b4';
+                        card.style.background = '#fff5f8';
+                        
+                        selectedTeamMember = memberId;
+                    }
+
+                    function selectService(element, serviceId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.service-item').forEach(item => {
+                            item.style.borderColor = '#e9ecef';
+                            item.style.background = 'white';
+                            const radio = item.querySelector('input[type="radio"]');
+                            if (radio) radio.checked = false;
+                        });
+                        
+                        // Highlight selected service
+                        element.style.borderColor = '#ff69b4';
+                        element.style.background = '#fff5f8';
+                        
+                        // Check the radio button
+                        const radio = element.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+                        
+                        selectedService = serviceId;
+                    }
+
+                    function proceedToBooking() {
+                        if (!selectedService) {
+                            alert('Please select a service before continuing.');
+                            return;
+                        }
+                        
+                        const staffParam = selectedTeamMember === 'any' ? '<t t-esc="selected_staff_id or staff_members[0].id if staff_members else \'1\'"/>' : selectedTeamMember;
+                        window.location.href = `/appointments/book?service_id=${selectedService}&staff_id=${staffParam}`;
+                    }
+
+                    // Pre-select team member if provided
+                    document.addEventListener('DOMContentLoaded', function() {
+                        if (selectedTeamMember && selectedTeamMember !== 'any') {
+                            const teamCards = document.querySelectorAll('.team-card');
+                            teamCards.forEach(card => {
+                                const onclick = card.getAttribute('onclick');
+                                if (onclick && onclick.includes(selectedTeamMember)) {
+                                    selectTeamMember(card, selectedTeamMember);
+                                }
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </t>
+    </template>
+
+    <!-- Professional Service Selection Page -->
+    <template id="service_selection_page" name="Select Services">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <!-- Hero Section -->
+                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="display-5 font-weight-bold text-dark mb-2">
+                                    <t t-esc="request.env.company.name or 'Professional Services'"/>
+                                    <t t-if="selected_branch"> - <t t-esc="selected_branch.name"/></t>
+                                </h1>
+                                <p class="text-muted mb-0">Select your preferred services</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600;">
+                                    Change salon
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <!-- Staff Member Selection Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h2 class="font-weight-bold mb-3">SELECT TEAM MEMBER</h2>
+                            
+                            <!-- Staff Selection Grid -->
+                            <div class="row">
+                                <!-- Any Team Member Option -->
+                                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                                    <div class="staff-selection-card text-center p-3" style="background: #f8f9fa; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; min-height: 180px;" onclick="selectTeamMember(this, 'any')">
+                                        <div class="staff-image-container mb-3 d-flex align-items-center justify-content-center" style="height: 80px;">
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                <i class="fa fa-users fa-lg text-muted"></i>
+                                            </div>
+                                        </div>
+                                        <h6 class="font-weight-bold mb-0">Any team member</h6>
+                                    </div>
+                                </div>
+
+                                <!-- Individual Staff Members -->
+                                <t t-if="staff_members">
+                                    <t t-foreach="staff_members" t-as="staff">
+                                        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                                            <div class="staff-selection-card text-center p-3" style="background: #f8f9fa; border-radius: 15px; cursor: pointer; transition: all 0.3s ease; min-height: 180px;" t-att-onclick="'selectTeamMember(this, \'' + str(staff.id) + '\')'">
+                                                <div class="staff-image-container mb-3 d-flex align-items-center justify-content-center" style="height: 80px;">
+                                                    <t t-if="staff.image">
+                                                        <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id" 
+                                                             class="rounded-circle" 
+                                                             style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+                                                             alt="Staff Photo"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                            <i class="fa fa-user text-white"></i>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                                <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
+                                                <t t-if="staff.specialization">
+                                                    <p class="text-muted small mb-0"><t t-esc="staff.specialization"/></p>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Selection -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="font-weight-bold mb-3">SELECT A SERVICE</h2>
+                            
+                            <!-- Search Bar -->
+                            <div class="mb-4">
+                                <div class="search-container" style="max-width: 600px;">
+                                    <input type="text" class="form-control form-control-lg" placeholder="Search services" style="border-radius: 25px; border: 2px solid #e9ecef; padding: 15px 25px;">
+                                </div>
+                            </div>
+
+                            <!-- Service Categories -->
+                            <div class="service-categories mb-4">
+                                <t t-if="service_categories">
+                                    <t t-foreach="service_categories" t-as="category">
+                                        <div class="category-section mb-4">
+                                            <div class="category-header mb-3 p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid #ff69b4;">
+                                                <h5 class="font-weight-bold mb-0">
+                                                    <t t-if="category.image">
+                                                        <img t-att-src="'/web/image/custom.service.category/%s/image/30x30' % category.id" class="rounded mr-2" style="width: 24px; height: 24px; object-fit: cover;" alt="Category Image"/>
+                                                    </t>
+                                                    <t t-esc="category.name"/>
+                                                </h5>
+                                            </div>
+                                            
+                                            <!-- Services in Category -->
+                                            <div class="services-list">
+                                                <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
+                                                    <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectService(this, '<t t-esc="service.id"/>')">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-8">
+                                                                <div class="d-flex align-items-start">
+                                                                    <t t-if="service.image">
+                                                                        <img t-att-src="'/web/image/custom.service/%s/image/80x80' % service.id" 
+                                                                             class="rounded mr-3" 
+                                                                             style="width: 50px; height: 50px; object-fit: cover;" 
+                                                                             alt="Service Image"/>
+                                                                    </t>
+                                                                    <div class="flex-grow-1">
+                                                                        <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
+                                                                        <t t-if="service.description">
+                                                                            <p class="text-muted mb-2 small">
+                                                                                <t t-esc="service.description[:100]"/>
+                                                                                <span t-if="len(service.description) > 100">...</span>
+                                                                            </p>
+                                                                        </t>
+                                                                        <div class="service-meta">
+                                                                            <span class="badge badge-light mr-2">
+                                                                                <i class="fa fa-clock mr-1"></i><t t-esc="service.duration"/>h
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 text-right">
+                                                                <div class="price-container">
+                                                                    <h5 class="font-weight-bold text-primary mb-0">
+                                                                        from <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                                    </h5>
+                                                                </div>
+                                                                <div class="mt-2">
+                                                                    <input type="radio" name="selected_service" t-att-value="service.id" class="service-radio" style="transform: scale(1.2);">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                
+                                <!-- All Services (if no categories) -->
+                                <t t-if="not service_categories and services">
+                                    <div class="services-list">
+                                        <t t-foreach="services" t-as="service">
+                                            <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" onclick="selectService(this, '<t t-esc="service.id"/>')">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-8">
+                                                        <div class="d-flex align-items-start">
+                                                            <t t-if="service.image">
+                                                                <img t-att-src="'/web/image/custom.service/%s/image/80x80' % service.id" 
+                                                                     class="rounded mr-3" 
+                                                                     style="width: 50px; height: 50px; object-fit: cover;" 
+                                                                     alt="Service Image"/>
+                                                            </t>
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
+                                                                <t t-if="service.description">
+                                                                    <p class="text-muted mb-2 small">
+                                                                        <t t-esc="service.description[:100]"/>
+                                                                        <span t-if="len(service.description) > 100">...</span>
+                                                                    </p>
+                                                                </t>
+                                                                <div class="service-meta">
+                                                                    <span class="badge badge-light mr-2">
+                                                                        <i class="fa fa-clock mr-1"></i><t t-esc="service.duration"/>h
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-right">
+                                                        <div class="price-container">
+                                                            <h5 class="font-weight-bold text-primary mb-0">
+                                                                from <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                            </h5>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <input type="radio" name="selected_service" t-att-value="service.id" class="service-radio" style="transform: scale(1.2);">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Continue Button -->
+                            <div class="text-center mt-5 mb-4">
+                                <button class="btn btn-lg" style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;" onclick="proceedToBooking()">
+                                    Continue to Booking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript for interactions -->
+                <script>
+                    let selectedTeamMember = null;
+                    let selectedService = null;
+
+                    function selectTeamMember(element, memberId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.staff-selection-card').forEach(card => {
+                            card.style.background = '#f8f9fa';
+                            card.style.color = 'inherit';
+                            card.style.border = 'none';
+                        });
+                        
+                        // Highlight selected
+                        element.style.background = '#ff69b4';
+                        element.style.color = 'white';
+                        selectedTeamMember = memberId;
+                    }
+
+                    function selectService(element, serviceId) {
+                        // Remove previous selection
+                        document.querySelectorAll('.service-item').forEach(item => {
+                            item.style.background = 'white';
+                            item.style.border = '1px solid #e9ecef';
+                        });
+                        
+                        // Highlight selected
+                        element.style.background = '#fff5f8';
+                        element.style.border = '2px solid #ff69b4';
+                        
+                        // Check radio button
+                        const radio = element.querySelector('.service-radio');
+                        if (radio) radio.checked = true;
+                        
+                        selectedService = serviceId;
+                    }
+
+                    function proceedToBooking() {
+                        if (selectedService) {
+                            let url = '/appointments/book?service_id=' + selectedService;
+                            if (selectedTeamMember &amp;&amp; selectedTeamMember !== 'any') {
+                                url += '&amp;staff_id=' + selectedTeamMember;
+                            }
+                            window.location.href = url;
+                        } else {
+                            alert('Please select a service to continue');
+                        }
+                    }
+
+                    // Search functionality
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const searchInput = document.querySelector('input[placeholder="Search services"]');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', function() {
+                                const searchTerm = this.value.toLowerCase();
+                                const serviceItems = document.querySelectorAll('.service-item');
+                                
+                                serviceItems.forEach(item => {
+                                    const serviceName = item.querySelector('h6').textContent.toLowerCase();
+                                    const serviceDesc = item.querySelector('.text-muted') ? item.querySelector('.text-muted').textContent.toLowerCase() : '';
+                                    
+                                    if (serviceName.includes(searchTerm) || serviceDesc.includes(searchTerm)) {
+                                        item.style.display = 'block';
+                                    } else {
+                                        item.style.display = 'none';
+                                    }
+                                });
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </t>
+    </template>
+
+    <!-- Professional Booking Form Page -->
+    <template id="booking_form_page" name="Book Appointment">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <!-- Hero Section -->
+                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="display-5 font-weight-bold text-dark mb-2">
+                                    <t t-esc="request.env.company.name or 'Professional Services'"/>
+                                </h1>
+                                <p class="text-muted mb-0">Complete your booking</p>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <a href="/appointments/services" class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600;">
+                                    ← Back to Services
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <!-- Booking Summary -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-4">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3">
+                                            <div class="d-flex align-items-center">
+                                                <t t-if="service.image">
+                                                    <img t-att-src="'/web/image/company.service/%s/image/80x80' % service.id" 
+                                                         class="rounded mr-3" 
+                                                         style="width: 60px; height: 60px; object-fit: cover;" 
+                                                         alt="Service Image"/>
+                                                </t>
+                                                <div>
+                                                    <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
+                                                    <p class="text-muted small mb-0"><t t-esc="service.duration"/>h • <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="d-flex align-items-center">
+                                                <t t-if="staff.image">
+                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/60x60' % staff.id" 
+                                                         class="rounded-circle mr-3" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;" 
+                                                         alt="Staff Photo"/>
+                                                </t>
+                                                <div>
+                                                    <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
+                                                    <p class="text-muted small mb-0"><t t-esc="staff.specialization or 'Professional'"/></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <h6 class="font-weight-bold mb-1">Location</h6>
+                                                <p class="text-muted small mb-0"><t t-esc="staff.branch_id.name"/></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <h6 class="font-weight-bold mb-1">Total</h6>
+                                                <h5 class="text-primary mb-0"><t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" action="/appointments/book" class="needs-validation" novalidate="true">
+                        <input type="hidden" name="service_id" t-att-value="service.id"/>
+                        <input type="hidden" name="staff_id" t-att-value="staff.id"/>
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <div class="row">
+                            <!-- Time Slot Selection -->
+                            <div class="col-lg-8 mb-4">
+                                <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                    <div class="card-header bg-white border-0" style="border-radius: 15px 15px 0 0;">
+                                        <h5 class="font-weight-bold mb-0">Select Date &amp; Time</h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <t t-if="available_slots">
+                                            <div class="time-slots-container">
+                                                <t t-foreach="available_slots.items()" t-as="date_slots">
+                                                    <div class="date-section mb-4">
+                                                        <h6 class="font-weight-bold mb-3 text-primary">
+                                                            <t t-esc="date_slots[0]"/>
+                                                        </h6>
+                                                        <div class="time-slots-grid">
+                                                            <t t-foreach="date_slots[1]" t-as="slot">
+                                                                <label class="time-slot-option" style="cursor: pointer; margin: 5px;">
+                                                                    <input type="radio" 
+                                                                           name="appointment_datetime" 
+                                                                           t-att-value="slot['datetime']"
+                                                                           style="display: none;"
+                                                                           required="true"/>
+                                                                    <div class="time-slot-button" 
+                                                                         style="padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 25px; text-align: center; transition: all 0.3s ease; background: white; font-weight: 500;">
+                                                                        <t t-esc="slot['time']"/>
+                                                                    </div>
+                                                                </label>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                        
+                                        <t t-if="not available_slots">
+                                            <div class="text-center py-5">
+                                                <i class="fa fa-calendar-times fa-3x text-muted mb-3"></i>
+                                                <h5 class="text-muted mb-2">No Available Time Slots</h5>
+                                                <p class="text-muted">No available time slots found for the next 30 days.</p>
+                                                <p class="text-muted">Please contact us directly to schedule your appointment.</p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Customer Information -->
+                            <div class="col-lg-4 mb-4">
+                                <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                    <div class="card-header bg-white border-0" style="border-radius: 15px 15px 0 0;">
+                                        <h5 class="font-weight-bold mb-0">Your Information</h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="form-group mb-3">
+                                            <label for="customer_name" class="font-weight-bold">Full Name *</label>
+                                            <input type="text" class="form-control" id="customer_name" 
+                                                   name="customer_name" required="true"
+                                                   style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 15px;"/>
+                                            <div class="invalid-feedback">
+                                                Please provide your full name.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="customer_email" class="font-weight-bold">Email Address *</label>
+                                            <input type="email" class="form-control" id="customer_email" 
+                                                   name="customer_email" required="true"
+                                                   style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 15px;"/>
+                                            <div class="invalid-feedback">
+                                                Please provide a valid email address.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="customer_phone" class="font-weight-bold">Phone Number</label>
+                                            <input type="tel" class="form-control" id="customer_phone" 
+                                                   name="customer_phone"
+                                                   style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 15px;"/>
+                                        </div>
+                                        
+                                        <div class="form-group mb-4">
+                                            <label for="notes" class="font-weight-bold">Additional Notes</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                                      placeholder="Any special requirements or notes..."
+                                                      style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 15px;"></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-block btn-lg" 
+                                                style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;"
+                                                t-if="available_slots">
+                                            Complete Booking
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Time Slot Selection JavaScript -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Time slot selection functionality
+                        const timeSlotOptions = document.querySelectorAll('.time-slot-option');
+                        
+                        timeSlotOptions.forEach(option => {
+                            option.addEventListener('click', function() {
+                                // Remove selection from all slots
+                                timeSlotOptions.forEach(opt => {
+                                    const button = opt.querySelector('.time-slot-button');
+                                    button.style.background = 'white';
+                                    button.style.borderColor = '#e9ecef';
+                                    button.style.color = 'inherit';
+                                });
+                                
+                                // Highlight selected slot
+                                const button = this.querySelector('.time-slot-button');
+                                button.style.background = '#ff69b4';
+                                button.style.borderColor = '#ff69b4';
+                                button.style.color = 'white';
+                                
+                                // Check the radio button
+                                const radio = this.querySelector('input[type="radio"]');
+                                radio.checked = true;
+                            });
+                        });
+                    });
+                </script>
             </div>
         </t>
     </template>
