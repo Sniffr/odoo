@@ -21,6 +21,7 @@
         'wizard/employee_import_wizard_views.xml',
         'wizard/company_import_wizard_views.xml',
         'views/staff_member_views.xml',
+        'views/staff_dashboard_views.xml',
         'views/branch_views.xml',
         'views/service_views.xml',
         'views/service_category_views.xml',

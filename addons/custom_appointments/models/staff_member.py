@@ -31,6 +31,11 @@ class StaffMember(models.Model):
     active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Notes')
     
+    appointment_count = fields.Integer(string='Total Appointments', compute='_compute_appointment_stats', store=False)
+    confirmed_appointment_count = fields.Integer(string='Confirmed Appointments', compute='_compute_appointment_stats', store=False)
+    completed_appointment_count = fields.Integer(string='Completed Appointments', compute='_compute_appointment_stats', store=False)
+    this_month_appointments = fields.Integer(string='This Month Appointments', compute='_compute_appointment_stats', store=False)
+    
     @api.depends('name', 'specialization')
     def _compute_display_name(self):
         for record in self:
@@ -40,6 +45,46 @@ class StaffMember(models.Model):
                 record.display_name = record.name
     
     display_name = fields.Char(compute='_compute_display_name', store=True)
+    
+    def _compute_appointment_stats(self):
+        """Compute appointment statistics for each staff member"""
+        from datetime import datetime, date
+        
+        for staff in self:
+            appointments = self.env['custom.appointment'].search([('staff_member_id', '=', staff.id)])
+            
+            staff.appointment_count = len(appointments)
+            staff.confirmed_appointment_count = len(appointments.filtered(lambda a: a.state == 'confirmed'))
+            staff.completed_appointment_count = len(appointments.filtered(lambda a: a.state == 'completed'))
+            
+            today = date.today()
+            first_day_month = today.replace(day=1)
+            this_month_appts = appointments.filtered(
+                lambda a: a.start and a.start.date() >= first_day_month and a.start.date() <= today
+            )
+            staff.this_month_appointments = len(this_month_appts)
+    
+    def action_view_appointments(self):
+        """Action to view all appointments for this staff member"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Appointments - {self.name}',
+            'res_model': 'custom.appointment',
+            'view_mode': 'list,form,calendar',
+            'domain': [('staff_member_id', '=', self.id)],
+            'context': {'default_staff_member_id': self.id},
+        }
+    
+    def action_view_calendar(self):
+        """Action to view calendar for this staff member"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Calendar - {self.name}',
+            'res_model': 'custom.appointment',
+            'view_mode': 'calendar,list,form',
+            'domain': [('staff_member_id', '=', self.id)],
+            'context': {'default_staff_member_id': self.id},
+        }
     
     @api.model
     def sync_from_employees(self):

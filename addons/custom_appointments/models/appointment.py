@@ -137,3 +137,20 @@ class Appointment(models.Model):
     def action_reset_to_draft(self):
         self.state = 'draft'
         return True
+    
+    @api.model
+    def get_my_appointments(self):
+        """Get appointments for the current user"""
+        if not self.env.user:
+            return self.browse([])
+        
+        my_appointments = self.search([('user_id', '=', self.env.user.id)])
+        
+        staff_members = self.env['custom.staff.member'].search([
+            ('employee_id.user_id', '=', self.env.user.id)
+        ])
+        if staff_members:
+            staff_appointments = self.search([('staff_member_id', 'in', staff_members.ids)])
+            my_appointments = my_appointments | staff_appointments
+        
+        return my_appointments
