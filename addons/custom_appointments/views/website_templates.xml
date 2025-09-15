@@ -131,16 +131,16 @@
                             </div>
                         </div>
 
-                        <!-- Right Panel - Salon Selection -->
+                        <!-- Right Panel - Branch Selection -->
                         <div class="col-lg-3 mb-4">
                             <div class="card shadow-sm border-0" style="border-radius: 15px;">
                                 <div class="card-body p-4">
-                                    <h5 class="font-weight-bold mb-4">Select Salon</h5>
+                                    <h5 class="font-weight-bold mb-4">Select Branch</h5>
                                     
-                                    <div class="salon-list">
+                                    <div class="branch-list">
                                         <t t-if="branches">
                                             <t t-foreach="branches" t-as="branch">
-                                                <div class="salon-item mb-3" style="cursor: pointer;" t-att-onclick="'selectSalon(this, \'' + str(branch.id) + '\')'">
+                                                <div class="branch-item mb-3" style="cursor: pointer;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
                                                     <div class="card border-0" style="border-radius: 10px; transition: all 0.3s ease;">
                                                         <div class="card-body p-3">
                                                             <div class="d-flex align-items-center justify-content-between">
@@ -185,7 +185,7 @@
                 <!-- Selection JavaScript -->
                 <script>
                     let selectedStaff = null;
-                    let selectedSalon = null;
+                    let selectedBranch = null;
 
                     function selectStaff(element, staffId) {
                         // Remove previous selection
@@ -208,17 +208,17 @@
                         selectedStaff = staffId;
                     }
 
-                    function selectSalon(element, salonId) {
+                    function selectBranch(element, branchId) {
                         // Remove previous selection
-                        document.querySelectorAll('.salon-item .card').forEach(card => {
+                        document.querySelectorAll('.branch-item .card').forEach(card => {
                             card.style.borderColor = '';
                             card.style.background = '';
                         });
-                        document.querySelectorAll('.salon-item .selection-indicator').forEach(indicator => {
+                        document.querySelectorAll('.branch-item .selection-indicator').forEach(indicator => {
                             indicator.style.display = 'none';
                         });
                         
-                        // Highlight selected salon
+                        // Highlight selected branch
                         const card = element.querySelector('.card');
                         card.style.borderColor = '#ff69b4';
                         card.style.background = '#fff5f8';
@@ -226,7 +226,7 @@
                         const indicator = element.querySelector('.selection-indicator');
                         indicator.style.display = 'block';
                         
-                        selectedSalon = salonId;
+                        selectedBranch = branchId;
                     }
 
                     function proceedToServices() {
@@ -237,8 +237,8 @@
                         
                         const params = new URLSearchParams();
                         params.append('staff_id', selectedStaff);
-                        if (selectedSalon) {
-                            params.append('salon_id', selectedSalon);
+                        if (selectedBranch) {
+                            params.append('branch_id', selectedBranch);
                         }
                         
                         window.location.href = `/appointments/services?${params.toString()}`;
@@ -265,7 +265,7 @@
                             </div>
                             <div class="col-md-4 text-right">
                                 <button class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600;">
-                                    Change salon
+                                    Change branch
                                 </button>
                             </div>
                         </div>
