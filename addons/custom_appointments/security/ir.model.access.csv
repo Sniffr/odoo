@@ -4,5 +4,8 @@ access_custom_branch_user,custom.branch.user,model_custom_branch,base.group_user
 access_company_service_user,company.service.user,model_company_service,base.group_user,1,1,1,1
 access_service_category_user,service.category.user,model_service_category,base.group_user,1,1,1,1
 access_custom_appointment_user,custom.appointment.user,model_custom_appointment,base.group_user,1,1,1,1
+access_custom_appointment_public,custom.appointment.public,model_custom_appointment,base.group_public,1,1,1,0
 access_employee_import_wizard_user,employee.import.wizard.user,model_employee_import_wizard,base.group_user,1,1,1,1
 access_company_import_wizard_user,company.import.wizard.user,model_company_import_wizard,base.group_user,1,1,1,1
+access_payment_transaction_user,payment.transaction.user,payment.model_payment_transaction,base.group_user,1,1,1,1
+access_payment_provider_user,payment.provider.user,payment.model_payment_provider,base.group_user,1,0,0,0

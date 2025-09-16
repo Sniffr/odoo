@@ -15,7 +15,7 @@
         - Integration with company structure
     ''',
     'author': 'Custom Development',
-    'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms'],
+    'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/employee_import_wizard_views.xml',

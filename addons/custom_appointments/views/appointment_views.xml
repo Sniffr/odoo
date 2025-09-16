@@ -14,6 +14,7 @@
                 <field name="start"/>
                 <field name="duration"/>
                 <field name="price"/>
+                <field name="payment_status"/>
                 <field name="state" decoration-success="state=='completed'" decoration-info="state=='confirmed'" decoration-warning="state=='in_progress'" decoration-danger="state=='cancelled'"/>
             </list>
         </field>
@@ -57,6 +58,14 @@
                         <group string="Pricing">
                             <field name="price"/>
                             <field name="currency_id"/>
+                        </group>
+                        <group string="Payment Information">
+                            <field name="payment_status"/>
+                            <field name="payment_transaction_id" readonly="1"/>
+                            <field name="payment_method" readonly="1"/>
+                            <field name="paid_amount" readonly="1"/>
+                            <field name="payment_date" readonly="1"/>
+                            <field name="payment_reference" readonly="1"/>
                         </group>
                     </group>
                     

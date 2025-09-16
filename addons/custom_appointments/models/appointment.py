@@ -41,6 +41,19 @@ class Appointment(models.Model):
     
     internal_notes = fields.Text(string='Internal Notes')
     
+    payment_status = fields.Selection([
+        ('pending', 'Payment Pending'),
+        ('paid', 'Paid'),
+        ('failed', 'Payment Failed'),
+        ('refunded', 'Refunded')
+    ], string='Payment Status', default='pending', required=True)
+    
+    payment_transaction_id = fields.Many2one('payment.transaction', string='Payment Transaction')
+    payment_method = fields.Char(string='Payment Method')
+    payment_reference = fields.Char(string='Payment Reference')
+    paid_amount = fields.Monetary(string='Paid Amount', currency_field='currency_id')
+    payment_date = fields.Datetime(string='Payment Date')
+    
     @api.depends('start', 'stop')
     def _compute_duration(self):
         for appointment in self:
@@ -120,6 +133,9 @@ class Appointment(models.Model):
                 appointment.calendar_event_id.write(event_vals)
     
     def action_confirm(self):
+        if self.payment_status != 'paid':
+            from odoo.exceptions import UserError
+            raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
         self._send_confirmation_notifications()
         return True

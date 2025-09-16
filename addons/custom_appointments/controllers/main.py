@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 from datetime import datetime, timedelta
 import json
@@ -190,15 +190,124 @@ class AppointmentController(http.Controller):
                 'state': 'confirmed' if not service.requires_approval else 'draft',
             }
             
+            appointment_vals['state'] = 'draft'
+            appointment_vals['payment_status'] = 'pending'
             appointment = request.env['custom.appointment'].sudo().create(appointment_vals)
             
-            return request.render('custom_appointments.booking_success_page', {
-                'appointment': appointment,
-                'service': service,
-                'staff': staff,
-            })
+            return request.redirect(f'/appointments/payment?appointment_id={appointment.id}')
             
         except Exception as e:
             return request.render('custom_appointments.booking_error_page', {
                 'error': str(e),
             })
+    
+    @http.route('/appointments/payment', type='http', auth='public', website=True, methods=['GET', 'POST'])
+    def payment_page(self, **kwargs):
+        """Payment page for appointment booking"""
+        if request.httprequest.method == 'GET':
+            appointment_id = kwargs.get('appointment_id')
+            if not appointment_id:
+                return request.redirect('/appointments')
+            
+            appointment = request.env['custom.appointment'].sudo().browse(int(appointment_id))
+            if not appointment.exists() or appointment.payment_status == 'paid':
+                return request.redirect('/appointments')
+            
+            acquirers = request.env['payment.provider'].sudo().search([
+                ('state', 'in', ['enabled', 'test']),
+                ('is_published', '=', True)
+            ])
+            
+            return request.render('custom_appointments.payment_page', {
+                'appointment': appointment,
+                'acquirers': acquirers,
+                'amount': appointment.price,
+                'currency': appointment.currency_id,
+            })
+        
+        elif request.httprequest.method == 'POST':
+            return self._process_payment(kwargs)
+    
+    def _process_payment(self, data):
+        """Process payment transaction"""
+        try:
+            appointment_id = int(data.get('appointment_id'))
+            acquirer_id = int(data.get('acquirer_id'))
+            
+            appointment = request.env['custom.appointment'].sudo().browse(appointment_id)
+            acquirer = request.env['payment.provider'].sudo().browse(acquirer_id)
+            
+            if not appointment.exists() or not acquirer.exists():
+                raise ValueError("Invalid appointment or payment method")
+            
+            transaction_vals = {
+                'amount': appointment.price,
+                'currency_id': appointment.currency_id.id,
+                'provider_id': acquirer.id,
+                'reference': f"APPT-{appointment.id}-{appointment.customer_name}",
+                'partner_id': request.env.user.partner_id.id if request.env.user != request.env.ref('base.public_user') else False,
+                'partner_name': appointment.customer_name,
+                'partner_email': appointment.customer_email,
+            }
+            
+            transaction = request.env['payment.transaction'].sudo().create(transaction_vals)
+            appointment.payment_transaction_id = transaction.id
+            
+            return request.redirect(transaction.get_portal_url())
+            
+        except Exception as e:
+            return request.render('custom_appointments.payment_error_page', {
+                'error': str(e),
+            })
+    
+    @http.route('/appointments/payment/webhook', type='http', auth='public', methods=['POST'], csrf=False)
+    def payment_webhook(self, **kwargs):
+        """Handle payment transaction status updates"""
+        try:
+            transaction_id = kwargs.get('transaction_id')
+            if not transaction_id:
+                return request.make_response('Missing transaction ID', status=400)
+            
+            transaction = request.env['payment.transaction'].sudo().browse(int(transaction_id))
+            if not transaction.exists():
+                return request.make_response('Transaction not found', status=404)
+            
+            appointment = request.env['custom.appointment'].sudo().search([
+                ('payment_transaction_id', '=', transaction.id)
+            ], limit=1)
+            
+            if appointment:
+                if transaction.state == 'done':
+                    appointment.write({
+                        'payment_status': 'paid',
+                        'paid_amount': transaction.amount,
+                        'payment_date': fields.Datetime.now(),
+                        'payment_method': transaction.provider_id.name,
+                        'payment_reference': transaction.reference,
+                        'state': 'confirmed'
+                    })
+                    appointment._send_confirmation_notifications()
+                elif transaction.state in ['cancel', 'error']:
+                    appointment.write({
+                        'payment_status': 'failed'
+                    })
+            
+            return request.make_response('OK', status=200)
+            
+        except Exception as e:
+            return request.make_response(f'Error: {str(e)}', status=500)
+    
+    @http.route('/appointments/payment/success', type='http', auth='public', website=True)
+    def payment_success(self, **kwargs):
+        """Payment success page"""
+        appointment_id = kwargs.get('appointment_id')
+        if not appointment_id:
+            return request.redirect('/appointments')
+        
+        appointment = request.env['custom.appointment'].sudo().browse(int(appointment_id))
+        if not appointment.exists():
+            return request.redirect('/appointments')
+        
+        return request.render('custom_appointments.payment_success_page', {
+            'appointment': appointment,
+        })
