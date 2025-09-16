@@ -83,6 +83,7 @@ class Appointment(models.Model):
         
         appointment = super(Appointment, self).create(vals)
         appointment._create_calendar_event()
+        appointment._send_staff_notification()
         return appointment
     
     def _create_calendar_event(self):
@@ -120,6 +121,7 @@ class Appointment(models.Model):
     
     def action_confirm(self):
         self.state = 'confirmed'
+        self._send_confirmation_notifications()
         return True
     
     def action_start(self):
@@ -132,6 +134,7 @@ class Appointment(models.Model):
     
     def action_cancel(self):
         self.state = 'cancelled'
+        self._send_cancellation_notifications()
         return True
     
     def action_reset_to_draft(self):
@@ -154,3 +157,84 @@ class Appointment(models.Model):
             my_appointments = my_appointments | staff_appointments
         
         return my_appointments
+    
+    def _send_confirmation_notifications(self):
+        """Send confirmation email to customer and SMS if phone is provided"""
+        for appointment in self:
+            if appointment.customer_email:
+                template = self.env.ref('custom_appointments.appointment_confirmation_email', raise_if_not_found=False)
+                if template:
+                    template.send_mail(appointment.id, force_send=True)
+            
+            if appointment.customer_phone:
+                self._send_sms_notification(
+                    appointment.customer_phone,
+                    f"Appointment confirmed! {appointment.service_id.name} with {appointment.staff_member_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')}. See you soon!"
+                )
+    
+    def _send_cancellation_notifications(self):
+        """Send cancellation email to customer and SMS if phone is provided"""
+        for appointment in self:
+            if appointment.customer_email:
+                template = self.env.ref('custom_appointments.appointment_cancellation_email', raise_if_not_found=False)
+                if template:
+                    template.send_mail(appointment.id, force_send=True)
+            
+            if appointment.customer_phone:
+                self._send_sms_notification(
+                    appointment.customer_phone,
+                    f"Your appointment for {appointment.service_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')} has been cancelled. Please contact us to reschedule."
+                )
+    
+    def _send_staff_notification(self):
+        """Send notification to staff member about new appointment"""
+        for appointment in self:
+            if appointment.staff_member_id.email:
+                template = self.env.ref('custom_appointments.staff_notification_email', raise_if_not_found=False)
+                if template:
+                    template.send_mail(appointment.id, force_send=True)
+    
+    def _send_reminder_notifications(self):
+        """Send reminder notifications (to be called by scheduled action)"""
+        for appointment in self:
+            if appointment.customer_email:
+                template = self.env.ref('custom_appointments.appointment_reminder_email', raise_if_not_found=False)
+                if template:
+                    template.send_mail(appointment.id, force_send=True)
+            
+            if appointment.customer_phone:
+                self._send_sms_notification(
+                    appointment.customer_phone,
+                    f"Reminder: Your appointment for {appointment.service_id.name} is tomorrow at {appointment.start.strftime('%I:%M %p')} with {appointment.staff_member_id.name}."
+                )
+    
+    def _send_sms_notification(self, phone_number, message):
+        """Send SMS notification using Odoo's SMS gateway"""
+        try:
+            self.env['sms.sms'].create({
+                'number': phone_number,
+                'body': message,
+                'state': 'outgoing',
+            })
+        except Exception as e:
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.warning(f"Failed to send SMS to {phone_number}: {str(e)}")
+    
+    @api.model
+    def send_appointment_reminders(self):
+        """Scheduled method to send appointment reminders 24 hours before"""
+        from datetime import datetime, timedelta
+        
+        tomorrow = datetime.now() + timedelta(days=1)
+        start_of_day = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = tomorrow.replace(hour=23, minute=59, second=59, microsecond=999999)
+        
+        appointments = self.search([
+            ('state', '=', 'confirmed'),
+            ('start', '>=', start_of_day),
+            ('start', '<=', end_of_day)
+        ])
+        
+        for appointment in appointments:
+            appointment._send_reminder_notifications()

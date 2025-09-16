@@ -15,7 +15,7 @@
         - Integration with company structure
     ''',
     'author': 'Custom Development',
-    'depends': ['base', 'hr', 'calendar', 'website'],
+    'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/employee_import_wizard_views.xml',
@@ -27,6 +27,8 @@
         'views/service_category_views.xml',
         'views/appointment_views.xml',
         'views/website_templates.xml',
+        'data/mail_templates.xml',
+        'data/cron_jobs.xml',
         'data/demo_data.xml',
         'data/services_demo_data.xml',
         'data/appointment_demo_data.xml',
