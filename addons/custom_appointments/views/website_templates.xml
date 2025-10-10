@@ -4,9 +4,13 @@
     <template id="appointment_booking_page" name="Book Appointment">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
-                <!-- Hero Section -->
-                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
-                    <div class="container">
+                <!-- Hero Section with Background Image and Fade -->
+                <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
+                    <!-- Background image with fade effect -->
+                    <div class="hero-bg-image"></div>
+                    <div class="hero-bg-overlay"></div>
+
+                    <div class="container position-relative" style="z-index: 2;">
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h1 class="display-5 font-weight-bold text-dark mb-2">
@@ -17,6 +21,38 @@
                         </div>
                     </div>
                 </div>
+
+                <style>
+                    .hero-section {
+                        min-height: 200px;
+                        display: flex;
+                        align-items: center;
+                    }
+                    .hero-bg-image {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-image: url('/custom_appointments/static/src/img/lashes.JPG');
+                        background-size: cover;
+                        background-position: right center;
+                        z-index: 1;
+                    }
+                    .hero-bg-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(90deg,
+                            rgba(255,255,255,1) 0%,
+                            rgba(255,255,255,0.9) 30%,
+                            rgba(255,255,255,0.6) 60%,
+                            rgba(255,255,255,0) 100%);
+                        z-index: 1;
+                    }
+                </style>
 
                 <div class="container">
                     <!-- Branch Selection (Top) -->
@@ -38,14 +74,12 @@
                                                             <div class="card-body p-4">
                                                                 <div class="d-flex flex-column h-100">
                                                                     <div>
-                                                                        <div class="d-flex align-items-center mb-3">
-                                                                            <div class="branch-icon rounded-circle bg-light d-flex align-items-center justify-content-center mr-3" style="width: 50px; height: 50px; min-width: 50px;">
-                                                                                <i class="fa fa-building text-primary" style="font-size: 20px;"></i>
-                                                                            </div>
-                                                                            <h5 class="font-weight-bold mb-0"><t t-esc="branch.name"/></h5>
+                                                                        <div class="d-flex align-items-center mb-4">
+
+                                                                            <h5 class="font-weight-bold mb-0 ml-2"><t t-esc="branch.name"/></h5>
                                                                         </div>
 
-                                                                        <div class="branch-details ml-2 pl-4" style="border-left: 2px solid #f0f0f0;">
+                                                                        <div class="branch-details mt-3 ml-2">
                                                                             <t t-if="branch.street">
                                                                                 <p class="text-muted mb-2">
                                                                                     <i class="fa fa-map-marker mr-2"></i>
@@ -65,9 +99,8 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mt-auto text-right">
-                                                                        <span class="badge badge-light px-3 py-2" style="border-radius: 50px;">
+                                                                        <span class="badge badge-light px-3 py-2" style="border-radius: 50px; visibility: hidden;">
                                                                             <i class="fa fa-check-circle mr-1"></i>
-                                                                            Select Branch
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -90,47 +123,61 @@
                     </div>
 
                     <div class="row">
-                        <!-- Staff Selection Grid (Full Width) -->
+                        <!-- Staff Selection Grid in a Separate Card (Full Width) -->
                         <div class="col-lg-12 mb-4">
-                            <div class="card shadow-sm border-0 appointment-card" style="border-radius: 15px;">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                    <h4 class="font-weight-bold mb-0">Select Your Specialist</h4>
+                                    <p class="mb-0 opacity-75">Choose the professional you'd like to work with</p>
+                                </div>
                                 <div class="card-body p-4">
-                                    <h5 class="font-weight-bold mb-4">Select Your Specialist</h5>
-
                                     <div class="staff-grid">
                                         <div class="row">
                                             <t t-if="staff_members">
                                                 <t t-foreach="staff_members" t-as="staff">
                                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                                        <div class="staff-card appointment-card" style="cursor: pointer;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
-                                                            <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
-                                                                <div class="card-body p-3">
+                                                        <div class="staff-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
+                                                            <div class="card h-100" style="border-radius: 15px; border: 2px solid transparent; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; min-height: 350px;">
+                                                                <div class="card-body p-3 d-flex flex-column">
                                                                     <div class="text-center mb-3">
                                                                         <t t-if="staff.image">
                                                                             <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id"
-                                                                                class="rounded-circle mx-auto"
-                                                                                style="width: 85px; height: 85px; object-fit: cover;"
+                                                                                class="rounded-circle mx-auto staff-image"
+                                                                                style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"
                                                                                 alt="Staff Photo"/>
                                                                         </t>
                                                                         <t t-else="">
-                                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto"
-                                                                                style="width: 85px; height: 85px;">
+                                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto staff-image"
+                                                                                style="width: 100px; height: 100px; border: 4px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                                                                                 <i class="fa fa-user text-white fa-2x"></i>
                                                                             </div>
                                                                         </t>
                                                                     </div>
-                                                                    <div class="text-center">
-                                                                        <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
-                                                                        <t t-if="staff.specialization">
-                                                                            <p class="text-muted small mb-1"><t t-esc="staff.specialization"/></p>
-                                                                        </t>
-                                                                        <div class="rating">
-                                                                            <t t-foreach="range(5)" t-as="star">
-                                                                                <i class="fa fa-star text-warning"></i>
+                                                                    <div class="text-center flex-grow-1 d-flex flex-column justify-content-between">
+                                                                        <div>
+                                                                            <h5 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h5>
+                                                                            <t t-if="staff.specialization">
+                                                                                <p class="text-muted mb-2"><t t-esc="staff.specialization"/></p>
                                                                             </t>
-                                                                            <span class="text-muted small ml-1">5.0</span>
+                                                                            <t t-else="">
+                                                                                <p class="text-muted mb-2">Specialist</p>
+                                                                            </t>
+
+                                                                            <div class="rating mb-2">
+                                                                                <t t-foreach="range(5)" t-as="star">
+                                                                                    <i class="fa fa-star text-warning"></i>
+                                                                                </t>
+                                                                                <span class="text-muted small ml-1">5.0</span>
+                                                                            </div>
+                                                                            <div class="expertise-badges mt-2">
+                                                                                <span class="badge badge-light mr-1">Expert</span>
+                                                                                <span class="badge badge-light">5+ Years</span>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="selection-indicator mt-2" style="display: none;">
-                                                                            <i class="fa fa-check-circle text-success fa-lg"></i>
+                                                                        <div class="selection-indicator mt-3" style="display: none;">
+                                                                            <span class="badge badge-success px-3 py-2" style="border-radius: 50px;">
+                                                                                <i class="fa fa-check-circle mr-1"></i> Selected
+                                                                            </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -148,83 +195,163 @@
                                             </t>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <!-- Location Details Section (Moved Below Specialists) -->
-                                    <div class="location-details mt-5">
-                                        <h5 class="font-weight-bold mb-4">Location Details</h5>
-                                        <div class="row">
-                                            <!-- Map Placeholder -->
-                                            <div class="col-md-6 mb-4">
-                                                <div class="map-placeholder" style="height: 200px; background: #f9f9f9; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                                    <div class="text-center">
-                                                        <i class="fa fa-map-marker fa-3x text-muted mb-2"></i>
-                                                        <p class="text-muted mb-0">Interactive Map</p>
+                        <!-- Location Details with Unique Styling -->
+                        <div class="col-lg-12 mb-4">
+                            <div class="location-card shadow-sm border-0" style="border-radius: 20px; overflow: hidden; background-image: linear-gradient(to right, #fff, #fff5f8); position: relative;">
+                                <!-- Decorative Elements -->
+                                <div class="decorative-circle" style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,105,180,0.1); z-index: 1;"></div>
+                                <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,105,180,0.08); z-index: 1;"></div>
+
+
+
+                                <div class="card-body p-4" style="position: relative; z-index: 2;">
+                                    <!-- Full-width Map Placeholder with Enhanced Styling -->
+                                    <div class="map-container mb-4" style="position: relative; height: 280px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                                        <!-- Map Background -->
+                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #f8f9fa, #fff);">
+                                            <!-- Decorative Map Elements -->
+                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.1);"></div>
+                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05);"></div>
+                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,105,180,0.07);"></div>
+
+                                            <!-- Roads -->
+                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(200,200,200,0.5);"></div>
+                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(200,200,200,0.5);"></div>
+                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(200,200,200,0.3);"></div>
+                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(200,200,200,0.3);"></div>
+                                        </div>
+
+                                        <!-- Location Marker -->
+                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                            <!-- Pulse Animation -->
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.3); animation: pulse 2s infinite;"></div>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.5); animation: pulse 2s infinite 0.3s;"></div>
+
+                                            <!-- Marker Pin -->
+                                            <div style="position: relative; width: 30px; height: 30px;">
+                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ff69b4; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Overlay with CTA -->
+                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
+                                            <div class="text-center">
+                                                <div style="width: 70px; height: 70px; background: #ff69b4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,105,180,0.3);">
+                                                    <i class="fa fa-map-marker fa-2x text-white"></i>
+                                                </div>
+                                                <h5 class="font-weight-bold mb-1" style="color: #333;">Our Location</h5>
+                                                <p class="text-muted mb-2">123 Beauty Street, City</p>
+                                                <button class="btn" style="background: #ff69b4; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,105,180,0.3); font-weight: 600;">
+                                                    <i class="fa fa-directions mr-2"></i>Get Directions
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Hours Section -->
+                                        <div class="col-md-6 mb-4">
+                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ff69b4;">
+                                                <div class="d-flex align-items-center mb-3">
+
+                                                    <h5 class="font-weight-bold ml-3 mb-0">Hours of Operation</h5>
+                                                </div>
+
+                                                <div class="hours-list mt-3">
+                                                    <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="day-label">
+                                                            <span class="font-weight-bold">Monday - Friday</span>
+                                                        </div>
+                                                        <div class="hours-value" style="color: #ff69b4; font-weight: 600;">
+                                                            9:00 AM - 6:00 PM
+                                                        </div>
+                                                    </div>
+                                                    <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="day-label">
+                                                            <span class="font-weight-bold">Saturday</span>
+                                                        </div>
+                                                        <div class="hours-value" style="color: #ff69b4; font-weight: 600;">
+                                                            9:00 AM - 4:00 PM
+                                                        </div>
+                                                    </div>
+                                                    <div class="hour-item d-flex justify-content-between align-items-center p-2">
+                                                        <div class="day-label">
+                                                            <span class="font-weight-bold">Sunday</span>
+                                                        </div>
+                                                        <div class="hours-value" style="color: #888;">
+                                                            Closed
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <!-- Business Hours -->
-                                                    <div class="col-md-12 mb-4">
-                                                        <div class="business-hours">
-                                                            <h6 class="font-weight-bold mb-3">Business Hours</h6>
-                                                            <div class="hours-list">
-                                                                <div class="d-flex justify-content-between mb-2">
-                                                                    <span>Monday - Friday</span>
-                                                                    <span class="text-muted">9:00 AM - 6:00 PM</span>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between mb-2">
-                                                                    <span>Saturday</span>
-                                                                    <span class="text-muted">9:00 AM - 4:00 PM</span>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between">
-                                                                    <span>Sunday</span>
-                                                                    <span class="text-muted">Closed</span>
-                                                                </div>
-                                                            </div>
+                                        <!-- Contact Info with Unique Style -->
+                                        <div class="col-md-6 mb-4">
+                                            <div class="contact-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+                                                <div class="d-flex align-items-center mb-3">
+
+                                                    <h5 class="font-weight-bold ml-3 mb-0">Contact Us</h5>
+                                                </div>
+
+                                                <div class="contact-list mt-3">
+                                                    <div class="contact-item d-flex align-items-center mb-3">
+                                                        <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                            <i class="fa fa-phone" style="color: #ff69b4;"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="small text-muted">Phone</div>
+                                                            <div class="font-weight-bold">(555) 123-4567</div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Contact Info -->
-                                            <div class="col-md-12">
-                                                <div class="contact-info">
-                                                    <h6 class="font-weight-bold mb-3">Contact Information</h6>
-                                                    <div class="row">
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="contact-item">
-                                                                <i class="fa fa-phone mr-2 text-primary"></i>
-                                                                <span>(555) 123-4567</span>
-                                                            </div>
+                                                    <div class="contact-item d-flex align-items-center mb-3">
+                                                        <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                            <i class="fa fa-envelope" style="color: #ff69b4;"></i>
                                                         </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="contact-item">
-                                                                <i class="fa fa-envelope mr-2 text-primary"></i>
-                                                                <span>info@salon.com</span>
-                                                            </div>
+                                                        <div>
+                                                            <div class="small text-muted">Email</div>
+                                                            <div class="font-weight-bold">info@salon.com</div>
                                                         </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="contact-item">
-                                                                <i class="fa fa-map-marker mr-2 text-primary"></i>
-                                                                <span>123 Beauty Street, City</span>
-                                                            </div>
+                                                    </div>
+                                                    <div class="contact-item d-flex align-items-center">
+                                                        <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                            <i class="fa fa-map-marker" style="color: #ff69b4;"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="small text-muted">Address</div>
+                                                            <div class="font-weight-bold">123 Beauty Street, City</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Continue Button -->
-                                    <div class="text-center mt-5">
-                                        <button class="btn btn-lg w-50" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;" onclick="proceedToServices()">
-                                            Continue to Services
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
+
+                            <style>
+                                @keyframes pulse {
+                                    0% {
+                                        transform: translate(-50%, -50%) scale(1);
+                                        opacity: 1;
+                                    }
+                                    100% {
+                                        transform: translate(-50%, -50%) scale(1.5);
+                                        opacity: 0;
+                                    }
+                                }
+                                .map-container:hover .map-overlay {
+                                    background: rgba(255,255,255,0.3);
+                                }
+                                .map-container:hover button {
+                                    transform: translateY(-3px);
+                                    box-shadow: 0 4px 12px rgba(255,105,180,0.4);
+                                }
+                            </style>
                         </div>
                     </div>
                 </div>
@@ -241,6 +368,12 @@
                             card.style.background = '';
                             card.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
                             card.style.transform = '';
+
+                            // Hide selection indicator on all cards
+                            const indicator = card.querySelector('.selection-indicator');
+                            if (indicator) {
+                                indicator.style.display = 'none';
+                            }
                         });
 
                         // Highlight selected staff with enhanced styling
@@ -251,7 +384,52 @@
                         card.style.boxShadow = '0 8px 20px rgba(255,105,180,0.3)';
                         card.style.transform = 'translateY(-5px)';
 
+                        // Show selection indicator for selected card
+                        const indicator = card.querySelector('.selection-indicator');
+                        if (indicator) {
+                            indicator.style.display = 'block';
+                        }
+
                         selectedStaff = staffId;
+
+                        // Add continue button if not already present
+                        if (!document.getElementById('continue-button')) {
+                            const continueButton = document.createElement('div');
+                            continueButton.id = 'continue-button';
+                            continueButton.className = 'text-center mt-4 mb-4 container';
+                            continueButton.innerHTML = `
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-8 col-lg-6">
+                                        <button class="btn btn-lg w-100 continue-services-btn"
+                                            style="background: #ff69b4; color: white; border: none; padding: 15px 25px;
+                                            border-radius: 25px; font-weight: 600; transition: all 0.3s ease;
+                                            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3); max-width: 100%;"
+                                            onclick="proceedToServices()">
+                                            <i class="fa fa-arrow-right mr-2"></i>
+                                            Continue to Services
+                                        </button>
+                                    </div>
+                                </div>
+                                <style>
+                                    @media (max-width: 767px) {
+                                        .continue-services-btn {
+                                            font-size: 16px;
+                                            padding: 12px 20px !important;
+                                        }
+                                    }
+                                    .continue-services-btn:hover {
+                                        transform: translateY(-2px);
+                                        box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+                                        background: #ff4da9 !important;
+                                    }
+                                    .continue-services-btn:active {
+                                        transform: translateY(1px);
+                                        box-shadow: 0 2px 5px rgba(255, 105, 180, 0.4);
+                                    }
+                                </style>
+                            `;
+                            document.querySelector('.staff-grid').after(continueButton);
+                        }
                     }
 
                     function selectBranch(element, branchId) {
@@ -260,17 +438,15 @@
                             card.style.borderColor = 'transparent';
                             card.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)';
                             card.style.background = '';
+                            card.style.transform = '';
 
-                            // Reset badge to default state
-                            const badge = card.querySelector('.badge');
-                            if (badge) {
-                                badge.style.background = '';
-                                badge.style.color = '';
-                                badge.style.borderColor = '#e9ecef';
-                                badge.innerHTML = '<i class="fa fa-map-pin mr-1"></i> Select Branch';
+                            // Hide selection indicator on all branch cards
+                            const indicator = card.querySelector('.selection-indicator');
+                            if (indicator) {
+                                indicator.style.display = 'none';
                             }
                         });
-                        
+
                         // Highlight selected branch with border and styling
                         const card = element.querySelector('.card');
                         card.style.borderColor = '#ff69b4';
@@ -278,13 +454,12 @@
                         card.style.background = '#fff5f8';
                         card.style.transform = 'translateY(-5px)';
 
-                        // Update selection badge to green "Selected Branch" with checkmark
-                        const badge = card.querySelector('.badge');
-                        if (badge) {
-                            badge.style.background = '#28a745';
-                            badge.style.color = 'white';
-                            badge.style.borderColor = '#28a745';
-                            badge.innerHTML = '<i class="fa fa-check-circle mr-1"></i> Selected Branch';
+                        // Show selection indicator for selected branch
+                        const indicator = card.querySelector('.selection-indicator');
+                        if (indicator) {
+                            indicator.style.display = 'block';
+                            indicator.className = 'badge badge-success px-3 py-2 selection-indicator';
+                            indicator.style.borderRadius = '50px';
                         }
 
                         selectedBranch = branchId;
@@ -339,7 +514,7 @@
                         <div class="card shadow-sm border-0" style="border-radius: 15px;">
                             <div class="card-body p-4">
                                 <h5 class="font-weight-bold mb-4">Select Team Member</h5>
-                                
+
                                 <div class="row">
                                     <!-- Any Team Member Option -->
                                     <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
@@ -347,7 +522,7 @@
                                             <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
                                                 <div class="card-body p-3">
                                                     <div class="team-avatar mb-2">
-                                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" 
+                                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
                                                              style="width: 60px; height: 60px;">
                                                             <i class="fa fa-users text-white"></i>
                                                         </div>
@@ -368,13 +543,13 @@
                                                         <div class="card-body p-3">
                                                             <div class="team-avatar mb-2">
                                                                 <t t-if="staff.image">
-                                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/80x80' % staff.id" 
-                                                                         class="rounded-circle mx-auto d-block" 
-                                                                         style="width: 60px; height: 60px; object-fit: cover;" 
+                                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/80x80' % staff.id"
+                                                                         class="rounded-circle mx-auto d-block"
+                                                                         style="width: 60px; height: 60px; object-fit: cover;"
                                                                          alt="Staff Photo"/>
                                                                 </t>
                                                                 <t t-else="">
-                                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto" 
+                                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto"
                                                                          style="width: 60px; height: 60px;">
                                                                         <i class="fa fa-user text-white"></i>
                                                                     </div>
