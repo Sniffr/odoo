@@ -19,10 +19,54 @@
                 </div>
 
                 <div class="container">
+                    <!-- Branch Selection (Top) -->
+                    <div class="branch-selection mb-4">
+                        <div class="card shadow-sm border-0 appointment-card" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <h5 class="font-weight-bold mb-4">Select Branch</h5>
+
+                                <div class="row">
+                                    <t t-if="branches">
+                                        <t t-foreach="branches" t-as="branch">
+                                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                                <div class="branch-item" style="cursor: pointer;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
+                                                    <div class="card border-0" style="border-radius: 10px; transition: all 0.3s ease;">
+                                                        <div class="card-body p-3">
+                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="font-weight-bold mb-1"><t t-esc="branch.name"/></h6>
+                                                                    <t t-if="branch.street">
+                                                                        <p class="text-muted small mb-0">
+                                                                            <i class="fa fa-map-marker mr-1"></i>
+                                                                            <t t-esc="branch.street"/>
+                                                                        </p>
+                                                                    </t>
+                                                                </div>
+                                                                <div class="selection-indicator" style="display: none;">
+                                                                    <i class="fa fa-check-circle text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="col-12 text-center py-4">
+                                            <i class="fa fa-building fa-2x text-muted mb-2"></i>
+                                            <p class="text-muted small">Main Location</p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <!-- Left Panel - Location Details -->
                         <div class="col-lg-4 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card shadow-sm border-0 appointment-card" style="border-radius: 15px;">
                                 <div class="card-body p-4">
                                     <h5 class="font-weight-bold mb-4">Location Details</h5>
                                     
@@ -73,106 +117,68 @@
                             </div>
                         </div>
 
-                        <!-- Center Panel - Staff Selection -->
-                        <div class="col-lg-5 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                        <!-- Center/Right Panel - Staff Selection Grid -->
+                        <div class="col-lg-8 mb-4">
+                            <div class="card shadow-sm border-0 appointment-card" style="border-radius: 15px;">
                                 <div class="card-body p-4">
                                     <h5 class="font-weight-bold mb-4">Select Your Specialist</h5>
                                     
                                     <div class="staff-grid">
-                                        <t t-if="staff_members">
-                                            <t t-foreach="staff_members" t-as="staff">
-                                                <div class="staff-card mb-3" style="cursor: pointer;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
-                                                    <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
-                                                        <div class="card-body p-3">
-                                                            <div class="d-flex align-items-center">
-                                                                <t t-if="staff.image">
-                                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/80x80' % staff.id" 
-                                                                         class="rounded-circle mr-3" 
-                                                                         style="width: 60px; height: 60px; object-fit: cover;" 
-                                                                         alt="Staff Photo"/>
-                                                                </t>
-                                                                <t t-else="">
-                                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mr-3" 
-                                                                         style="width: 60px; height: 60px;">
-                                                                        <i class="fa fa-user text-white fa-lg"></i>
-                                                                    </div>
-                                                                </t>
-                                                                <div class="flex-grow-1">
-                                                                    <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
-                                                                    <t t-if="staff.specialization">
-                                                                        <p class="text-muted small mb-1"><t t-esc="staff.specialization"/></p>
-                                                                    </t>
-                                                                    <div class="rating">
-                                                                        <t t-foreach="range(5)" t-as="star">
-                                                                            <i class="fa fa-star text-warning"></i>
+                                        <div class="row">
+                                            <t t-if="staff_members">
+                                                <t t-foreach="staff_members" t-as="staff">
+                                                    <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                                                        <div class="staff-card appointment-card" style="cursor: pointer;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
+                                                            <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
+                                                                <div class="card-body p-3">
+                                                                    <div class="text-center mb-3">
+                                                                        <t t-if="staff.image">
+                                                                            <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id"
+                                                                                class="rounded-circle mx-auto"
+                                                                                style="width: 85px; height: 85px; object-fit: cover;"
+                                                                                alt="Staff Photo"/>
                                                                         </t>
-                                                                        <span class="text-muted small ml-1">5.0</span>
+                                                                        <t t-else="">
+                                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto"
+                                                                                style="width: 85px; height: 85px;">
+                                                                                <i class="fa fa-user text-white fa-2x"></i>
+                                                                            </div>
+                                                                        </t>
+                                                                    </div>
+                                                                    <div class="text-center">
+                                                                        <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
+                                                                        <t t-if="staff.specialization">
+                                                                            <p class="text-muted small mb-1"><t t-esc="staff.specialization"/></p>
+                                                                        </t>
+                                                                        <div class="rating">
+                                                                            <t t-foreach="range(5)" t-as="star">
+                                                                                <i class="fa fa-star text-warning"></i>
+                                                                            </t>
+                                                                            <span class="text-muted small ml-1">5.0</span>
+                                                                        </div>
+                                                                        <div class="selection-indicator mt-2" style="display: none;">
+                                                                            <i class="fa fa-check-circle text-success fa-lg"></i>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="selection-indicator" style="display: none;">
-                                                                    <i class="fa fa-check-circle text-success fa-lg"></i>
-                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="col-12 text-center py-4">
+                                                    <i class="fa fa-users fa-3x text-muted mb-3"></i>
+                                                    <h6 class="text-muted">No Staff Available</h6>
+                                                    <p class="text-muted small">Please contact us directly for appointments.</p>
                                                 </div>
                                             </t>
-                                        </t>
-                                        <t t-else="">
-                                            <div class="text-center py-4">
-                                                <i class="fa fa-users fa-3x text-muted mb-3"></i>
-                                                <h6 class="text-muted">No Staff Available</h6>
-                                                <p class="text-muted small">Please contact us directly for appointments.</p>
-                                            </div>
-                                        </t>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Panel - Branch Selection -->
-                        <div class="col-lg-3 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                                <div class="card-body p-4">
-                                    <h5 class="font-weight-bold mb-4">Select Branch</h5>
-                                    
-                                    <div class="branch-list">
-                                        <t t-if="branches">
-                                            <t t-foreach="branches" t-as="branch">
-                                                <div class="branch-item mb-3" style="cursor: pointer;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
-                                                    <div class="card border-0" style="border-radius: 10px; transition: all 0.3s ease;">
-                                                        <div class="card-body p-3">
-                                                            <div class="d-flex align-items-center justify-content-between">
-                                                                <div class="flex-grow-1">
-                                                                    <h6 class="font-weight-bold mb-1"><t t-esc="branch.name"/></h6>
-                                                                    <t t-if="branch.street">
-                                                                        <p class="text-muted small mb-0">
-                                                                            <i class="fa fa-map-marker mr-1"></i>
-                                                                            <t t-esc="branch.street"/>
-                                                                        </p>
-                                                                    </t>
-                                                                </div>
-                                                                <div class="selection-indicator" style="display: none;">
-                                                                    <i class="fa fa-check-circle text-success"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </t>
-                                        </t>
-                                        <t t-else="">
-                                            <div class="text-center py-4">
-                                                <i class="fa fa-building fa-2x text-muted mb-2"></i>
-                                                <p class="text-muted small">Main Location</p>
-                                            </div>
-                                        </t>
+                                        </div>
                                     </div>
                                     
                                     <!-- Continue Button -->
                                     <div class="text-center mt-4">
-                                        <button class="btn btn-lg w-100" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;" onclick="proceedToServices()">
+                                        <button class="btn btn-lg w-50" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;" onclick="proceedToServices()">
                                             Continue to Services
                                         </button>
                                     </div>
@@ -210,22 +216,24 @@
 
                     function selectBranch(element, branchId) {
                         // Remove previous selection
-                        document.querySelectorAll('.branch-item .card').forEach(card => {
-                            card.style.borderColor = '';
+                        document.querySelectorAll('.branch-card .card').forEach(card => {
+                            card.style.borderColor = 'transparent';
+                            card.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)';
                             card.style.background = '';
-                        });
-                        document.querySelectorAll('.branch-item .selection-indicator').forEach(indicator => {
-                            indicator.style.display = 'none';
+                            const badge = card.querySelector('.badge');
+                            if (badge) badge.classList.replace('badge-primary', 'badge-light');
                         });
                         
-                        // Highlight selected branch
+                        // Highlight selected branch with border and styling
                         const card = element.querySelector('.card');
                         card.style.borderColor = '#ff69b4';
+                        card.style.boxShadow = '0 5px 15px rgba(255,105,180,0.2)';
                         card.style.background = '#fff5f8';
                         
-                        const indicator = element.querySelector('.selection-indicator');
-                        indicator.style.display = 'block';
-                        
+                        // Update selection badge
+                        const badge = card.querySelector('.badge');
+                        if (badge) badge.classList.replace('badge-light', 'badge-primary');
+
                         selectedBranch = branchId;
                     }
 
@@ -234,15 +242,22 @@
                             alert('Please select a staff member before continuing.');
                             return;
                         }
-                        
+                        document.querySelectorAll('.branch-item .radio-inner').forEach(dot => {
+                            dot.style.display = 'none';
+                        });
+
                         const params = new URLSearchParams();
                         params.append('staff_id', selectedStaff);
                         if (selectedBranch) {
                             params.append('branch_id', selectedBranch);
                         }
-                        
+                        // Show selection indicators
+
                         window.location.href = `/appointments/services?${params.toString()}`;
                     }
+                        const radioDot = element.querySelector('.radio-inner');
+                        radioDot.style.display = 'block';
+
                 </script>
             </div>
         </t>
