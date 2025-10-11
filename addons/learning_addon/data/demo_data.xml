@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo Learning Records -->
+        <record id="learning_record_1" model="learning.record">
+            <field name="name">Python Basics</field>
+            <field name="description">Learn the fundamentals of Python programming including variables, functions, and control structures.</field>
+            <field name="category">python</field>
+            <field name="difficulty">beginner</field>
+            <field name="is_completed">True</field>
+            <field name="completion_date">2024-01-15</field>
+            <field name="notes">&lt;p&gt;Great introduction to Python. Covered:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Variables and data types&lt;/li&gt;
+&lt;li&gt;Functions and modules&lt;/li&gt;
+&lt;li&gt;Control flow (if/else, loops)&lt;/li&gt;
+&lt;/ul&gt;</field>
+        </record>
+
+        <record id="learning_record_2" model="learning.record">
+            <field name="name">Odoo Development Fundamentals</field>
+            <field name="description">Understanding Odoo framework, models, views, and basic module development.</field>
+            <field name="category">odoo</field>
+            <field name="difficulty">intermediate</field>
+            <field name="is_completed">False</field>
+            <field name="notes">&lt;p&gt;Currently learning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Model creation and fields&lt;/li&gt;
+&lt;li&gt;View definitions (form, tree, kanban)&lt;/li&gt;
+&lt;li&gt;Security and access rights&lt;/li&gt;
+&lt;/ul&gt;</field>
+        </record>
+
+        <record id="learning_record_3" model="learning.record">
+            <field name="name">JavaScript ES6 Features</field>
+            <field name="description">Modern JavaScript features including arrow functions, promises, and async/await.</field>
+            <field name="category">javascript</field>
+            <field name="difficulty">intermediate</field>
+            <field name="is_completed">True</field>
+            <field name="completion_date">2024-02-20</field>
+            <field name="notes">&lt;p&gt;Excellent course on modern JS features.&lt;/p&gt;</field>
+        </record>
+
+        <record id="learning_record_4" model="learning.record">
+            <field name="name">Database Design Principles</field>
+            <field name="description">Learn about database normalization, relationships, and best practices for database design.</field>
+            <field name="category">other</field>
+            <field name="difficulty">beginner</field>
+            <field name="is_completed">False</field>
+        </record>
+    </data>
+</odoo>

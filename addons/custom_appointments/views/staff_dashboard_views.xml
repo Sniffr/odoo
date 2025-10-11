@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Staff Dashboard Kanban View -->
+    <record id="staff_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">custom.staff.member.dashboard.kanban</field>
+        <field name="model">custom.staff.member</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="specialization"/>
+                <field name="image"/>
+                <field name="appointment_count"/>
+                <field name="confirmed_appointment_count"/>
+                <field name="completed_appointment_count"/>
+                <field name="this_month_appointments"/>
+                <field name="is_bookable"/>
+                <field name="branch_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="image" widget="image" class="oe_avatar" options="{'size': [40, 40]}"/>
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        <field name="specialization"/>
+                                    </div>
+                                    <div class="o_secondary">
+                                        <field name="branch_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_primary_left">
+                                        <button class="btn btn-primary" name="action_view_appointments" type="object">
+                                            <field name="appointment_count"/> Total Bookings
+                                        </button>
+                                    </div>
+                                    <div class="col-6 o_kanban_primary_right">
+                                        <button class="btn btn-secondary" name="action_view_calendar" type="object">
+                                            View Calendar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-4">
+                                        <span class="o_stat_text">Confirmed</span>
+                                        <div class="o_stat_value">
+                                            <field name="confirmed_appointment_count"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="o_stat_text">Completed</span>
+                                        <div class="o_stat_value">
+                                            <field name="completed_appointment_count"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="o_stat_text">This Month</span>
+                                        <div class="o_stat_value">
+                                            <field name="this_month_appointments"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <span class="badge badge-success" t-if="record.is_bookable.raw_value">Available for Booking</span>
+                                        <span class="badge badge-secondary" t-if="!record.is_bookable.raw_value">Not Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Staff Dashboard List View -->
+    <record id="staff_dashboard_list_view" model="ir.ui.view">
+        <field name="name">custom.staff.member.dashboard.list</field>
+        <field name="model">custom.staff.member</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="image" widget="image" class="oe_avatar"/>
+                <field name="name"/>
+                <field name="specialization"/>
+                <field name="branch_id"/>
+                <field name="appointment_count" string="Total Bookings"/>
+                <field name="confirmed_appointment_count" string="Confirmed"/>
+                <field name="completed_appointment_count" string="Completed"/>
+                <field name="this_month_appointments" string="This Month"/>
+                <field name="is_bookable" widget="boolean_button"/>
+                <button name="action_view_appointments" type="object" string="View Appointments" class="btn btn-primary btn-sm"/>
+                <button name="action_view_calendar" type="object" string="View Calendar" class="btn btn-secondary btn-sm"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Staff Dashboard Action -->
+    <record id="staff_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Staff Dashboard</field>
+        <field name="res_model">custom.staff.member</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('staff_dashboard_kanban_view')}),
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('staff_dashboard_list_view')})]"/>
+        <field name="domain">[('active', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Staff Dashboard
+            </p>
+            <p>
+                View staff members and their appointment statistics. Click on "Total Bookings" to see all appointments or "View Calendar" to see their schedule.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Staff Dashboard -->
+    <menuitem id="staff_dashboard_menu" 
+              name="Staff Dashboard" 
+              parent="appointments_main_menu"
+              action="staff_dashboard_action"
+              sequence="10"/>
+</odoo>

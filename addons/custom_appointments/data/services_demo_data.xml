@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo Service Categories -->
+    <record id="category_consultation" model="service.category">
+        <field name="name">Consultation</field>
+        <field name="code">CONSULT</field>
+        <field name="description">Professional consultation services</field>
+        <field name="color">1</field>
+        <field name="sequence">10</field>
+    </record>
+    
+    <record id="category_training" model="service.category">
+        <field name="name">Training</field>
+        <field name="code">TRAIN</field>
+        <field name="description">Training and educational services</field>
+        <field name="color">3</field>
+        <field name="sequence">20</field>
+    </record>
+    
+    <record id="category_support" model="service.category">
+        <field name="name">Support</field>
+        <field name="code">SUPPORT</field>
+        <field name="description">Technical and customer support services</field>
+        <field name="color">5</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <!-- Demo Services -->
+    <record id="service_business_consultation" model="company.service">
+        <field name="name">Business Strategy Consultation</field>
+        <field name="code">BSC001</field>
+        <field name="category_id" ref="category_consultation"/>
+        <field name="price">200.0</field>
+        <field name="duration">2.0</field>
+        <field name="description">Comprehensive business strategy consultation to help grow your business</field>
+        <field name="customer_notes">Please bring your business plan and financial statements</field>
+        <field name="is_bookable">True</field>
+        <field name="published">True</field>
+        <field name="requires_approval">True</field>
+        <field name="max_advance_booking">14</field>
+    </record>
+    
+    <record id="service_technical_consultation" model="company.service">
+        <field name="name">Technical Consultation</field>
+        <field name="code">TC001</field>
+        <field name="category_id" ref="category_consultation"/>
+        <field name="price">150.0</field>
+        <field name="duration">1.5</field>
+        <field name="description">Technical consultation for IT and software solutions</field>
+        <field name="customer_notes">Please prepare a list of your technical requirements</field>
+        <field name="is_bookable">True</field>
+        <field name="published">True</field>
+        <field name="max_advance_booking">21</field>
+    </record>
+    
+    <record id="service_team_training" model="company.service">
+        <field name="name">Team Training Workshop</field>
+        <field name="code">TTW001</field>
+        <field name="category_id" ref="category_training"/>
+        <field name="price">500.0</field>
+        <field name="duration">4.0</field>
+        <field name="description">Comprehensive team training workshop for up to 10 participants</field>
+        <field name="customer_notes">Workshop includes materials and refreshments</field>
+        <field name="is_bookable">True</field>
+        <field name="published">True</field>
+        <field name="requires_approval">True</field>
+        <field name="preparation_time">0.5</field>
+        <field name="cleanup_time">0.5</field>
+        <field name="max_advance_booking">30</field>
+    </record>
+    
+    <record id="service_phone_support" model="company.service">
+        <field name="name">Phone Support Session</field>
+        <field name="code">PS001</field>
+        <field name="category_id" ref="category_support"/>
+        <field name="price">75.0</field>
+        <field name="duration">0.5</field>
+        <field name="description">30-minute phone support session</field>
+        <field name="customer_notes">Please have your account information ready</field>
+        <field name="is_bookable">True</field>
+        <field name="published">True</field>
+        <field name="max_advance_booking">7</field>
+    </record>
+    
+    <record id="service_onsite_support" model="company.service">
+        <field name="name">On-site Technical Support</field>
+        <field name="code">OTS001</field>
+        <field name="category_id" ref="category_support"/>
+        <field name="price">300.0</field>
+        <field name="duration">3.0</field>
+        <field name="description">On-site technical support and troubleshooting</field>
+        <field name="customer_notes">Travel costs may apply for locations outside the city</field>
+        <field name="is_bookable">True</field>
+        <field name="published">True</field>
+        <field name="requires_approval">True</field>
+        <field name="preparation_time">0.25</field>
+        <field name="max_advance_booking">14</field>
+    </record>
+</odoo>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Appointment List View -->
+    <record id="appointment_list_view" model="ir.ui.view">
+        <field name="name">custom.appointment.list</field>
+        <field name="model">custom.appointment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="service_id"/>
+                <field name="staff_member_id"/>
+                <field name="branch_id"/>
+                <field name="start"/>
+                <field name="duration"/>
+                <field name="price"/>
+                <field name="payment_status"/>
+                <field name="state" decoration-success="state=='completed'" decoration-info="state=='confirmed'" decoration-warning="state=='in_progress'" decoration-danger="state=='cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Appointment Form View -->
+    <record id="appointment_form_view" model="ir.ui.view">
+        <field name="name">custom.appointment.form</field>
+        <field name="model">custom.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_start" string="Start" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Appointment Details">
+                            <field name="name"/>
+                            <field name="service_id"/>
+                            <field name="staff_member_id"/>
+                            <field name="branch_id"/>
+                        </group>
+                        <group string="Customer Information">
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="customer_phone"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Timing">
+                            <field name="start"/>
+                            <field name="stop"/>
+                            <field name="duration"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="price"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group string="Payment Information">
+                            <field name="payment_status"/>
+                            <field name="payment_transaction_id" readonly="1"/>
+                            <field name="payment_method" readonly="1"/>
+                            <field name="paid_amount" readonly="1"/>
+                            <field name="payment_date" readonly="1"/>
+                            <field name="payment_reference" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Internal Notes">
+                            <field name="internal_notes"/>
+                        </page>
+                        <page string="Calendar Details">
+                            <group>
+                                <field name="user_id"/>
+                                <field name="calendar_event_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Appointment Calendar View -->
+    <record id="appointment_calendar_view" model="ir.ui.view">
+        <field name="name">custom.appointment.calendar</field>
+        <field name="model">custom.appointment</field>
+        <field name="arch" type="xml">
+            <calendar string="Appointments" date_start="start" date_stop="stop" color="staff_member_id" mode="month">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="service_id"/>
+                <field name="staff_member_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Appointment Kanban View -->
+    <record id="appointment_kanban_view" model="ir.ui.view">
+        <field name="name">custom.appointment.kanban</field>
+        <field name="model">custom.appointment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="service_id"/>
+                <field name="staff_member_id"/>
+                <field name="start"/>
+                <field name="price"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_title">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="customer_name"/> - <field name="service_id"/>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="staff_member_id"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="start" widget="date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Appointment Action -->
+    <record id="appointment_action" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">custom.appointment</field>
+        <field name="view_mode">list,form,calendar,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Schedule your first appointment!
+            </p>
+            <p>
+                Create and manage customer appointments with your staff members.
+            </p>
+        </field>
+    </record>
+
+    <!-- My Appointments Action (for logged-in users) -->
+    <record id="my_appointments_action" model="ir.actions.act_window">
+        <field name="name">My Appointments</field>
+        <field name="res_model">custom.appointment</field>
+        <field name="view_mode">list,form,calendar,kanban</field>
+        <field name="domain">[
+            '|',
+            ('user_id', '=', uid),
+            ('staff_member_id.employee_id.user_id', '=', uid)
+        ]</field>
+        <field name="context">{'search_default_my_appointments': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No appointments found!
+            </p>
+            <p>
+                Your appointments will appear here. This includes appointments where you are the responsible user or linked staff member.
+            </p>
+        </field>
+    </record>
+
+    <!-- Customer Appointments Action (for customers who booked via website) -->
+    <record id="customer_appointments_action" model="ir.actions.act_window">
+        <field name="name">Customer Appointments</field>
+        <field name="res_model">custom.appointment</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="domain">[('customer_email', '=', user.email)]</field>
+        <field name="context">{'search_default_customer_appointments': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No appointments found!
+            </p>
+            <p>
+                Your booked appointments will appear here based on your email address.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items - Integrated into Appointments -->
+    <menuitem id="appointments_menu" 
+              name="All Appointments" 
+              parent="appointments_main_menu"
+              action="appointment_action"
+              sequence="50"/>
+              
+    <menuitem id="my_appointments_menu" 
+              name="My Appointments" 
+              parent="appointments_main_menu"
+              action="my_appointments_action"
+              sequence="60"/>
+              
+    <menuitem id="customer_appointments_menu" 
+              name="My Bookings" 
+              parent="appointments_main_menu"
+              action="customer_appointments_action"
+              sequence="70"
+              groups="base.group_portal,base.group_public"/>
+</odoo>
