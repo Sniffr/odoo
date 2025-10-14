@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="payment_mpesa_redirect_form" name="M-Pesa Payment Form">
+        <div class="mpesa_payment_container">
+            <h4>M-Pesa Payment</h4>
+            <p>You will receive an STK Push notification on your M-Pesa registered phone.</p>
+            
+            <div class="form-group">
+                <label for="mpesa_phone">M-Pesa Phone Number *</label>
+                <input type="tel" 
+                       id="mpesa_phone" 
+                       class="form-control" 
+                       placeholder="254XXXXXXXXX or 07XXXXXXXX"
+                       required="required"/>
+                <small class="form-text text-muted">
+                    Enter your M-Pesa registered phone number (e.g., 254712345678 or 0712345678)
+                </small>
+            </div>
+            
+            <div id="mpesa_message" class="alert" style="display:none;"></div>
+            
+            <button type="button" 
+                    id="mpesa_pay_button" 
+                    class="btn btn-primary btn-lg btn-block"
+                    data-tx-id="{tx_id}"
+                    data-amount="{amount}">
+                Pay KES <t t-esc="amount"/>
+            </button>
+            
+            <div id="mpesa_loading" style="display:none;" class="text-center mt-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Processing...</span>
+                </div>
+                <p class="mt-2">Please check your phone and enter your M-Pesa PIN...</p>
+            </div>
+        </div>
+    </template>
+</odoo>

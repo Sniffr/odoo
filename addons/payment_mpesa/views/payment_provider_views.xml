@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payment_provider_form_mpesa" model="ir.ui.view">
+        <field name="name">payment.provider.form.mpesa</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='provider_credentials']" position="after">
+                <group name="mpesa_credentials" invisible="code != 'mpesa'">
+                    <group>
+                        <field name="mpesa_consumer_key" password="True"/>
+                        <field name="mpesa_consumer_secret" password="True"/>
+                    </group>
+                    <group>
+                        <field name="mpesa_shortcode"/>
+                        <field name="mpesa_passkey" password="True"/>
+                        <field name="mpesa_callback_url" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
