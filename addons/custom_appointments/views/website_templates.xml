@@ -1358,8 +1358,8 @@
                                         
                                         <div class="payment-methods mb-4">
                                             <t t-foreach="acquirers" t-as="acquirer">
-                                                <div class="payment-option mb-3">
-                                                    <div class="card border" style="cursor: pointer;" t-attf-onclick="selectPaymentMethod(this, '#{acquirer.id}')">
+                                                <div class="payment-option mb-3" t-att-data-code="acquirer.code">
+                                                    <div class="card border" style="cursor: pointer;" t-attf-onclick="selectPaymentMethod(this, '#{acquirer.id}', '#{acquirer.code}')">
                                                         <div class="card-body p-3">
                                                             <div class="d-flex align-items-center">
                                                                 <input type="radio" name="acquirer_id" t-att-value="acquirer.id" class="mr-3"/>
@@ -1371,6 +1371,22 @@
                                                                     <i class="fa fa-credit-card fa-2x text-primary"></i>
                                                                 </div>
                                                             </div>
+                                                            
+                                                            <!-- M-Pesa Phone Number Field -->
+                                                            <t t-if="acquirer.code == 'mpesa'">
+                                                                <div class="mt-3 mpesa-phone-field" style="display: none;">
+                                                                    <label for="mpesa_phone" class="font-weight-bold">M-Pesa Phone Number *</label>
+                                                                    <input type="tel" 
+                                                                           id="mpesa_phone" 
+                                                                           name="mpesa_phone"
+                                                                           class="form-control" 
+                                                                           placeholder="254724512285 or 0724512285"
+                                                                           pattern="(254|0)[17]\d{8}"/>
+                                                                    <small class="form-text text-muted">
+                                                                        Enter your M-Pesa registered phone number
+                                                                    </small>
+                                                                </div>
+                                                            </t>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1390,13 +1406,29 @@
                 </div>
                 
                 <script>
-                    function selectPaymentMethod(element, acquirerId) {
+                    function selectPaymentMethod(element, acquirerId, acquirerCode) {
+                        // Remove border from all cards
                         document.querySelectorAll('.payment-option .card').forEach(card => {
                             card.classList.remove('border-primary');
                         });
                         
+                        // Hide all M-Pesa phone fields
+                        document.querySelectorAll('.mpesa-phone-field').forEach(field => {
+                            field.style.display = 'none';
+                        });
+                        
+                        // Select this payment method
                         element.classList.add('border-primary');
                         element.querySelector('input[type="radio"]').checked = true;
+                        
+                        // Show M-Pesa phone field if this is M-Pesa
+                        if (acquirerCode === 'mpesa') {
+                            const phoneField = element.querySelector('.mpesa-phone-field');
+                            if (phoneField) {
+                                phoneField.style.display = 'block';
+                            }
+                        }
+                        
                         document.getElementById('pay-btn').disabled = false;
                     }
                 </script>
