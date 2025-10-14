@@ -631,32 +631,23 @@
                     <div class="service-selection">
                         <div class="row">
                             <div class="col-12">
-                                <!-- Search Bar -->
-                                <div class="search-section mb-4">
-                                    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <!-- Search Bar with Enhanced Styling -->
+                                <div class="service-search-section mb-4">
+                                    <h3 class="text-center font-weight-bold mb-2 mt-4" style="color: #333;">
+                                       Select Your Service
+                                    </h3>
+                                    <div class="card shadow-sm border-0" style="border-radius: 15px; background: linear-gradient(to right, #fff5f8, #fff);">
                                         <div class="card-body p-4">
-                                            <div class="row align-items-center">
+                                            <div class="row justify-content-center">
                                                 <div class="col-md-8">
                                                     <div class="search-input-group">
                                                         <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text bg-white border-right-0" style="border-radius: 20px 0 0 20px;">
-                                                                    <i class="fa fa-search text-muted"></i>
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control border-left-0" placeholder="Search for services..." 
-                                                                   style="border-radius: 0 20px 20px 0; padding: 12px;" id="service-search" onkeyup="searchServices(this.value)"/>
+
+                                                            <input type="text" class="form-control border-left-0" placeholder="Search for services by name or description..."
+                                                                   style="border-radius: 25px 25px 25px 25px; padding: 15px; border-color: #ff69b4; box-shadow: 0 3px 10px rgba(255,105,180,0.1);"
+                                                                   id="service-search" onkeyup="searchServices(this.value)"/>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4 text-right">
-                                                    <div class="filter-buttons">
-                                                        <button class="btn btn-outline-secondary mr-2" style="border-radius: 20px;">
-                                                            <i class="fa fa-filter mr-1"></i> Filter
-                                                        </button>
-                                                        <button class="btn btn-outline-secondary" style="border-radius: 20px;">
-                                                            <i class="fa fa-sort mr-1"></i> Sort
-                                                        </button>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -711,6 +702,8 @@
                                                                                             <img t-att-src="'/web/image/company.service/%s/image/200x200' % service.id"
                                                                                                 style="width: 100%; height: 100%; object-fit: cover;"
                                                                                                 alt="Service Image"/>
+                                                                                            <!-- Image overlay -->
+                                                                                            <div class="service-image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,105,180,0.3) 0%, rgba(255,105,180,0) 50%); border-radius: 16px 0 0 16px;"></div>
                                                                                         </div>
                                                                                     </t>
                                                                                     <t t-else="">
@@ -724,7 +717,9 @@
                                                                                 <!-- Service Content Section -->
                                                                                 <div class="col-md-8">
                                                                                     <div class="service-content p-4">
-                                                                                        <h5 class="font-weight-bold mb-2 service-title"><t t-esc="service.name"/></h5>
+                                                                                        <h5 class="font-weight-bold mb-2 service-title">
+                                                                                            <t t-esc="service.name"/>
+                                                                                        </h5>
 
                                                                                         <!-- Service Description -->
                                                                                         <t t-if="service.description">
@@ -734,7 +729,7 @@
                                                                                             </p>
                                                                                         </t>
 
-                                                                                        <!-- Service Details -->
+                                                                                        <!-- Service Details with Enhanced Icons -->
                                                                                         <div class="service-details d-flex flex-wrap mb-3">
                                                                                             <span class="badge mr-2 mb-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
                                                                                                 <i class="fa fa-clock-o mr-1"></i>
@@ -748,7 +743,7 @@
                                                                                             </t>
                                                                                         </div>
 
-                                                                                        <!-- Price and Selection -->
+                                                                                        <!-- Price and Selection with Enhanced Styling -->
                                                                                         <div class="d-flex justify-content-between align-items-center">
                                                                                             <div class="service-price">
                                                                                                 <span class="text-muted small mr-1">from</span>
@@ -757,9 +752,16 @@
                                                                                                 </span>
                                                                                             </div>
                                                                                             <div class="service-selection">
-                                                                                                <div class="custom-control custom-radio">
-                                                                                                    <input type="radio" name="selected_service" t-att-value="service.id" t-att-id="'service-' + str(service.id)" class="custom-control-input" />
-                                                                                                    <label class="custom-control-label" t-att-for="'service-' + str(service.id)">Select</label>
+                                                                                                <div class="selection-checkbox position-relative">
+                                                                                                    <input type="radio" name="selected_service" t-att-value="service.id"
+                                                                                                           t-att-id="'service-' + str(service.id)" class="custom-control-input position-absolute invisible"
+                                                                                                           style="opacity: 0; cursor: pointer;"/>
+                                                                                                    <label class="select-btn" t-att-for="'service-' + str(service.id)"
+                                                                                                           style="background: transparent; border: 2px solid #ff69b4; color: #ff69b4;
+                                                                                                                  border-radius: 20px; padding: 6px 16px; font-weight: 600;
+                                                                                                                  cursor: pointer; transition: all 0.3s ease;">
+                                                                                                        Select
+                                                                                                    </label>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
@@ -824,30 +826,64 @@
                             item.style.transform = '';
                             item.style.borderColor = 'transparent';
                             item.style.background = 'white';
+
+                            // Reset all select buttons
+                            const selectBtn = item.querySelector('.select-btn');
+                            if (selectBtn) {
+                                selectBtn.style.background = 'transparent';
+                                selectBtn.style.color = '#ff69b4';
+                                selectBtn.style.borderColor = '#ff69b4';
+                                selectBtn.textContent = 'Select';
+                            }
+
                             const radio = item.querySelector('input[type="radio"]');
                             if (radio) radio.checked = false;
                         });
-                        
+
                         // Apply selection styling
                         element.style.boxShadow = '0 8px 20px rgba(255,105,180,0.2)';
                         element.style.transform = 'translateY(-3px)';
                         element.style.borderLeft = '4px solid #ff69b4';
                         element.style.background = '#fff5f8';
                         
+                        // Apply selection styling to the button
+                        const selectBtn = element.querySelector('.select-btn');
+                        if (selectBtn) {
+                            selectBtn.style.background = '#ff69b4';
+                            selectBtn.style.color = 'white';
+                            selectBtn.style.borderColor = '#ff69b4';
+                            selectBtn.textContent = 'Selected';
+                        }
+
                         const radio = element.querySelector('input[type="radio"]');
                         if (radio) radio.checked = true;
-                        
+
                         selectedService = serviceId;
                     }
 
                     function searchServices(query) {
-                        const serviceItems = document.querySelectorAll('.service-item');
-                        serviceItems.forEach(item => {
-                            const serviceName = item.querySelector('h6').textContent.toLowerCase();
-                            const serviceDesc = item.querySelector('p').textContent.toLowerCase();
-                            const searchText = (serviceName + ' ' + serviceDesc).toLowerCase();
+                        if (!query) {
+                            // If search is empty, show all services
+                            document.querySelectorAll('.service-item').forEach(item => {
+                                item.parentElement.style.display = 'block';
+                            });
+                            return;
+                        }
 
-                            if (searchText.includes(query.toLowerCase())) {
+                        query = query.toLowerCase();
+
+                        document.querySelectorAll('.service-item').forEach(item => {
+                            // Safely get title text
+                            const titleElement = item.querySelector('.service-title');
+                            const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+
+                            // Safely get description text
+                            const descElement = item.querySelector('.service-description');
+                            const desc = descElement ? descElement.textContent.toLowerCase() : '';
+
+                            const searchText = title + ' ' + desc;
+
+                            if (searchText.includes(query)) {
                                 item.parentElement.style.display = 'block';
                             } else {
                                 item.parentElement.style.display = 'none';
