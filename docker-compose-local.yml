@@ -31,6 +31,19 @@ services:
       - ./logs:/var/log/odoo
     restart: unless-stopped
     command: ["odoo", "--config=/etc/odoo/odoo.conf"]
+    develop:
+      watch:
+        - action: rebuild
+          path: ./addons
+          target: /mnt/extra-addons
+        - action: rebuild
+          path: ./config
+          target: /etc/odoo
+        - action: sync
+          path: ./logs
+          target: /var/log/odoo
+        - action: rebuild
+          path: requirements.txt
 
   nginx:
     image: nginx:alpine
