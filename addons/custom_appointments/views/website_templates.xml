@@ -934,21 +934,23 @@
                     <div class="row">
                         <!-- Left Panel - Time Slots -->
                         <div class="col-lg-8 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                    <h4 class="font-weight-bold mb-0">Available Time Slots</h4>
+                                    <p class="mb-0 opacity-75">Choose your preferred appointment time</p>
+                                </div>
                                 <div class="card-body p-4">
-                                    <h5 class="font-weight-bold mb-4">Available Time Slots</h5>
-                                    
                                     <!-- Date Navigation -->
                                     <div class="date-navigation mb-4">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <button class="btn btn-outline-secondary" onclick="previousWeek()">
-                                                        <i class="fa fa-chevron-left"></i> Previous
+                                                    <button class="btn" style="background: #fff5f8; color: #ff69b4; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; box-shadow: 0 3px 8px rgba(255,105,180,0.15); transition: all 0.3s ease;" onclick="previousWeek()">
+                                                        <i class="fa fa-chevron-left mr-1"></i> Previous Week
                                                     </button>
-                                                    <h6 class="mb-0" id="current-week">This Week</h6>
-                                                    <button class="btn btn-outline-secondary" onclick="nextWeek()">
-                                                        Next <i class="fa fa-chevron-right"></i>
+                                                    <h6 class="mb-0 font-weight-bold" id="current-week" style="color: #555;">October 14 - October 20, 2025</h6>
+                                                    <button class="btn" style="background: #fff5f8; color: #ff69b4; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; box-shadow: 0 3px 8px rgba(255,105,180,0.15); transition: all 0.3s ease;" onclick="nextWeek()">
+                                                        Next Week <i class="fa fa-chevron-right ml-1"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -959,15 +961,19 @@
                                     <div class="time-slots-container">
                                         <t t-foreach="available_slots.items()" t-as="date_slots">
                                             <div class="date-section mb-4">
-                                                <h6 class="font-weight-bold mb-3 text-primary">
-                                                    <t t-esc="date_slots[0]"/>
-                                                </h6>
+                                                <div class="date-header p-2 pl-3 mb-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; border-left: 4px solid #ff69b4;">
+                                                    <h6 class="font-weight-bold mb-0" style="color: #333;">
+                                                        <i class="fa fa-calendar-day mr-2" style="color: #ff69b4;"></i>
+                                                        <t t-esc="date_slots[0]"/>
+                                                    </h6>
+                                                </div>
                                                 <div class="row">
                                                     <t t-foreach="date_slots[1]" t-as="slot">
-                                                        <div class="col-md-3 col-sm-4 col-6 mb-2">
-                                                            <button class="btn btn-outline-primary time-slot-btn w-100" 
-                                                                    style="border-radius: 20px; padding: 10px; transition: all 0.3s ease;"
+                                                        <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                                            <button class="btn btn-outline-primary time-slot-btn w-100"
+                                                                    style="border-radius: 20px; padding: 10px; transition: all 0.3s ease; border-color: #ff69b4; color: #ff69b4; font-weight: 500;"
                                                                     t-att-onclick="'selectTimeSlot(this, \'' + slot['datetime'] + '\')'">
+                                                                <i class="fa fa-clock-o mr-1"></i>
                                                                 <t t-esc="slot['time']"/>
                                                             </button>
                                                         </div>
@@ -982,90 +988,148 @@
 
                         <!-- Right Panel - Booking Summary & Customer Info -->
                         <div class="col-lg-4 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card shadow-sm border-0" style="border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08);">
+                                <!-- Summary Card Header with Gradient -->
+                                <div class="card-header p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                    <h5 class="font-weight-bold text-white mb-0">
+                                        <i class="fa fa-clipboard-list mr-2"></i>
+                                        Booking Summary
+                                    </h5>
+                                </div>
                                 <div class="card-body p-4">
                                     <!-- Booking Summary -->
-                                    <h5 class="font-weight-bold mb-4">Booking Summary</h5>
-                                    
                                     <div class="booking-summary mb-4">
-                                        <div class="summary-item mb-3 p-3" style="background: #f8f9fa; border-radius: 10px;">
-                                            <div class="d-flex align-items-center">
+                                        <!-- Service Details with Enhanced Styling -->
+                                        <div class="summary-item mb-4 service-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
+                                            <!-- Decorative Element -->
+                                            <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+
+                                            <div class="d-flex align-items-center p-3 position-relative" style="z-index: 2;">
                                                 <t t-if="service.image">
-                                                    <img t-att-src="'/web/image/company.service/%s/image/60x60' % service.id" 
-                                                         class="rounded mr-3" 
-                                                         style="width: 50px; height: 50px; object-fit: cover;" 
-                                                         alt="Service Image"/>
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 15px; background: #f8f9fa;">
+                                                        <img t-att-src="'/web/image/company.service/%s/image/60x60' % service.id"
+                                                             style="width: 100%; height: 100%; object-fit: cover;"
+                                                             alt="Service Image"/>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: #fff5f8; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                                                        <i class="fa fa-spa" style="color: #ff69b4; font-size: 24px;"></i>
+                                                    </div>
                                                 </t>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
-                                                    <p class="text-muted small mb-0">
-                                                        <i class="fa fa-clock mr-1"></i><t t-esc="service.duration"/>h
-                                                        | <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                    </p>
+                                                    <span class="d-block small text-muted mb-1" style="text-transform: uppercase; letter-spacing: 0.5px;">Service</span>
+                                                    <h6 class="font-weight-bold mb-1" style="color: #333;"><t t-esc="service.name"/></h6>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="badge mr-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 5px 10px; font-weight: normal;">
+                                                            <i class="fa fa-clock-o mr-1"></i><t t-esc="service.duration"/>h
+                                                        </span>
+                                                        <span class="price font-weight-bold" style="color: #ff69b4;">
+                                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="summary-item mb-3 p-3" style="background: #f8f9fa; border-radius: 10px;">
-                                            <div class="d-flex align-items-center">
+                                        <!-- Staff Member Details with Enhanced Styling -->
+                                        <div class="summary-item mb-4 staff-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
+                                            <!-- Decorative Element -->
+                                            <div style="position: absolute; top: -15px; right: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+
+                                            <div class="d-flex align-items-center p-3 position-relative" style="z-index: 2;">
                                                 <t t-if="staff.image">
-                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/60x60' % staff.id" 
-                                                         class="rounded-circle mr-3" 
-                                                         style="width: 50px; height: 50px; object-fit: cover;" 
-                                                         alt="Staff Photo"/>
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 15px;">
+                                                        <img t-att-src="'/web/image/custom.staff.member/%s/image/60x60' % staff.id"
+                                                             style="width: 100%; height: 100%; object-fit: cover;"
+                                                             alt="Staff Photo"/>
+                                                    </div>
                                                 </t>
                                                 <t t-else="">
-                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mr-3" 
-                                                         style="width: 50px; height: 50px;">
-                                                        <i class="fa fa-user text-white"></i>
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 3px solid white;">
+                                                        <i class="fa fa-user" style="color: #ff69b4; font-size: 24px;"></i>
                                                     </div>
                                                 </t>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
+                                                    <span class="d-block small text-muted mb-1" style="text-transform: uppercase; letter-spacing: 0.5px;">Specialist</span>
+                                                    <h6 class="font-weight-bold mb-1" style="color: #333;"><t t-esc="staff.name"/></h6>
                                                     <t t-if="staff.specialization">
-                                                        <p class="text-muted small mb-0"><t t-esc="staff.specialization"/></p>
+                                                        <p class="text-muted small mb-0" style="font-style: italic;"><t t-esc="staff.specialization"/></p>
                                                     </t>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="selected-time-display mb-3 p-3" style="background: #fff5f8; border: 2px solid #ff69b4; border-radius: 10px; display: none;">
-                                            <h6 class="font-weight-bold text-primary mb-1">Selected Time</h6>
-                                            <p class="mb-0" id="selected-time-text">Please select a time slot</p>
+                                        <!-- Selected Time with Enhanced Styling -->
+                                        <div class="selected-time-display mb-4" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 2px dashed #ff69b4; padding: 15px; display: none; position: relative; overflow: hidden;">
+                                            <!-- Decorative Elements -->
+                                            <div style="position: absolute; top: -15px; left: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+                                            <div style="position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+
+                                            <div class="position-relative" style="z-index: 2;">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div style="width: 40px; height: 40px; min-width: 40px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                                        <i class="fa fa-calendar-check-o" style="color: #ff69b4; font-size: 18px;"></i>
+                                                    </div>
+                                                    <span class="d-block text-muted" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 12px;">Selected Date &amp; Time</span>
+                                                </div>
+                                                <div class="selected-time-content pl-4 ml-2 mt-2 border-left" style="border-color: #ff69b4 !important;">
+                                                    <h6 class="font-weight-bold" style="color: #ff69b4;" id="selected-time-text">Please select a time slot</h6>
+                                                    <p class="small text-muted mb-0">Duration: <t t-esc="service.duration"/> hour<t t-if="service.duration != 1">s</t></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Total Price Summary -->
+                                        <div class="summary-total p-3 mb-4" style="background: #fff5f8; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03);">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>
+                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">
+                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <!-- Customer Information Form -->
-                                    <form id="booking-form" method="post" t-attf-action="/appointments/book?service_id={{service.id}}&amp;staff_id={{staff.id}}">
-                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                        <input type="hidden" name="service_id" t-att-value="service.id"/>
-                                        <input type="hidden" name="staff_id" t-att-value="staff.id"/>
-                                        <input type="hidden" name="appointment_datetime" id="appointment_datetime"/>
+                                    <div class="customer-form-section">
+                                        <h5 class="font-weight-bold mb-3" style="color: #333; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+                                            <i class="fa fa-user-circle mr-2" style="color: #ff69b4;"></i>
+                                            Your Information
+                                        </h5>
+                                        <form id="booking-form" method="post" t-attf-action="/appointments/book?service_id={{service.id}}&amp;staff_id={{staff.id}}">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="service_id" t-att-value="service.id"/>
+                                            <input type="hidden" name="staff_id" t-att-value="staff.id"/>
+                                            <input type="hidden" name="appointment_datetime" id="appointment_datetime"/>
 
-                                        <div class="form-group mb-3">
-                                            <label class="font-weight-bold">Full Name *</label>
-                                            <input type="text" class="form-control" name="customer_name" required="" style="border-radius: 10px; padding: 12px;"/>
-                                        </div>
+                                            <div class="form-group mb-3">
+                                                <label class="font-weight-bold small" style="color: #555;">Full Name *</label>
+                                                <input type="text" class="form-control" name="customer_name" required="" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                            </div>
 
-                                        <div class="form-group mb-3">
-                                            <label class="font-weight-bold">Email Address *</label>
-                                            <input type="email" class="form-control" name="customer_email" required="" style="border-radius: 10px; padding: 12px;"/>
-                                        </div>
+                                            <div class="form-group mb-3">
+                                                <label class="font-weight-bold small" style="color: #555;">Email Address *</label>
+                                                <input type="email" class="form-control" name="customer_email" required="" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                            </div>
 
-                                        <div class="form-group mb-3">
-                                            <label class="font-weight-bold">Phone Number</label>
-                                            <input type="tel" class="form-control" name="customer_phone" style="border-radius: 10px; padding: 12px;"/>
-                                        </div>
+                                            <div class="form-group mb-3">
+                                                <label class="font-weight-bold small" style="color: #555;">Phone Number</label>
+                                                <input type="tel" class="form-control" name="customer_phone" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                            </div>
 
-                                        <div class="form-group mb-4">
-                                            <label class="font-weight-bold">Special Requests</label>
-                                            <textarea class="form-control" name="notes" rows="3" placeholder="Any special requests or notes..." style="border-radius: 10px; padding: 12px;"></textarea>
-                                        </div>
+                                            <div class="form-group mb-4">
+                                                <label class="font-weight-bold small" style="color: #555;">Special Requests</label>
+                                                <textarea class="form-control" name="notes" rows="3" placeholder="Any special requests or notes..." style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"></textarea>
+                                            </div>
 
-                                        <button type="submit" class="btn btn-lg w-100" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;" disabled="" id="book-btn">
-                                            Book Appointment
-                                        </button>
-                                    </form>
+                                            <button type="submit" class="btn btn-lg w-100" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,105,180,0.3);" disabled="" id="book-btn">
+                                                <i class="fa fa-calendar-check-o mr-2"></i>
+                                                Book Appointment
+                                            </button>
+                                            <p class="text-center text-muted small mt-2">You'll receive a confirmation email with your booking details</p>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1075,6 +1139,8 @@
                 <!-- Time Slot Selection JavaScript -->
                 <script>
                     let selectedDateTime = null;
+                    // Track current week for navigation
+                    let currentWeekStart = new Date('2025-10-14'); // Default to Oct 14, 2025
 
                     function selectTimeSlot(button, datetime) {
                         // Remove previous selection
@@ -1095,8 +1161,8 @@
                         const timeText = document.getElementById('selected-time-text');
                         
                         const date = new Date(datetime);
-                        const formattedTime = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        
+                        const dayName = getDayName(date);
+                        const formattedTime = dayName + ', ' + date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         timeText.textContent = formattedTime;
                         timeDisplay.style.display = 'block';
                         
@@ -1104,15 +1170,90 @@
                         document.getElementById('book-btn').disabled = false;
                     }
 
+
+                    function getDayName(date) {
+                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        return days[date.getDay()];
+                    }
+
+                    // Format date to include day name
+                    function formatDate(date) {
+                        const dayName = getDayName(date);
+                        return `${dayName}, ${date.toLocaleDateString()}`;
+                    }
+
+                    // Format the week range with day names
+                    function formatWeekRange(startDate) {
+                        const endDate = new Date(startDate);
+                        endDate.setDate(endDate.getDate() + 6); // End date is 6 days after start date
+
+                        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+                    }
+
                     function previousWeek() {
-                        // Implementation for previous week navigation
-                        console.log('Previous week clicked');
+                        // Move to previous week
+                        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+                        updateWeekDisplay();
+                        loadWeekTimeSlots();
                     }
 
                     function nextWeek() {
-                        // Implementation for next week navigation
-                        console.log('Next week clicked');
+                        // Move to next week
+                        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+                        updateWeekDisplay();
+                        loadWeekTimeSlots();
                     }
+
+                    function updateWeekDisplay() {
+                        // Update the week display text
+                        const weekDisplay = document.getElementById('current-week');
+                        weekDisplay.textContent = formatWeekRange(currentWeekStart);
+                    }
+
+                    function loadWeekTimeSlots() {
+                        // Placeholder for AJAX call to load slots for the selected week
+                        console.log('Loading slots for week starting:', currentWeekStart.toISOString());
+
+                        // Here you would typically make an AJAX call to fetch time slots
+                        // For now, just show a loading message
+                        const timeSlotsContainer = document.querySelector('.time-slots-container');
+                        if (timeSlotsContainer) {
+                            timeSlotsContainer.innerHTML = '<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Loading time slots...</p></div>';
+
+                            // Simulate AJAX delay
+                            setTimeout(() => {
+                                // In a real implementation, this would be replaced with actual data from the server
+                                timeSlotsContainer.innerHTML = '<div class="text-center p-5"><p>Please refresh the page to see available time slots for the selected week.</p></div>';
+                            }, 1000);
+                        }
+                    }
+
+                    // Initialize days of the week on page load
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Initialize the current week display
+                        updateWeekDisplay();
+
+                        // Add day of week to each date section
+                        document.querySelectorAll('.date-section').forEach(section => {
+                            const dateHeader = section.querySelector('.date-header h6');
+                            if (dateHeader) {
+                                const dateText = dateHeader.textContent.trim();
+                                // Extract the date part (format is typically MM/DD/YYYY or similar)
+                                const dateString = dateText.replace(/.*calendar-day mr-2.*/, '').trim();
+
+                                try {
+                                    const date = new Date(dateString);
+                                    if (!isNaN(date.getTime())) {
+                                        // Update the header text to include the day name
+                                        const dayName = getDayName(date);
+                                        dateHeader.innerHTML = `<i class="fa fa-calendar-day mr-2" style="color: #ff69b4;"></i>${dayName}, ${date.toLocaleDateString()}`;
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing date:', e);
+                                }
+                            }
+                        });
+                    });
                 </script>
             </div>
         </t>
