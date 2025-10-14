@@ -256,12 +256,15 @@ class AppointmentController(http.Controller):
                 if not payment_method:
                     payment_method = request.env['payment.method'].sudo().search([], limit=1)
             
+            import time
+            unique_ref = f"APPT-{appointment.id}-{int(time.time())}"
+            
             transaction_vals = {
                 'amount': appointment.price,
                 'currency_id': appointment.currency_id.id,
                 'provider_id': acquirer.id,
                 'payment_method_id': payment_method.id if payment_method else False,
-                'reference': f"APPT-{appointment.id}-{appointment.customer_name}",
+                'reference': unique_ref,
                 'partner_id': request.env.user.partner_id.id if request.env.user != request.env.ref('base.public_user') else False,
                 'partner_name': appointment.customer_name,
                 'partner_email': appointment.customer_email,
