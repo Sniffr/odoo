@@ -1367,10 +1367,9 @@
                                                                     <h6 class="mb-1"><t t-esc="acquirer.name"/></h6>
                                                                     <small class="text-muted">Secure payment processing</small>
                                                                 </div>
-                                                                <t t-if="acquirer.image">
-                                                                    <img t-attf-src="/web/image/payment.provider/#{acquirer.id}/image/50x30" 
-                                                                         class="ml-3" alt="Payment Method"/>
-                                                                </t>
+                                                                <div class="ml-3">
+                                                                    <i class="fa fa-credit-card fa-2x text-primary"></i>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

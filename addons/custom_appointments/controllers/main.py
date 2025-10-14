@@ -205,9 +205,7 @@ class AppointmentController(http.Controller):
             return request.redirect(f'/appointments/payment?appointment_id={appointment.id}')
             
         except Exception as e:
-            return request.render('custom_appointments.booking_error_page', {
-                'error': str(e),
-            })
+            return request.redirect(f'/appointments?error={str(e)}')
     
     @http.route('/appointments/payment', type='http', auth='public', website=True, methods=['GET', 'POST'])
     def payment_page(self, **kwargs):
@@ -248,11 +246,25 @@ class AppointmentController(http.Controller):
             if not appointment.exists() or not acquirer.exists():
                 raise ValueError("Invalid appointment or payment method")
             
+            payment_methods = acquirer.payment_method_ids
+            if payment_methods:
+                payment_method = payment_methods[0]
+            else:
+                payment_method = request.env['payment.method'].sudo().search([
+                    ('code', '=', acquirer.code)
+                ], limit=1)
+                if not payment_method:
+                    payment_method = request.env['payment.method'].sudo().search([], limit=1)
+            
+            import time
+            unique_ref = f"APPT-{appointment.id}-{int(time.time())}"
+            
             transaction_vals = {
                 'amount': appointment.price,
                 'currency_id': appointment.currency_id.id,
                 'provider_id': acquirer.id,
-                'reference': f"APPT-{appointment.id}-{appointment.customer_name}",
+                'payment_method_id': payment_method.id if payment_method else False,
+                'reference': unique_ref,
                 'partner_id': request.env.user.partner_id.id if request.env.user != request.env.ref('base.public_user') else False,
                 'partner_name': appointment.customer_name,
                 'partner_email': appointment.customer_email,
@@ -261,12 +273,26 @@ class AppointmentController(http.Controller):
             transaction = request.env['payment.transaction'].sudo().create(transaction_vals)
             appointment.payment_transaction_id = transaction.id
             
-            return request.redirect(transaction.get_portal_url())
+            if acquirer.code == 'demo':
+                transaction.write({'state': 'done'})
+                appointment.write({
+                    'payment_status': 'paid',
+                    'paid_amount': transaction.amount,
+                    'payment_date': fields.Datetime.now(),
+                    'payment_method': acquirer.name,
+                    'payment_reference': transaction.reference,
+                    'state': 'confirmed'
+                })
+                return request.redirect(f'/appointments/payment/success?appointment_id={appointment.id}')
+            
+            return request.render('payment.payment_form', {
+                'transaction': transaction,
+                'amount': transaction.amount,
+                'currency': transaction.currency_id,
+            })
             
         except Exception as e:
-            return request.render('custom_appointments.payment_error_page', {
-                'error': str(e),
-            })
+            return request.redirect(f'/appointments/payment?appointment_id={appointment_id}&error={str(e)}')
     
     @http.route('/appointments/payment/webhook', type='http', auth='public', methods=['POST'], csrf=False)
     def payment_webhook(self, **kwargs):
