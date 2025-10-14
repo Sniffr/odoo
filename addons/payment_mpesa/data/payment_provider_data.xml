@@ -5,7 +5,6 @@
         <field name="code">mpesa</field>
         <field name="state">disabled</field>
         <field name="is_published">False</field>
-        <field name="image_128" type="base64" file="payment_mpesa/static/img/mpesa_icon.png"/>
         <field name="redirect_form_view_id" ref="payment_mpesa.payment_mpesa_redirect_form"/>
     </record>
 </odoo>
