@@ -27,8 +27,8 @@ class AppointmentController(http.Controller):
     def service_selection(self, **kwargs):
         """Professional service selection page"""
         staff_id = kwargs.get('staff_id')
-        salon_id = kwargs.get('salon_id')
-        
+        branch_id = kwargs.get('branch_id')
+
         services = request.env['company.service'].sudo().get_available_services()
         service_categories = request.env['service.category'].sudo().search([
             ('active', '=', True)
@@ -40,15 +40,23 @@ class AppointmentController(http.Controller):
         ], order='name')
         
         selected_branch = None
-        if salon_id:
-            selected_branch = request.env['res.company'].sudo().browse(int(salon_id))
-        
+        selected_staff = None
+
+        # Get selected branch details if branch_id provided
+        if branch_id:
+            selected_branch = request.env['res.company'].sudo().browse(int(branch_id))
+
+        # Get selected staff details if staff_id provided
+        if staff_id and staff_id != 'any':
+            selected_staff = request.env['custom.staff.member'].sudo().browse(int(staff_id))
+
         return request.render('custom_appointments.service_selection_page', {
             'services': services,
             'service_categories': service_categories,
             'staff_members': staff_members,
             'selected_staff_id': staff_id,
             'selected_branch': selected_branch,
+            'selected_staff': selected_staff,
         })
 
     @http.route('/appointments/book', type='http', auth='public', website=True, methods=['GET', 'POST'])

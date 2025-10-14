@@ -232,7 +232,7 @@
                                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.5); animation: pulse 2s infinite 0.3s;"></div>
 
                                             <!-- Marker Pin -->
-                                            <div style="position: relative; width: 30px; height: 30px;">
+                                            <div style="position: relative; width: 30px, height: 30px;">
                                                 <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ff69b4; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
                                             </div>
                                         </div>
@@ -349,7 +349,7 @@
                                 }
                                 .map-container:hover button {
                                     transform: translateY(-3px);
-                                    box-shadow: 0 4px 12px rgba(255,105,180,0.4);
+                                    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
                                 }
                             </style>
                         </div>
@@ -488,9 +488,13 @@
     <template id="service_selection_page" name="Select Services">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
-                <!-- Hero Section -->
-                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
-                    <div class="container">
+                <!-- Hero Section with Background Image and Fade -->
+                <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
+                    <!-- Background image with fade effect -->
+                    <div class="hero-bg-image-services"></div>
+                    <div class="hero-bg-overlay"></div>
+
+                    <div class="container position-relative" style="z-index: 2;">
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h1 class="display-5 font-weight-bold text-dark mb-2">
@@ -500,71 +504,124 @@
                                 <p class="text-muted mb-0">Select your preferred services</p>
                             </div>
                             <div class="col-md-4 text-right">
-                                <button class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600;">
-                                    Change branch
-                                </button>
+                                <a href="/appointments" class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600; box-shadow: 0 4px 10px rgba(255,105,180,0.3);">
+                                    <i class="fa fa-arrow-left mr-2"></i> Change branch
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="container">
-                    <!-- Team Member Selection (Top) -->
-                    <div class="team-selection mb-5">
-                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                            <div class="card-body p-4">
-                                <h5 class="font-weight-bold mb-4">Select Team Member</h5>
+                <style>
+                    .hero-section {
+                        min-height: 200px;
+                        display: flex;
+                        align-items: center;
+                    }
+                    .hero-bg-image-services {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-image: url('/custom_appointments/static/src/img/lashes.JPG');
+                        background-size: cover;
+                        background-position: center right;
+                        z-index: 1;
+                    }
+                    .hero-bg-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(90deg,
+                            rgba(255,255,255,1) 0%,
+                            rgba(255,255,255,0.9) 30%,
+                            rgba(255,255,255,0.6) 60%,
+                            rgba(255,255,255,0) 100%);
+                        z-index: 1;
+                    }
+                </style>
 
+                <div class="container">
+                    <!-- Selection Summary Panel (New) -->
+                    <div class="selection-summary mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                            <div class="card-header bg-light p-3" style="background: #f8f9fa; border: none;">
+                                <h5 class="font-weight-bold mb-0">
+                                    <i class="fa fa-check-circle mr-2" style="color: #ff69b4;"></i>
+                                    Your Selection Summary
+                                </h5>
+                            </div>
+                            <div class="card-body p-3">
                                 <div class="row">
-                                    <!-- Any Team Member Option -->
-                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                                        <div class="team-card text-center" style="cursor: pointer;" onclick="selectTeamMember(this, 'any')">
-                                            <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
-                                                <div class="card-body p-3">
-                                                    <div class="team-avatar mb-2">
-                                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
-                                                             style="width: 60px; height: 60px;">
-                                                            <i class="fa fa-users text-white"></i>
-                                                        </div>
+                                    <!-- Branch Information -->
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <div class="selection-item p-3" style="background: #fff5f8; border-radius: 10px;">
+                                            <div class="d-flex align-items-center">
+                                                <div style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+                                                    <i class="fa fa-building" style="color: #ff69b4; font-size: 18px;"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="small text-muted">Selected Branch</div>
+                                                    <div class="font-weight-bold" id="selected-branch-name">
+                                                        <t t-if="selected_branch">
+                                                            <t t-esc="selected_branch.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Main Branch
+                                                        </t>
                                                     </div>
-                                                    <h6 class="font-weight-bold mb-1">Any</h6>
-                                                    <p class="text-muted small mb-0">Available</p>
+                                                    <div class="small text-muted" id="selected-branch-address">
+                                                        <t t-if="selected_branch and selected_branch.street">
+                                                            <t t-esc="selected_branch.street"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            123 Main Street
+                                                        </t>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Individual Team Members -->
-                                    <t t-if="staff_members">
-                                        <t t-foreach="staff_members" t-as="staff">
-                                            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                                                <div class="team-card text-center" style="cursor: pointer;" t-att-onclick="'selectTeamMember(this, ' + str(staff.id) + ')'">
-                                                    <div class="card border-0" style="border-radius: 12px; transition: all 0.3s ease;">
-                                                        <div class="card-body p-3">
-                                                            <div class="team-avatar mb-2">
-                                                                <t t-if="staff.image">
-                                                                    <img t-att-src="'/web/image/custom.staff.member/%s/image/80x80' % staff.id"
-                                                                         class="rounded-circle mx-auto d-block"
-                                                                         style="width: 60px; height: 60px; object-fit: cover;"
-                                                                         alt="Staff Photo"/>
-                                                                </t>
-                                                                <t t-else="">
-                                                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto"
-                                                                         style="width: 60px; height: 60px;">
-                                                                        <i class="fa fa-user text-white"></i>
-                                                                    </div>
-                                                                </t>
-                                                            </div>
-                                                            <h6 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h6>
-                                                            <t t-if="staff.specialization">
-                                                                <p class="text-muted small mb-0"><t t-esc="staff.specialization"/></p>
-                                                            </t>
-                                                        </div>
+
+                                    <!-- Staff Member Information -->
+                                    <div class="col-md-6">
+                                        <div class="selection-item p-3" style="background: #fff5f8; border-radius: 10px;">
+                                            <div class="d-flex align-items-center">
+                                                <div id="staff-avatar" style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); overflow: hidden;">
+                                                    <t t-if="selected_staff and selected_staff.image">
+                                                        <img t-att-src="'/web/image/custom.staff.member/%s/image/90x90' % selected_staff.id"
+                                                             style="width: 100%; height: 100%; object-fit: cover;"
+                                                             alt="Staff Photo"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <i class="fa fa-user" style="color: #ff69b4; font-size: 18px;"></i>
+                                                    </t>
+                                                </div>
+                                                <div>
+                                                    <div class="small text-muted">Selected Specialist</div>
+                                                    <div class="font-weight-bold" id="selected-staff-name">
+                                                        <t t-if="selected_staff">
+                                                            <t t-esc="selected_staff.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Any Available Staff
+                                                        </t>
+                                                    </div>
+                                                    <div class="small text-muted" id="selected-staff-specialization">
+                                                        <t t-if="selected_staff and selected_staff.specialization">
+                                                            <t t-esc="selected_staff.specialization"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Professional Specialist
+                                                        </t>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </t>
-                                    </t>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -588,7 +645,7 @@
                                                                 </span>
                                                             </div>
                                                             <input type="text" class="form-control border-left-0" placeholder="Search for services..." 
-                                                                   style="border-radius: 0 20px 20px 0; padding: 12px;" id="service-search"/>
+                                                                   style="border-radius: 0 20px 20px 0; padding: 12px;" id="service-search" onkeyup="searchServices(this.value)"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -612,59 +669,109 @@
                                     <t t-foreach="service_categories" t-as="category">
                                         <t t-if="services.filtered(lambda s: s.category_id.id == category.id)">
                                             <div class="category-section mb-5">
-                                                <!-- Category Header -->
-                                                <div class="category-header mb-3 p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid #ff69b4;">
-                                                    <h5 class="font-weight-bold mb-0">
-                                                        <t t-if="category.image">
-                                                            <img t-att-src="'/web/image/service.category/%s/image/30x30' % category.id" class="rounded mr-2" style="width: 24px; height: 24px; object-fit: cover;" alt="Category Image"/>
-                                                        </t>
-                                                        <t t-esc="category.name"/>
-                                                    </h5>
+                                                <!-- Category Header with Enhanced Styling -->
+                                                <div class="category-header mb-4 p-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
+                                                    <div class="category-decoration" style="position: absolute; top: -15px; right: -15px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,105,180,0.03); z-index: 1;"></div>
+                                                    <div class="d-flex align-items-center position-relative" style="z-index: 2;">
+                                                        <div style="width: 40px; height: 40px; min-width: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+                                                            <t t-if="category.image">
+                                                                <img t-att-src="'/web/image/service.category/%s/image/40x40' % category.id"
+                                                                    class="rounded-circle"
+                                                                    style="width: 30px; height: 30px; object-fit: cover;"
+                                                                    alt="Category"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <i class="fa fa-list" style="color: #ff69b4; font-size: 16px;"></i>
+                                                            </t>
+                                                        </div>
+                                                        <div>
+                                                            <h4 class="font-weight-bold mb-0"><t t-esc="category.name"/></h4>
+                                                            <t t-if="services.filtered(lambda s: s.category_id.id == category.id)">
+                                                                <p class="text-muted mb-0 small">
+                                                                    <t t-esc="len(services.filtered(lambda s: s.category_id.id == category.id))"/> services available
+                                                                </p>
+                                                            </t>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 
-                                                <!-- Services in Category -->
+                                                <!-- Services in Category with Grid Layout -->
                                                 <div class="services-list">
-                                                    <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
-                                                        <div class="service-item mb-3 p-4" style="background: white; border: 1px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-8">
-                                                                    <div class="d-flex align-items-start">
-                                                                        <t t-if="service.image">
-                                                                            <img t-att-src="'/web/image/company.service/%s/image/80x80' % service.id" 
-                                                                                 class="rounded mr-3" 
-                                                                                 style="width: 60px; height: 60px; object-fit: cover;" 
-                                                                                 alt="Service Image"/>
-                                                                        </t>
-                                                                        <div class="flex-grow-1">
-                                                                            <h6 class="font-weight-bold mb-1"><t t-esc="service.name"/></h6>
-                                                                            <t t-if="service.description">
-                                                                                <p class="text-muted mb-2 small">
-                                                                                    <t t-esc="service.description[:100]"/>
-                                                                                    <t t-if="len(service.description) > 100">...</t>
-                                                                                </p>
-                                                                            </t>
-                                                                            <div class="service-meta">
-                                                                                <span class="badge badge-light mr-2">
-                                                                                    <i class="fa fa-clock-o mr-1"></i>
-                                                                                    <t t-esc="service.duration"/>h
-                                                                                </span>
+                                                    <div class="row">
+                                                        <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
+                                                            <div class="col-lg-6 col-md-12 mb-4">
+                                                                <div class="service-item h-100" style="background: white; border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 15px rgba(0,0,0,0.05);" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
+                                                                    <div class="card border-0 h-100">
+                                                                        <div class="card-body p-0">
+                                                                            <div class="row no-gutters h-100">
+                                                                                <!-- Service Image Section -->
+                                                                                <div class="col-md-4 service-image-container position-relative d-none d-md-block">
+                                                                                    <t t-if="service.image">
+                                                                                        <div class="service-image h-100" style="border-radius: 16px 0 0 16px; overflow: hidden;">
+                                                                                            <img t-att-src="'/web/image/company.service/%s/image/200x200' % service.id"
+                                                                                                style="width: 100%; height: 100%; object-fit: cover;"
+                                                                                                alt="Service Image"/>
+                                                                                        </div>
+                                                                                    </t>
+                                                                                    <t t-else="">
+                                                                                        <div class="service-image-placeholder h-100 d-flex align-items-center justify-content-center"
+                                                                                            style="background: linear-gradient(135deg, #fff5f8, #ffd6e7); border-radius: 16px 0 0 16px;">
+                                                                                            <i class="fa fa-spa text-pink" style="font-size: 32px; color: #ff69b4; opacity: 0.5;"></i>
+                                                                                        </div>
+                                                                                    </t>
+                                                                                </div>
+
+                                                                                <!-- Service Content Section -->
+                                                                                <div class="col-md-8">
+                                                                                    <div class="service-content p-4">
+                                                                                        <h5 class="font-weight-bold mb-2 service-title"><t t-esc="service.name"/></h5>
+
+                                                                                        <!-- Service Description -->
+                                                                                        <t t-if="service.description">
+                                                                                            <p class="text-muted mb-3 service-description small">
+                                                                                                <t t-esc="service.description[:100]"/>
+                                                                                                <t t-if="len(service.description) > 100">...</t>
+                                                                                            </p>
+                                                                                        </t>
+
+                                                                                        <!-- Service Details -->
+                                                                                        <div class="service-details d-flex flex-wrap mb-3">
+                                                                                            <span class="badge mr-2 mb-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                                <i class="fa fa-clock-o mr-1"></i>
+                                                                                                <t t-esc="service.duration"/> hour<t t-if="service.duration != 1">s</t>
+                                                                                            </span>
+                                                                                            <t t-if="service.category_id">
+                                                                                                <span class="badge mr-2 mb-2" style="background: #f0f0f0; color: #666; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                                    <i class="fa fa-tag mr-1"></i>
+                                                                                                    <t t-esc="service.category_id.name"/>
+                                                                                                </span>
+                                                                                            </t>
+                                                                                        </div>
+
+                                                                                        <!-- Price and Selection -->
+                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                            <div class="service-price">
+                                                                                                <span class="text-muted small mr-1">from</span>
+                                                                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="service-selection">
+                                                                                                <div class="custom-control custom-radio">
+                                                                                                    <input type="radio" name="selected_service" t-att-value="service.id" t-att-id="'service-' + str(service.id)" class="custom-control-input" />
+                                                                                                    <label class="custom-control-label" t-att-for="'service-' + str(service.id)">Select</label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-4 text-right">
-                                                                    <div class="service-price">
-                                                                        <h5 class="font-weight-bold text-primary mb-1">
-                                                                            from <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                                        </h5>
-                                                                        <div class="service-selection">
-                                                                            <input type="radio" name="selected_service" t-att-value="service.id" style="transform: scale(1.5);"/>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </t>
+                                                        </t>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </t>
@@ -681,17 +788,17 @@
                         </div>
                     </div>
 
-                    <!-- Continue Button -->
-                    <div class="text-center mt-4 mb-5">
-                        <button class="btn btn-lg" 
-                                style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600;"
+                    <!-- Continue Button with Enhanced Styling -->
+                    <div class="text-center mt-5 mb-5">
+                        <button class="btn btn-lg"
+                                style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(255,105,180,0.3); transition: all 0.3s ease;"
                                 onclick="proceedToBooking()">
-                            Continue to Booking
+                            <i class="fa fa-calendar-check-o mr-2"></i> Continue to Booking
                         </button>
                     </div>
                 </div>
 
-                <!-- JavaScript for Service Selection -->
+                <!-- JavaScript for Service Selection with Enhanced Interaction -->
                 <script>
                     let selectedTeamMember = 'any';
                     let defaultStaffId = '1';
@@ -711,14 +818,20 @@
                     }
 
                     function selectService(element, serviceId) {
+                        // Reset all services
                         document.querySelectorAll('.service-item').forEach(item => {
-                            item.style.borderColor = '#e9ecef';
+                            item.style.boxShadow = '0 3px 15px rgba(0,0,0,0.05)';
+                            item.style.transform = '';
+                            item.style.borderColor = 'transparent';
                             item.style.background = 'white';
                             const radio = item.querySelector('input[type="radio"]');
                             if (radio) radio.checked = false;
                         });
                         
-                        element.style.borderColor = '#ff69b4';
+                        // Apply selection styling
+                        element.style.boxShadow = '0 8px 20px rgba(255,105,180,0.2)';
+                        element.style.transform = 'translateY(-3px)';
+                        element.style.borderLeft = '4px solid #ff69b4';
                         element.style.background = '#fff5f8';
                         
                         const radio = element.querySelector('input[type="radio"]');
@@ -733,7 +846,7 @@
                             const serviceName = item.querySelector('h6').textContent.toLowerCase();
                             const serviceDesc = item.querySelector('p').textContent.toLowerCase();
                             const searchText = (serviceName + ' ' + serviceDesc).toLowerCase();
-                            
+
                             if (searchText.includes(query.toLowerCase())) {
                                 item.parentElement.style.display = 'block';
                             } else {
