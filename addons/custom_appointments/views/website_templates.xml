@@ -1467,6 +1467,74 @@
     </template>
 
     <!-- Payment Success Page -->
+    <template id="payment_pending_page" name="Payment Pending">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <div class="spinner-border text-primary mb-4" role="status" style="width: 4rem; height: 4rem;">
+                                        <span class="sr-only">Processing...</span>
+                                    </div>
+                                    <h2 class="font-weight-bold mb-3">Payment Processing</h2>
+                                    <p class="text-muted mb-4">Please check your phone and enter your M-Pesa PIN to complete the payment.</p>
+                                    
+                                    <div class="alert alert-info" role="alert">
+                                        <i class="fa fa-info-circle mr-2"></i>
+                                        You should receive an M-Pesa prompt on your phone. Once you complete the payment, this page will automatically update.
+                                    </div>
+                                    
+                                    <div class="appointment-details p-4 mt-4" style="background: #f8f9fa; border-radius: 10px;">
+                                        <h5 class="font-weight-bold mb-3">Appointment Details</h5>
+                                        <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
+                                        <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p class="mb-0"><strong>Amount:</strong> <t t-esc="appointment.currency_id.symbol"/><t t-esc="appointment.price"/></p>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <button id="checkStatusBtn" class="btn btn-primary" onclick="checkPaymentStatus()">Check Payment Status</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script type="text/javascript">
+                    let checkInterval;
+                    let appointmentId = <t t-esc="appointment.id"/>;
+                    
+                    function checkPaymentStatus() {
+                        fetch('/appointment/payment/status?appointment_id=' + appointmentId)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.payment_status === 'paid') {
+                                    clearInterval(checkInterval);
+                                    window.location.href = '/appointments/payment/success?appointment_id=' + appointmentId;
+                                } else if (data.payment_status === 'failed') {
+                                    clearInterval(checkInterval);
+                                    alert('Payment failed. Please try again.');
+                                    window.location.href = '/appointments/payment?appointment_id=' + appointmentId;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error checking payment status:', error);
+                            });
+                    }
+                    
+                    checkInterval = setInterval(checkPaymentStatus, 5000);
+                    
+                    setTimeout(function() {
+                        clearInterval(checkInterval);
+                    }, 120000);
+                </script>
+            </div>
+        </t>
+    </template>
+    
     <template id="payment_success_page" name="Payment Success">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
