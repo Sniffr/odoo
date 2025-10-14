@@ -69,8 +69,10 @@ class MpesaController(http.Controller):
                         _logger.warning('M-Pesa: Failed to send confirmation notifications: %s', str(e))
                 else:  # Failed
                     appointment.write({
-                        'payment_status': 'failed'
+                        'payment_status': 'failed',
+                        'description': f'{appointment.description or ""}\n\nPayment failed: {result_desc}'.strip()
                     })
+                    _logger.info('M-Pesa: Payment failed for appointment %s. Reason: %s', appointment.id, result_desc)
             
             return {'ResultCode': 0, 'ResultDesc': 'Success'}
             
