@@ -1508,27 +1508,56 @@
                     let appointmentId = <t t-esc="appointment.id"/>;
                     
                     function checkPaymentStatus() {
-                        fetch('/appointment/payment/status?appointment_id=' + appointmentId)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.payment_status === 'paid') {
-                                    clearInterval(checkInterval);
-                                    window.location.href = '/appointments/payment/success?appointment_id=' + appointmentId;
-                                } else if (data.payment_status === 'failed') {
-                                    clearInterval(checkInterval);
-                                    alert('Payment failed. Please try again.');
-                                    window.location.href = '/appointments/payment?appointment_id=' + appointmentId;
-                                }
+                        console.log('Checking payment status for appointment:', appointmentId);
+                        
+                        fetch('/appointment/payment/status', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    appointment_id: appointmentId
+                                },
+                                id: new Date().getTime()
                             })
-                            .catch(error => {
-                                console.error('Error checking payment status:', error);
-                            });
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log('Payment status response:', result);
+                            const data = result.result || {};
+                            
+                            if (data.error) {
+                                console.error('Error:', data.error);
+                                return;
+                            }
+                            
+                            if (data.payment_status === 'paid') {
+                                clearInterval(checkInterval);
+                                alert('Payment successful! Redirecting...');
+                                window.location.href = '/appointments/payment/success?appointment_id=' + appointmentId;
+                            } else if (data.payment_status === 'failed') {
+                                clearInterval(checkInterval);
+                                alert('Payment failed. Please try again.');
+                                window.location.href = '/appointments/payment?appointment_id=' + appointmentId;
+                            } else {
+                                console.log('Payment still pending. Status:', data.payment_status);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error checking payment status:', error);
+                        });
                     }
                     
+                    // Start auto-checking every 5 seconds
                     checkInterval = setInterval(checkPaymentStatus, 5000);
                     
+                    // Stop checking after 2 minutes
                     setTimeout(function() {
                         clearInterval(checkInterval);
+                        alert('Payment check timeout. Please refresh the page to check status.');
                     }, 120000);
                 </script>
             </div>
