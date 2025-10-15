@@ -132,10 +132,15 @@ class PaymentTransaction(models.Model):
             
             _logger.info('PesaPal order submitted: %s', data)
             
+            redirect_url = data.get('redirect_url', '')
+            if redirect_url and redirect_url.startswith('/'):
+                pesapal_base = api_url.replace('/pesapalv3', '').replace('/v3', '')
+                redirect_url = f'{pesapal_base}{redirect_url}'
+            
             return {
                 'order_tracking_id': data.get('order_tracking_id'),
                 'merchant_reference': data.get('merchant_reference'),
-                'redirect_url': data.get('redirect_url')
+                'redirect_url': redirect_url
             }
         except Exception as e:
             _logger.error('PesaPal order submission failed: %s', str(e))
