@@ -1,5 +1,6 @@
 from odoo import http, fields
 from odoo.http import request
+from werkzeug.utils import redirect
 from datetime import datetime, timedelta
 import json
 
@@ -297,6 +298,26 @@ class AppointmentController(http.Controller):
                     return request.redirect(f'/appointments/payment/pending?appointment_id={appointment.id}')
                 else:
                     return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Failed to initiate M-Pesa payment. Please try again.')
+            
+            elif acquirer.code == 'pesapal':
+                processing_values = {
+                    'reference': transaction.reference,
+                    'amount': transaction.amount,
+                    'currency': transaction.currency_id,
+                    'partner_id': transaction.partner_id.id if transaction.partner_id else False,
+                }
+                
+                try:
+                    rendering_values = transaction._get_specific_rendering_values(processing_values)
+                    redirect_url = rendering_values.get('redirect_url')
+                    
+                    if redirect_url:
+                        return redirect(redirect_url, code=303)
+                    else:
+                        return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Failed to initialize PesaPal payment. Please try again.')
+                except Exception as e:
+                    error_msg = str(e).replace('\n', ' ').replace('\r', ' ')
+                    return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=PesaPal Error: {error_msg}')
             
             return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Payment method not yet fully configured')
             

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payment form template -->
+    <template id="pesapal_form" name="PesaPal Payment Form">
+        <div class="text-center">
+            <p>You will be redirected to PesaPal to complete your payment securely.</p>
+            <p>Please wait while we prepare your payment...</p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </template>
+</odoo>
