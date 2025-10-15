@@ -14,7 +14,11 @@
                     <group>
                         <field name="mpesa_shortcode"/>
                         <field name="mpesa_passkey" password="True"/>
-                        <field name="mpesa_callback_url" readonly="1"/>
+                        <label for="mpesa_callback_url"/>
+                        <div class="o_row">
+                            <field name="mpesa_callback_url" placeholder="e.g., https://yourdomain.com/payment/mpesa/callback"/>
+                            <button name="action_reset_callback_url" type="object" string="Reset to Default" class="btn-link" icon="fa-refresh" invisible="code != 'mpesa'"/>
+                        </div>
                     </group>
                 </group>
             </xpath>

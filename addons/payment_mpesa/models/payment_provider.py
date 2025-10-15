@@ -33,16 +33,18 @@ class PaymentProvider(models.Model):
     mpesa_callback_url = fields.Char(
         string='Callback URL',
         compute='_compute_mpesa_callback_url',
-        help='URL where M-Pesa will send payment notifications',
+        store=True,
+        readonly=False,
+        help='URL where M-Pesa will send payment notifications. Auto-computed but can be overridden manually.',
     )
 
     @api.depends('code')
     def _compute_mpesa_callback_url(self):
         for provider in self:
-            if provider.code == 'mpesa':
+            if provider.code == 'mpesa' and not provider.mpesa_callback_url:
                 base_url = provider.get_base_url()
                 provider.mpesa_callback_url = f'{base_url}/payment/mpesa/callback'
-            else:
+            elif provider.code != 'mpesa':
                 provider.mpesa_callback_url = False
 
     def _mpesa_get_api_url(self):
@@ -51,3 +53,11 @@ class PaymentProvider(models.Model):
             return 'https://api.safaricom.co.ke'
         else:
             return 'https://sandbox.safaricom.co.ke'
+    
+    def action_reset_callback_url(self):
+        """Reset callback URL to the default computed value"""
+        self.ensure_one()
+        if self.code == 'mpesa':
+            base_url = self.get_base_url()
+            self.mpesa_callback_url = f'{base_url}/payment/mpesa/callback'
+        return True
