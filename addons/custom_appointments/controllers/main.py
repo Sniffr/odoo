@@ -1,5 +1,6 @@
 from odoo import http, fields
 from odoo.http import request
+from werkzeug.utils import redirect
 from datetime import datetime, timedelta
 import json
 
@@ -311,7 +312,7 @@ class AppointmentController(http.Controller):
                     redirect_url = rendering_values.get('redirect_url')
                     
                     if redirect_url:
-                        return request.redirect(redirect_url)
+                        return redirect(redirect_url, code=303)
                     else:
                         return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Failed to initialize PesaPal payment. Please try again.')
                 except Exception as e:
