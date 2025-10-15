@@ -153,3 +153,9 @@ class StaffMember(models.Model):
                     'type': 'success',
                 }
             }
+    
+    def unlink(self):
+        """Override unlink to delete related appointments first (cascade delete)"""
+        appointments = self.env['custom.appointment'].search([('staff_member_id', 'in', self.ids)])
+        appointments.unlink()
+        return super(StaffMember, self).unlink()

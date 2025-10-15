@@ -1358,8 +1358,8 @@
                                         
                                         <div class="payment-methods mb-4">
                                             <t t-foreach="acquirers" t-as="acquirer">
-                                                <div class="payment-option mb-3">
-                                                    <div class="card border" style="cursor: pointer;" t-attf-onclick="selectPaymentMethod(this, '#{acquirer.id}')">
+                                                <div class="payment-option mb-3" t-att-data-code="acquirer.code">
+                                                    <div class="card border" style="cursor: pointer;" t-attf-onclick="selectPaymentMethod(this, '#{acquirer.id}', '#{acquirer.code}')">
                                                         <div class="card-body p-3">
                                                             <div class="d-flex align-items-center">
                                                                 <input type="radio" name="acquirer_id" t-att-value="acquirer.id" class="mr-3"/>
@@ -1371,6 +1371,22 @@
                                                                     <i class="fa fa-credit-card fa-2x text-primary"></i>
                                                                 </div>
                                                             </div>
+                                                            
+                                                            <!-- M-Pesa Phone Number Field -->
+                                                            <t t-if="acquirer.code == 'mpesa'">
+                                                                <div class="mt-3 mpesa-phone-field" style="display: none;">
+                                                                    <label for="mpesa_phone" class="font-weight-bold">M-Pesa Phone Number *</label>
+                                                                    <input type="tel" 
+                                                                           id="mpesa_phone" 
+                                                                           name="mpesa_phone"
+                                                                           class="form-control" 
+                                                                           placeholder="254724512285 or 0724512285"
+                                                                           pattern="(254|0)[17]\d{8}"/>
+                                                                    <small class="form-text text-muted">
+                                                                        Enter your M-Pesa registered phone number
+                                                                    </small>
+                                                                </div>
+                                                            </t>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1390,13 +1406,29 @@
                 </div>
                 
                 <script>
-                    function selectPaymentMethod(element, acquirerId) {
+                    function selectPaymentMethod(element, acquirerId, acquirerCode) {
+                        // Remove border from all cards
                         document.querySelectorAll('.payment-option .card').forEach(card => {
                             card.classList.remove('border-primary');
                         });
                         
+                        // Hide all M-Pesa phone fields
+                        document.querySelectorAll('.mpesa-phone-field').forEach(field => {
+                            field.style.display = 'none';
+                        });
+                        
+                        // Select this payment method
                         element.classList.add('border-primary');
                         element.querySelector('input[type="radio"]').checked = true;
+                        
+                        // Show M-Pesa phone field if this is M-Pesa
+                        if (acquirerCode === 'mpesa') {
+                            const phoneField = element.querySelector('.mpesa-phone-field');
+                            if (phoneField) {
+                                phoneField.style.display = 'block';
+                            }
+                        }
+                        
                         document.getElementById('pay-btn').disabled = false;
                     }
                 </script>
@@ -1435,6 +1467,103 @@
     </template>
 
     <!-- Payment Success Page -->
+    <template id="payment_pending_page" name="Payment Pending">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <div class="spinner-border text-primary mb-4" role="status" style="width: 4rem; height: 4rem;">
+                                        <span class="sr-only">Processing...</span>
+                                    </div>
+                                    <h2 class="font-weight-bold mb-3">Payment Processing</h2>
+                                    <p class="text-muted mb-4">Please check your phone and enter your M-Pesa PIN to complete the payment.</p>
+                                    
+                                    <div class="alert alert-info" role="alert">
+                                        <i class="fa fa-info-circle mr-2"></i>
+                                        You should receive an M-Pesa prompt on your phone. Once you complete the payment, this page will automatically update.
+                                    </div>
+                                    
+                                    <div class="appointment-details p-4 mt-4" style="background: #f8f9fa; border-radius: 10px;">
+                                        <h5 class="font-weight-bold mb-3">Appointment Details</h5>
+                                        <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
+                                        <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p class="mb-0"><strong>Amount:</strong> <t t-esc="appointment.currency_id.symbol"/><t t-esc="appointment.price"/></p>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <button id="checkStatusBtn" class="btn btn-primary" onclick="checkPaymentStatus()">Check Payment Status</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script type="text/javascript">
+                    let checkInterval;
+                    let appointmentId = <t t-esc="appointment.id"/>;
+                    
+                    function checkPaymentStatus() {
+                        console.log('Checking payment status for appointment:', appointmentId);
+                        
+                        fetch('/appointment/payment/status', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    appointment_id: appointmentId
+                                },
+                                id: new Date().getTime()
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log('Payment status response:', result);
+                            const data = result.result || {};
+                            
+                            if (data.error) {
+                                console.error('Error:', data.error);
+                                return;
+                            }
+                            
+                            if (data.payment_status === 'paid') {
+                                clearInterval(checkInterval);
+                                alert('Payment successful! Redirecting...');
+                                window.location.href = '/appointments/payment/success?appointment_id=' + appointmentId;
+                            } else if (data.payment_status === 'failed') {
+                                clearInterval(checkInterval);
+                                alert('Payment failed. Please try again.');
+                                window.location.href = '/appointments/payment?appointment_id=' + appointmentId;
+                            } else {
+                                console.log('Payment still pending. Status:', data.payment_status);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error checking payment status:', error);
+                        });
+                    }
+                    
+                    // Start auto-checking every 5 seconds
+                    checkInterval = setInterval(checkPaymentStatus, 5000);
+                    
+                    // Stop checking after 2 minutes
+                    setTimeout(function() {
+                        clearInterval(checkInterval);
+                        alert('Payment check timeout. Please refresh the page to check status.');
+                    }, 120000);
+                </script>
+            </div>
+        </t>
+    </template>
+    
     <template id="payment_success_page" name="Payment Success">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">

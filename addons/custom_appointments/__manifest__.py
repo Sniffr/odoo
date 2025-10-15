@@ -29,6 +29,8 @@
         'views/website_templates.xml',
         'data/mail_templates.xml',
         'data/cron_jobs.xml',
+    ],
+    'demo': [
         'data/demo_data.xml',
         'data/services_demo_data.xml',
         'data/appointment_demo_data.xml',

@@ -14,9 +14,9 @@ class Appointment(models.Model):
     customer_email = fields.Char(string='Customer Email', required=True)
     customer_phone = fields.Char(string='Customer Phone')
     
-    service_id = fields.Many2one('company.service', string='Service', required=True)
-    staff_member_id = fields.Many2one('custom.staff.member', string='Staff Member', required=True)
-    branch_id = fields.Many2one('custom.branch', string='Branch')
+    service_id = fields.Many2one('company.service', string='Service', required=True, ondelete='cascade')
+    staff_member_id = fields.Many2one('custom.staff.member', string='Staff Member', required=True, ondelete='cascade')
+    branch_id = fields.Many2one('custom.branch', string='Branch', ondelete='set null')
     
     start = fields.Datetime(string='Start Time', required=True)
     stop = fields.Datetime(string='End Time', required=True)

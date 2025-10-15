@@ -246,15 +246,17 @@ class AppointmentController(http.Controller):
             if not appointment.exists() or not acquirer.exists():
                 raise ValueError("Invalid appointment or payment method")
             
-            payment_methods = acquirer.payment_method_ids
-            if payment_methods:
-                payment_method = payment_methods[0]
-            else:
+            payment_method = request.env['payment.method'].sudo().search([
+                ('code', '=', acquirer.code if acquirer.code != 'none' else 'card')
+            ], limit=1)
+            
+            if not payment_method:
                 payment_method = request.env['payment.method'].sudo().search([
-                    ('code', '=', acquirer.code)
+                    ('code', '=', 'card')
                 ], limit=1)
-                if not payment_method:
-                    payment_method = request.env['payment.method'].sudo().search([], limit=1)
+            
+            if not payment_method:
+                raise ValueError("No payment method available. Please contact support.")
             
             import time
             unique_ref = f"APPT-{appointment.id}-{int(time.time())}"
@@ -263,7 +265,7 @@ class AppointmentController(http.Controller):
                 'amount': appointment.price,
                 'currency_id': appointment.currency_id.id,
                 'provider_id': acquirer.id,
-                'payment_method_id': payment_method.id if payment_method else False,
+                'payment_method_id': payment_method.id,
                 'reference': unique_ref,
                 'partner_id': request.env.user.partner_id.id if request.env.user != request.env.ref('base.public_user') else False,
                 'partner_name': appointment.customer_name,
@@ -285,14 +287,22 @@ class AppointmentController(http.Controller):
                 })
                 return request.redirect(f'/appointments/payment/success?appointment_id={appointment.id}')
             
-            return request.render('payment.payment_form', {
-                'transaction': transaction,
-                'amount': transaction.amount,
-                'currency': transaction.currency_id,
-            })
+            elif acquirer.code == 'mpesa':
+                phone_number = data.get('mpesa_phone', '').strip()
+                if not phone_number:
+                    return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Phone number is required for M-Pesa payment')
+                
+                result = transaction._mpesa_initiate_stk_push(phone_number)
+                if result:
+                    return request.redirect(f'/appointments/payment/pending?appointment_id={appointment.id}')
+                else:
+                    return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Failed to initiate M-Pesa payment. Please try again.')
+            
+            return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Payment method not yet fully configured')
             
         except Exception as e:
-            return request.redirect(f'/appointments/payment?appointment_id={appointment_id}&error={str(e)}')
+            error_msg = str(e).replace('\n', ' ').replace('\r', ' ')
+            return request.redirect(f'/appointments/payment?appointment_id={appointment_id}&error={error_msg}')
     
     @http.route('/appointments/payment/webhook', type='http', auth='public', methods=['POST'], csrf=False)
     def payment_webhook(self, **kwargs):
@@ -330,6 +340,40 @@ class AppointmentController(http.Controller):
             
         except Exception as e:
             return request.make_response(f'Error: {str(e)}', status=500)
+    
+    @http.route('/appointment/payment/status', type='json', auth='public')
+    def check_payment_status(self, **kwargs):
+        """Check payment status for appointment"""
+        try:
+            appointment_id = kwargs.get('appointment_id')
+            if not appointment_id:
+                return {'error': 'Missing appointment ID'}
+            
+            appointment = request.env['custom.appointment'].sudo().browse(int(appointment_id))
+            if not appointment.exists():
+                return {'error': 'Appointment not found'}
+            
+            return {
+                'payment_status': appointment.payment_status,
+                'state': appointment.state,
+            }
+        except Exception as e:
+            return {'error': str(e)}
+    
+    @http.route('/appointments/payment/pending', type='http', auth='public', website=True)
+    def payment_pending(self, **kwargs):
+        """Payment pending page for M-Pesa"""
+        appointment_id = kwargs.get('appointment_id')
+        if not appointment_id:
+            return request.redirect('/appointments')
+        
+        appointment = request.env['custom.appointment'].sudo().browse(int(appointment_id))
+        if not appointment.exists():
+            return request.redirect('/appointments')
+        
+        return request.render('custom_appointments.payment_pending_page', {
+            'appointment': appointment,
+        })
     
     @http.route('/appointments/payment/success', type='http', auth='public', website=True)
     def payment_success(self, **kwargs):

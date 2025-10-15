@@ -49,6 +49,31 @@ class MpesaController(http.Controller):
             
             transaction._process_notification_data(notification_data)
             
+            appointment = request.env['custom.appointment'].sudo().search([
+                ('payment_transaction_id', '=', transaction.id)
+            ], limit=1)
+            
+            if appointment:
+                if result_code == 0:  # Success
+                    appointment.write({
+                        'payment_status': 'paid',
+                        'paid_amount': transaction.amount,
+                        'payment_date': request.env['ir.fields'].Datetime.now(),
+                        'payment_method': transaction.provider_id.name,
+                        'payment_reference': transaction.reference,
+                        'state': 'confirmed'
+                    })
+                    try:
+                        appointment._send_confirmation_notifications()
+                    except Exception as e:
+                        _logger.warning('M-Pesa: Failed to send confirmation notifications: %s', str(e))
+                else:  # Failed
+                    appointment.write({
+                        'payment_status': 'failed',
+                        'description': f'{appointment.description or ""}\n\nPayment failed: {result_desc}'.strip()
+                    })
+                    _logger.info('M-Pesa: Payment failed for appointment %s. Reason: %s', appointment.id, result_desc)
+            
             return {'ResultCode': 0, 'ResultDesc': 'Success'}
             
         except Exception as e:
