@@ -225,10 +225,12 @@ class AppointmentController(http.Controller):
                 ('is_published', '=', True)
             ])
             
+            amount_to_charge = appointment.service_id.get_amount_to_charge()
+            
             return request.render('custom_appointments.payment_page', {
                 'appointment': appointment,
                 'acquirers': acquirers,
-                'amount': appointment.price,
+                'amount': amount_to_charge,
                 'currency': appointment.currency_id,
             })
         
@@ -262,8 +264,10 @@ class AppointmentController(http.Controller):
             import time
             unique_ref = f"APPT-{appointment.id}-{int(time.time())}"
             
+            amount_to_charge = appointment.service_id.get_amount_to_charge()
+            
             transaction_vals = {
-                'amount': appointment.price,
+                'amount': amount_to_charge,
                 'currency_id': appointment.currency_id.id,
                 'provider_id': acquirer.id,
                 'payment_method_id': payment_method.id,
