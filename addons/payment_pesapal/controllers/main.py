@@ -39,7 +39,7 @@ class PesaPalController(http.Controller):
             
             tx._handle_notification_data('pesapal', notification_data)
         
-        return request.redirect('/payment/status')
+        return "<h2>Payment received and processed successfully. You may now close this page.</h2>", 200, {'Content-Type': 'text/html'}
 
     @http.route('/payment/pesapal/ipn', type='http', auth='public', methods=['GET'], csrf=False)
     def pesapal_ipn(self, **data):
