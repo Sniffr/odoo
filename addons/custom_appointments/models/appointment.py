@@ -83,21 +83,22 @@ class Appointment(models.Model):
         if self.start and self.service_id and self.service_id.duration:
             self.stop = self.start + timedelta(hours=self.service_id.duration)
     
-    @api.model
-    def create(self, vals):
-        if not vals.get('name') and vals.get('service_id') and vals.get('customer_name'):
-            service = self.env['company.service'].browse(vals['service_id'])
-            vals['name'] = f"{service.name} - {vals['customer_name']}"
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('name') and vals.get('service_id') and vals.get('customer_name'):
+                service = self.env['company.service'].browse(vals['service_id'])
+                vals['name'] = f"{service.name} - {vals['customer_name']}"
+            
+            if vals.get('staff_member_id'):
+                staff = self.env['custom.staff.member'].browse(vals['staff_member_id'])
+                if staff.employee_id and staff.employee_id.user_id:
+                    vals['user_id'] = staff.employee_id.user_id.id
         
-        if vals.get('staff_member_id'):
-            staff = self.env['custom.staff.member'].browse(vals['staff_member_id'])
-            if staff.employee_id and staff.employee_id.user_id:
-                vals['user_id'] = staff.employee_id.user_id.id
-        
-        appointment = super(Appointment, self).create(vals)
-        appointment._create_calendar_event()
-        appointment._send_staff_notification()
-        return appointment
+        appointments = super(Appointment, self).create(vals_list)
+        appointments._create_calendar_event()
+        appointments._send_staff_notification()
+        return appointments
     
     def _create_calendar_event(self):
         """Create a corresponding calendar event for this appointment"""
