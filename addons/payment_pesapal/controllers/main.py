@@ -1,6 +1,6 @@
 import logging
 import requests
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -39,7 +39,33 @@ class PesaPalController(http.Controller):
             
             tx._handle_notification_data('pesapal', notification_data)
         
-        return request.redirect('/payment/status')
+        appointment = request.env['custom.appointment'].sudo().search([
+            ('payment_transaction_id', '=', tx.id)
+        ], limit=1)
+        
+        if appointment:
+            if tx.state == 'done':
+                appointment.write({
+                    'payment_status': 'paid',
+                    'paid_amount': tx.amount,
+                    'payment_date': fields.Datetime.now(),
+                    'payment_method': tx.provider_id.name,
+                    'payment_reference': tx.reference,
+                    'state': 'confirmed'
+                })
+                try:
+                    appointment._send_confirmation_notifications()
+                except Exception as e:
+                    _logger.warning('Failed to send confirmation notifications: %s', str(e))
+                
+                return request.redirect(f'/appointments/payment/success?appointment_id={appointment.id}')
+            elif tx.state in ['cancel', 'error']:
+                appointment.write({
+                    'payment_status': 'failed'
+                })
+                return request.redirect(f'/appointments/payment?appointment_id={appointment.id}&error=Payment failed. Please try again.')
+        
+        return request.redirect('/appointments/payment/success' if tx.state == 'done' else '/appointments')
 
     @http.route('/payment/pesapal/ipn', type='http', auth='public', methods=['GET'], csrf=False)
     def pesapal_ipn(self, **data):
