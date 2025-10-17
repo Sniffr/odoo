@@ -60,12 +60,13 @@ class Branch(models.Model):
             'context': {'default_branch_id': self.id},
         }
     
-    @api.model
-    def create(self, vals):
-        if vals.get('is_main_branch'):
-            existing_main = self.search([('is_main_branch', '=', True)])
-            existing_main.write({'is_main_branch': False})
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('is_main_branch'):
+                existing_main = self.search([('is_main_branch', '=', True)])
+                existing_main.write({'is_main_branch': False})
+        return super().create(vals_list)
     
     def write(self, vals):
         if vals.get('is_main_branch'):
