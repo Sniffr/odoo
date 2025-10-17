@@ -138,13 +138,14 @@ class AppointmentController(http.Controller):
         while current_time + service_duration <= end_hour:
             slot_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
             
-            if not self._has_conflict(staff, slot_datetime, service_duration):
-                slots.append({
-                    'time': slot_datetime.strftime('%H:%M'),
-                    'datetime': slot_datetime.isoformat(),
-                })
+            is_booked = self._has_conflict(staff, slot_datetime, service_duration)
+            slots.append({
+                'time': slot_datetime.strftime('%H:%M'),
+                'datetime': slot_datetime.isoformat(),
+                'is_booked': is_booked,
+            })
             
-            current_time += 0.5
+            current_time += service_duration
         
         return slots
 
