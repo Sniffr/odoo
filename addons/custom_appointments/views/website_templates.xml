@@ -691,33 +691,60 @@
                                                     <div class="row">
                                                         <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
                                                             <div class="col-lg-6 col-md-12 mb-4">
-                                                                <div class="service-item h-100" style="background: white; border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 15px rgba(0,0,0,0.05);" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
-                                                                    <div class="card border-0 h-100">
+                                                                <div class="service-item h-100"
+                                                                     style="background: white; border: none; border-radius: 18px; cursor: pointer;
+                                                                            transition: all 0.3s ease; box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+                                                                            position: relative; overflow: hidden;"
+                                                                     t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
+
+                                                                    <!-- Selection indicator ribbon (initially hidden) -->
+                                                                    <div class="selection-ribbon"
+                                                                         style="position: absolute; top: 15px; right: -30px; width: 120px; height: 30px;
+                                                                                background-color: #ff69b4; color: white; text-align: center;
+                                                                                line-height: 30px; transform: rotate(45deg);
+                                                                                font-size: 14px; font-weight: bold; z-index: 10; display: none;">
+                                                                        Selected
+                                                                    </div>
+
+                                                                    <!-- Decorative elements (subtle design accents) -->
+                                                                    <div class="service-decoration-dot-1"
+                                                                         style="position: absolute; top: 15px; left: 15px; width: 8px; height: 8px;
+                                                                                border-radius: 50%; background: rgba(255,105,180,0.2); z-index: 1;"></div>
+                                                                    <div class="service-decoration-dot-2"
+                                                                         style="position: absolute; bottom: 15px; right: 18px; width: 12px; height: 12px;
+                                                                                border-radius: 50%; background: rgba(255,105,180,0.15); z-index: 1;"></div>
+
+                                                                    <div class="card border-0 h-100 service-card-inner"
+                                                                         style="border-radius: 18px; transition: all 0.3s ease;">
                                                                         <div class="card-body p-0">
                                                                             <div class="row no-gutters h-100">
-                                                                                <!-- Service Image Section -->
+                                                                                <!-- Service Image Section - Improved styling -->
                                                                                 <div class="col-md-4 service-image-container position-relative d-none d-md-block">
                                                                                     <t t-if="service.image">
-                                                                                        <div class="service-image h-100" style="border-radius: 16px 0 0 16px; overflow: hidden;">
+                                                                                        <div class="service-image h-100"
+                                                                                             style="border-radius: 18px 0 0 18px; overflow: hidden;">
                                                                                             <img t-att-src="'/web/image/company.service/%s/image/200x200' % service.id"
-                                                                                                style="width: 100%; height: 100%; object-fit: cover;"
+                                                                                                style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;"
                                                                                                 alt="Service Image"/>
-                                                                                            <!-- Image overlay -->
-                                                                                            <div class="service-image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,105,180,0.3) 0%, rgba(255,105,180,0) 50%); border-radius: 16px 0 0 16px;"></div>
+                                                                                            <!-- Enhanced image overlay with gradient -->
+                                                                                            <div class="service-image-overlay"
+                                                                                                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                                                                                                            background: linear-gradient(135deg, rgba(255,105,180,0.3) 0%, rgba(255,105,180,0) 70%);
+                                                                                                            border-radius: 18px 0 0 18px; transition: all 0.3s ease;"></div>
                                                                                         </div>
                                                                                     </t>
                                                                                     <t t-else="">
                                                                                         <div class="service-image-placeholder h-100 d-flex align-items-center justify-content-center"
-                                                                                            style="background: linear-gradient(135deg, #fff5f8, #ffd6e7); border-radius: 16px 0 0 16px;">
+                                                                                            style="background: linear-gradient(135deg, #fff5f8, #ffd6e7); border-radius: 18px 0 0 18px;">
                                                                                             <i class="fa fa-spa text-pink" style="font-size: 32px; color: #ff69b4; opacity: 0.5;"></i>
                                                                                         </div>
                                                                                     </t>
                                                                                 </div>
 
-                                                                                <!-- Service Content Section -->
+                                                                                <!-- Service Content Section - Improved layout -->
                                                                                 <div class="col-md-8">
                                                                                     <div class="service-content p-4">
-                                                                                        <h5 class="font-weight-bold mb-2 service-title">
+                                                                                        <h5 class="font-weight-bold mb-2 service-title" style="transition: color 0.3s ease;">
                                                                                             <t t-esc="service.name"/>
                                                                                         </h5>
 
@@ -731,12 +758,16 @@
 
                                                                                         <!-- Service Details with Enhanced Icons -->
                                                                                         <div class="service-details d-flex flex-wrap mb-3">
-                                                                                            <span class="badge mr-2 mb-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                            <span class="badge mr-2 mb-2 service-badge-duration"
+                                                                                                  style="background: #fff5f8; color: #ff69b4; border-radius: 30px;
+                                                                                                         padding: 8px 15px; font-weight: normal; transition: all 0.3s ease;">
                                                                                                 <i class="fa fa-clock-o mr-1"></i>
                                                                                                 <t t-esc="service.duration"/> hour<t t-if="service.duration != 1">s</t>
                                                                                             </span>
                                                                                             <t t-if="service.category_id">
-                                                                                                <span class="badge mr-2 mb-2" style="background: #f0f0f0; color: #666; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                                <span class="badge mr-2 mb-2 service-badge-category"
+                                                                                                      style="background: #f0f0f0; color: #666; border-radius: 30px;
+                                                                                                             padding: 8px 15px; font-weight: normal; transition: all 0.3s ease;">
                                                                                                     <i class="fa fa-tag mr-1"></i>
                                                                                                     <t t-esc="service.category_id.name"/>
                                                                                                 </span>
@@ -744,10 +775,10 @@
                                                                                         </div>
 
                                                                                         <!-- Price and Selection with Enhanced Styling -->
-                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                        <div class="d-flex justify-content-between align-items-center mt-auto">
                                                                                             <div class="service-price">
                                                                                                 <span class="text-muted small mr-1">from</span>
-                                                                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem; transition: all 0.3s ease;">
                                                                                                     <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
                                                                                                 </span>
                                                                                             </div>
@@ -806,19 +837,6 @@
                     let defaultStaffId = '1';
                     let selectedService = null;
 
-                    function selectTeamMember(element, memberId) {
-                        document.querySelectorAll('.team-card .card').forEach(card => {
-                            card.style.borderColor = '';
-                            card.style.background = '';
-                        });
-                        
-                        const card = element.querySelector('.card');
-                        card.style.borderColor = '#ff69b4';
-                        card.style.background = '#fff5f8';
-                        
-                        selectedTeamMember = memberId;
-                    }
-
                     function selectService(element, serviceId) {
                         // Reset all services
                         document.querySelectorAll('.service-item').forEach(item => {
@@ -836,16 +854,63 @@
                                 selectBtn.textContent = 'Select';
                             }
 
-                            const radio = item.querySelector('input[type="radio"]');
-                            if (radio) radio.checked = false;
+                            // Reset ribbon and hide it
+                            const ribbon = item.querySelector('.selection-ribbon');
+                            if (ribbon) ribbon.style.display = 'none';
+
+                            // Reset all badges
+                            const durationBadge = item.querySelector('.service-badge-duration');
+                            if (durationBadge) {
+                                durationBadge.style.background = '#fff5f8';
+                                durationBadge.style.color = '#ff69b4';
+                            }
+
+                            const categoryBadge = item.querySelector('.service-badge-category');
+                            if (categoryBadge) {
+                                categoryBadge.style.background = '#f0f0f0';
+                                categoryBadge.style.color = '#666';
+                            }
+
+                            // Reset image zoom if exists
+                            const serviceImage = item.querySelector('.service-image img');
+                            if (serviceImage) {
+                                serviceImage.style.transform = '';
+                            }
+
+                            // Reset title color
+                            const title = item.querySelector('.service-title');
+                            if (title) title.style.color = '#212529'; // Bootstrap default text color
                         });
 
-                        // Apply selection styling
-                        element.style.boxShadow = '0 8px 20px rgba(255,105,180,0.2)';
-                        element.style.transform = 'translateY(-3px)';
-                        element.style.borderLeft = '4px solid #ff69b4';
-                        element.style.background = '#fff5f8';
-                        
+                        const radio = element.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+
+                        // Apply selection styling with enhanced visual effects
+                        element.style.boxShadow = '0 10px 25px rgba(255,105,180,0.25)';
+                        element.style.transform = 'translateY(-5px)';
+                        element.style.background = 'linear-gradient(to right, #fff5f8, white)';
+
+                        // Show ribbon indicator
+                        const ribbon = element.querySelector('.selection-ribbon');
+                        if (ribbon) ribbon.style.display = 'block';
+
+                        // Enhance badges
+                        const durationBadge = element.querySelector('.service-badge-duration');
+                        if (durationBadge) {
+                            durationBadge.style.background = '#ff69b4';
+                            durationBadge.style.color = 'white';
+                        }
+
+                        // Enhance title
+                        const title = element.querySelector('.service-title');
+                        if (title) title.style.color = '#ff69b4';
+
+                        // Add subtle zoom effect to image if exists
+                        const serviceImage = element.querySelector('.service-image img');
+                        if (serviceImage) {
+                            serviceImage.style.transform = 'scale(1.05)';
+                        }
+
                         // Apply selection styling to the button
                         const selectBtn = element.querySelector('.select-btn');
                         if (selectBtn) {
@@ -855,10 +920,27 @@
                             selectBtn.textContent = 'Selected';
                         }
 
-                        const radio = element.querySelector('input[type="radio"]');
-                        if (radio) radio.checked = true;
-
+                        // Update selected service
                         selectedService = serviceId;
+
+                        // Enable continue button
+                        const continueButton = document.querySelector('button[onclick="proceedToBooking()"]');
+                        if (continueButton) {
+                            continueButton.disabled = false;
+                        }
+                    }
+
+                    function selectTeamMember(element, memberId) {
+                        document.querySelectorAll('.team-card .card').forEach(card => {
+                            card.style.borderColor = '';
+                            card.style.background = '';
+                        });
+
+                        const card = element.querySelector('.card');
+                        card.style.borderColor = '#ff69b4';
+                        card.style.background = '#fff5f8';
+
+                        selectedTeamMember = memberId;
                     }
 
                     function searchServices(query) {
@@ -872,6 +954,7 @@
 
                         query = query.toLowerCase();
 
+                        // Filter services based on search query
                         document.querySelectorAll('.service-item').forEach(item => {
                             // Safely get title text
                             const titleElement = item.querySelector('.service-title');
