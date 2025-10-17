@@ -17,6 +17,16 @@ class CompanyService(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency', 
                                   default=lambda self: self.env.company.currency_id)
     
+    fee_type = fields.Selection([
+        ('full', 'Full Price'),
+        ('partial', 'Booking Fee (Partial Payment)')
+    ], string='Payment Type', default='full', required=True,
+       help='Choose whether to charge full price or a booking fee upfront')
+    booking_fee = fields.Float(string='Booking Fee', default=0.0,
+                               help='Amount to charge as booking fee (if partial payment is selected)')
+    booking_fee_percentage = fields.Float(string='Booking Fee %', compute='_compute_booking_fee_percentage', store=True,
+                                         help='Booking fee as a percentage of full price')
+    
     duration = fields.Float(string='Duration (Hours)', default=1.0, help='Service duration in hours')
     duration_minutes = fields.Integer(string='Duration (Minutes)', compute='_compute_duration_minutes', store=True)
     
@@ -40,6 +50,28 @@ class CompanyService(models.Model):
     def _compute_duration_minutes(self):
         for record in self:
             record.duration_minutes = int(record.duration * 60)
+    
+    @api.depends('price', 'booking_fee')
+    def _compute_booking_fee_percentage(self):
+        for record in self:
+            if record.price > 0:
+                record.booking_fee_percentage = (record.booking_fee / record.price) * 100
+            else:
+                record.booking_fee_percentage = 0.0
+    
+    def get_amount_to_charge(self):
+        """Get the amount to charge based on fee type"""
+        self.ensure_one()
+        if self.fee_type == 'partial' and self.booking_fee > 0:
+            return self.booking_fee
+        return self.price
+    
+    def get_remaining_amount(self):
+        """Get the remaining amount after booking fee"""
+        self.ensure_one()
+        if self.fee_type == 'partial' and self.booking_fee > 0:
+            return self.price - self.booking_fee
+        return 0.0
     
     @api.depends('name', 'price', 'currency_id')
     def _compute_display_name(self):

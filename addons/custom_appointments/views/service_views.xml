@@ -67,6 +67,26 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="Payment Settings">
+                            <group>
+                                <group>
+                                    <field name="fee_type" widget="radio"/>
+                                    <field name="booking_fee" invisible="fee_type == 'full'"/>
+                                    <field name="booking_fee_percentage" invisible="fee_type == 'full'" readonly="1"/>
+                                </group>
+                                <group>
+                                    <label for="price" string="Full Price"/>
+                                    <div>
+                                        <field name="price" class="oe_inline"/> 
+                                        <field name="currency_id" class="oe_inline" readonly="1"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <div invisible="fee_type == 'full'" class="alert alert-info" role="alert">
+                                <strong>Booking Fee Configuration:</strong><br/>
+                                Customers will pay the booking fee upfront. The remaining balance will be due at the appointment.
+                            </div>
+                        </page>
                         <page string="Staff Requirements">
                             <group>
                                 <field name="requires_specific_staff"/>

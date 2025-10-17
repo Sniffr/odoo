@@ -777,10 +777,20 @@
                                                                                         <!-- Price and Selection with Enhanced Styling -->
                                                                                         <div class="d-flex justify-content-between align-items-center mt-auto">
                                                                                             <div class="service-price">
-                                                                                                <span class="text-muted small mr-1">from</span>
-                                                                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem; transition: all 0.3s ease;">
-                                                                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                                                                </span>
+                                                                                                <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
+                                                                                                    <span class="text-muted small mr-1">booking fee</span>
+                                                                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/>
+                                                                                                    </span>
+                                                                                                    <br/>
+                                                                                                    <span class="text-muted small">Full price: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></span>
+                                                                                                </t>
+                                                                                                <t t-else="">
+                                                                                                    <span class="text-muted small mr-1">from</span>
+                                                                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                                                                    </span>
+                                                                                                </t>
                                                                                             </div>
                                                                                             <div class="service-selection">
                                                                                                 <div class="selection-checkbox position-relative">
@@ -1107,9 +1117,19 @@
                                                         <span class="badge mr-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 5px 10px; font-weight: normal;">
                                                             <i class="fa fa-clock-o mr-1"></i><t t-esc="service.duration"/>h
                                                         </span>
-                                                        <span class="price font-weight-bold" style="color: #ff69b4;">
-                                                            <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                        </span>
+                                                        <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
+                                                            <div class="d-flex flex-column">
+                                                                <span class="price font-weight-bold" style="color: #ff69b4;">
+                                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/> <small class="text-muted">(booking fee)</small>
+                                                                </span>
+                                                                <small class="text-muted">Full: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></small>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="price font-weight-bold" style="color: #ff69b4;">
+                                                                <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                            </span>
+                                                        </t>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1165,12 +1185,35 @@
 
                                         <!-- Total Price Summary -->
                                         <div class="summary-total p-3 mb-4" style="background: #fff5f8; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03);">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>
-                                                <span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">
-                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
-                                                </span>
-                                            </div>
+                                            <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="font-weight-bold" style="color: #333; font-size: 14px;">Booking Fee (Pay Now)</span>
+                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 18px;">
+                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/>
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="text-muted" style="font-size: 14px;">Balance Due at Appointment</span>
+                                                    <span class="text-muted" style="font-size: 14px;">
+                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price - service.booking_fee"/>
+                                                    </span>
+                                                </div>
+                                                <hr class="my-2"/>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total Price</span>
+                                                    <span class="font-weight-bold" style="color: #333; font-size: 18px;">
+                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                    </span>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>
+                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">
+                                                        <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
+                                                    </span>
+                                                </div>
+                                            </t>
                                         </div>
                                     </div>
 
@@ -1425,11 +1468,38 @@
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
                                         <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
                                         <p><strong>Duration:</strong> <t t-esc="appointment.service_id.duration"/> hours</p>
-                                        <p class="mb-0"><strong>Total Amount:</strong> 
-                                            <span class="h4 text-primary">
-                                                <t t-esc="currency.symbol"/><t t-esc="amount"/>
-                                            </span>
-                                        </p>
+
+                                        <t t-if="appointment.service_id.fee_type == 'partial' and appointment.service_id.booking_fee > 0">
+                                            <hr class="my-3"/>
+                                            <div class="price-breakdown">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span><strong>Booking Fee (Pay Now):</strong></span>
+                                                    <span class="h5 text-primary mb-0">
+                                                        <t t-esc="currency.symbol"/><t t-esc="amount"/>
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Balance Due at Appointment:</span>
+                                                    <span class="text-muted">
+                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price - amount"/>
+                                                    </span>
+                                                </div>
+                                                <hr class="my-2"/>
+                                                <div class="d-flex justify-content-between">
+                                                    <span><strong>Total Service Price:</strong></span>
+                                                    <span class="font-weight-bold">
+                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <p class="mb-0"><strong>Total Amount:</strong>
+                                                <span class="h4 text-primary">
+                                                    <t t-esc="currency.symbol"/><t t-esc="amount"/>
+                                                </span>
+                                            </p>
+                                        </t>
                                     </div>
                                     
                                     <!-- Payment Methods -->
