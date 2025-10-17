@@ -70,9 +70,9 @@
                         <page string="Payment Settings">
                             <group>
                                 <group>
-                                    <field name="fee_type" widget="radio"/>
-                                    <field name="booking_fee" invisible="fee_type == 'full'"/>
-                                    <field name="booking_fee_percentage" invisible="fee_type == 'full'" readonly="1"/>
+                                    <field name="fee_type" widget="radio" optional="show"/>
+                                    <field name="booking_fee" attrs="{'invisible': [('fee_type', '=', 'full')]}" optional="show"/>
+                                    <field name="booking_fee_percentage" attrs="{'invisible': [('fee_type', '=', 'full')]}" readonly="1" optional="show"/>
                                 </group>
                                 <group>
                                     <label for="price" string="Full Price"/>
@@ -82,7 +82,7 @@
                                     </div>
                                 </group>
                             </group>
-                            <div invisible="fee_type == 'full'" class="alert alert-info" role="alert">
+                            <div attrs="{'invisible': [('fee_type', '=', 'full')]}" class="alert alert-info" role="alert">
                                 <strong>Booking Fee Configuration:</strong><br/>
                                 Customers will pay the booking fee upfront. The remaining balance will be due at the appointment.
                             </div>
