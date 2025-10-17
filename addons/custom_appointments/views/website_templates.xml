@@ -1259,11 +1259,12 @@
                 </style>
                 
                 <!-- Time Slot Selection JavaScript -->
-                <script>
+                <script><![CDATA[
                     let selectedDateTime = null;
                     let currentMonth = new Date();
                     let currentSelectedDate = null;
-                    let availableSlots = <t t-raw="available_slots" t-if="available_slots"/>{};
+                    ]]><t t-set="available_slots_json" t-value="available_slots"/><![CDATA[
+                    let availableSlots = ]]><t t-out="available_slots_json or '{}'"/><![CDATA[;
                     
                     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
                                        'July', 'August', 'September', 'October', 'November', 'December'];
@@ -1297,7 +1298,7 @@
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         
-                        for (let i = 0; i < 42; i++) {
+                        for (let i = 0; i &lt; 42; i++) {
                             const date = new Date(startDate);
                             date.setDate(date.getDate() + i);
                             
@@ -1306,9 +1307,9 @@
                             dateDiv.textContent = date.getDate();
                             
                             const dateKey = date.toISOString().split('T')[0];
-                            const isPast = date < today;
+                            const isPast = date &lt; today;
                             const isOtherMonth = date.getMonth() !== month;
-                            const hasSlots = availableSlots && availableSlots[dateKey] && availableSlots[dateKey].length > 0;
+                            const hasSlots = availableSlots &amp;&amp; availableSlots[dateKey] &amp;&amp; availableSlots[dateKey].length &gt; 0;
                             
                             if (isOtherMonth) {
                                 dateDiv.classList.add('other-month');
