@@ -1198,24 +1198,189 @@
                     </div>
                 </div>
 
+                <!-- Calendar Styles -->
+                <style>
+                    .calendar-grid {
+                        display: grid;
+                        grid-template-columns: repeat(7, 1fr);
+                        gap: 4px;
+                    }
+                    
+                    .calendar-date {
+                        aspect-ratio: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        font-size: 14px;
+                        border: 1px solid transparent;
+                    }
+                    
+                    .calendar-date:hover:not(.disabled):not(.other-month) {
+                        background: #f0f8ff;
+                        border-color: #4a90e2;
+                    }
+                    
+                    .calendar-date.selected {
+                        background: #4a90e2 !important;
+                        color: white !important;
+                        font-weight: bold;
+                    }
+                    
+                    .calendar-date.other-month {
+                        color: #ccc;
+                        cursor: default;
+                    }
+                    
+                    .calendar-date.disabled {
+                        color: #e0e0e0;
+                        cursor: not-allowed;
+                    }
+                    
+                    .calendar-date.has-slots {
+                        font-weight: 600;
+                        color: #4a90e2;
+                    }
+                    
+                    .time-slot-btn.disabled {
+                        background: #f5f5f5 !important;
+                        color: #999 !important;
+                        border-color: #ddd !important;
+                        cursor: not-allowed;
+                        opacity: 0.6;
+                    }
+                    
+                    .time-slot-btn:not(.disabled):hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 8px rgba(74,144,226,0.2);
+                    }
+                </style>
+                
                 <!-- Time Slot Selection JavaScript -->
                 <script>
                     let selectedDateTime = null;
-                    // Track current week for navigation
-                    let currentWeekStart = new Date('2025-10-14'); // Default to Oct 14, 2025
+                    let currentMonth = new Date();
+                    let currentSelectedDate = null;
+                    let availableSlots = <t t-raw="available_slots" t-if="available_slots"/>{};
+                    
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                                       'July', 'August', 'September', 'October', 'November', 'December'];
+                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+                    function previousMonth() {
+                        currentMonth.setMonth(currentMonth.getMonth() - 1);
+                        renderCalendar();
+                    }
+
+                    function nextMonth() {
+                        currentMonth.setMonth(currentMonth.getMonth() + 1);
+                        renderCalendar();
+                    }
+
+                    function renderCalendar() {
+                        const year = currentMonth.getFullYear();
+                        const month = currentMonth.getMonth();
+                        
+                        document.getElementById('current-month').textContent = 
+                            `${monthNames[month]} ${year}`;
+                        
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        const startDate = new Date(firstDay);
+                        startDate.setDate(startDate.getDate() - startDate.getDay());
+                        
+                        const calendarGrid = document.getElementById('calendar-grid');
+                        calendarGrid.innerHTML = '';
+                        
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        for (let i = 0; i < 42; i++) {
+                            const date = new Date(startDate);
+                            date.setDate(date.getDate() + i);
+                            
+                            const dateDiv = document.createElement('div');
+                            dateDiv.className = 'calendar-date';
+                            dateDiv.textContent = date.getDate();
+                            
+                            const dateKey = date.toISOString().split('T')[0];
+                            const isPast = date < today;
+                            const isOtherMonth = date.getMonth() !== month;
+                            const hasSlots = availableSlots && availableSlots[dateKey] && availableSlots[dateKey].length > 0;
+                            
+                            if (isOtherMonth) {
+                                dateDiv.classList.add('other-month');
+                            } else if (isPast) {
+                                dateDiv.classList.add('disabled');
+                            } else if (hasSlots) {
+                                dateDiv.classList.add('has-slots');
+                                dateDiv.onclick = function() { selectDate(date, dateKey); };
+                            }
+                            
+                            if (currentSelectedDate && currentSelectedDate.toDateString() === date.toDateString()) {
+                                dateDiv.classList.add('selected');
+                            }
+                            
+                            calendarGrid.appendChild(dateDiv);
+                        }
+                    }
+
+                    function selectDate(date, dateKey) {
+                        currentSelectedDate = date;
+                        renderCalendar();
+                        
+                        const dayName = dayNames[date.getDay()];
+                        const monthName = monthNames[date.getMonth()];
+                        document.getElementById('selected-date-display').textContent = 
+                            `${dayName}, ${monthName} ${date.getDate()}`;
+                        
+                        loadTimeSlotsForDate(dateKey);
+                    }
+
+                    function loadTimeSlotsForDate(dateKey) {
+                        const container = document.getElementById('time-slots-container');
+                        const slots = availableSlots[dateKey] || [];
+                        
+                        if (slots.length === 0) {
+                            container.innerHTML = '<div class="col-12 text-center p-4"><p class="text-muted">No available time slots for this date</p></div>';
+                            return;
+                        }
+                        
+                        let html = '<div class="row">';
+                        slots.forEach(slot => {
+                            const isBooked = slot.is_booked || false;
+                            const btnClass = isBooked ? 'btn btn-secondary time-slot-btn disabled w-100' : 'btn btn-outline-primary time-slot-btn w-100';
+                            const disabled = isBooked ? 'disabled' : '';
+                            const onclick = isBooked ? '' : `onclick="selectTimeSlot(this, '${slot.datetime}')"`;
+                            
+                            html += `
+                                <div class="col-6 mb-2">
+                                    <button class="${btnClass}" ${disabled} ${onclick}
+                                            style="border-radius: 8px; padding: 12px 8px; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
+                                        ${slot.time}
+                                    </button>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        html += '<div class="text-center mt-3"><a href="#" class="text-primary small" onclick="showAllSessions(); return false;">Show all sessions</a></div>';
+                        
+                        container.innerHTML = html;
+                    }
 
                     function selectTimeSlot(button, datetime) {
-                        // Remove previous selection
                         document.querySelectorAll('.time-slot-btn').forEach(btn => {
-                            btn.classList.remove('btn-primary');
-                            btn.classList.add('btn-outline-primary');
+                            if (!btn.classList.contains('disabled')) {
+                                btn.classList.remove('btn-primary');
+                                btn.classList.add('btn-outline-primary');
+                            }
                         });
                         
-                        // Highlight selected slot
                         button.classList.remove('btn-outline-primary');
                         button.classList.add('btn-primary');
                         
-                        // Update selected time display
                         selectedDateTime = datetime;
                         document.getElementById('appointment_datetime').value = datetime;
                         
@@ -1223,98 +1388,26 @@
                         const timeText = document.getElementById('selected-time-text');
                         
                         const date = new Date(datetime);
-                        const dayName = getDayName(date);
+                        const dayName = dayNames[date.getDay()];
                         const formattedTime = dayName + ', ' + date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         timeText.textContent = formattedTime;
                         timeDisplay.style.display = 'block';
                         
-                        // Enable book button
                         document.getElementById('book-btn').disabled = false;
                     }
 
-
-                    function getDayName(date) {
-                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                        return days[date.getDay()];
+                    function showAllSessions() {
+                        alert('Show all sessions functionality to be implemented');
                     }
 
-                    // Format date to include day name
-                    function formatDate(date) {
-                        const dayName = getDayName(date);
-                        return `${dayName}, ${date.toLocaleDateString()}`;
-                    }
-
-                    // Format the week range with day names
-                    function formatWeekRange(startDate) {
-                        const endDate = new Date(startDate);
-                        endDate.setDate(endDate.getDate() + 6); // End date is 6 days after start date
-
-                        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-                    }
-
-                    function previousWeek() {
-                        // Move to previous week
-                        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-                        updateWeekDisplay();
-                        loadWeekTimeSlots();
-                    }
-
-                    function nextWeek() {
-                        // Move to next week
-                        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-                        updateWeekDisplay();
-                        loadWeekTimeSlots();
-                    }
-
-                    function updateWeekDisplay() {
-                        // Update the week display text
-                        const weekDisplay = document.getElementById('current-week');
-                        weekDisplay.textContent = formatWeekRange(currentWeekStart);
-                    }
-
-                    function loadWeekTimeSlots() {
-                        // Placeholder for AJAX call to load slots for the selected week
-                        console.log('Loading slots for week starting:', currentWeekStart.toISOString());
-
-                        // Here you would typically make an AJAX call to fetch time slots
-                        // For now, just show a loading message
-                        const timeSlotsContainer = document.querySelector('.time-slots-container');
-                        if (timeSlotsContainer) {
-                            timeSlotsContainer.innerHTML = '<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Loading time slots...</p></div>';
-
-                            // Simulate AJAX delay
-                            setTimeout(() => {
-                                // In a real implementation, this would be replaced with actual data from the server
-                                timeSlotsContainer.innerHTML = '<div class="text-center p-5"><p>Please refresh the page to see available time slots for the selected week.</p></div>';
-                            }, 1000);
-                        }
-                    }
-
-                    // Initialize days of the week on page load
                     document.addEventListener('DOMContentLoaded', function() {
-                        // Initialize the current week display
-                        updateWeekDisplay();
-
-                        // Add day of week to each date section
-                        document.querySelectorAll('.date-section').forEach(section => {
-                            const dateHeader = section.querySelector('.date-header h6');
-                            if (dateHeader) {
-                                const dateText = dateHeader.textContent.trim();
-                                // Extract the date part (format is typically MM/DD/YYYY or similar)
-                                const dateString = dateText.replace(/.*calendar-day mr-2.*/, '').trim();
-
-                                try {
-                                    const date = new Date(dateString);
-                                    if (!isNaN(date.getTime())) {
-                                        // Update the header text to include the day name
-                                        const dayName = getDayName(date);
-                                        dateHeader.innerHTML = `<i class="fa fa-calendar-day mr-2" style="color: #ff69b4;"></i>${dayName}, ${date.toLocaleDateString()}`;
-                                    }
-                                } catch (e) {
-                                    console.error('Error parsing date:', e);
-                                }
-                            }
-                        });
+                        renderCalendar();
+                        
+                        if (availableSlots && Object.keys(availableSlots).length > 0) {
+                            const firstDate = Object.keys(availableSlots)[0];
+                            const date = new Date(firstDate);
+                            selectDate(date, firstDate);
+                        }
                     });
                 </script>
             </div>
