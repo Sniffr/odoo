@@ -1404,13 +1404,13 @@
                     document.addEventListener('DOMContentLoaded', function() {
                         renderCalendar();
                         
-                        if (availableSlots && Object.keys(availableSlots).length > 0) {
+                        if (availableSlots &amp;&amp; Object.keys(availableSlots).length &gt; 0) {
                             const firstDate = Object.keys(availableSlots)[0];
                             const date = new Date(firstDate);
                             selectDate(date, firstDate);
                         }
                     });
-                </script>
+                ]]></script>
             </div>
         </t>
     </template>
