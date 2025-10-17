@@ -1298,7 +1298,7 @@
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         
-                        for (let i = 0; i &lt; 42; i++) {
+                        for (let i = 0; i < 42; i++) {
                             const date = new Date(startDate);
                             date.setDate(date.getDate() + i);
                             
@@ -1307,9 +1307,9 @@
                             dateDiv.textContent = date.getDate();
                             
                             const dateKey = date.toISOString().split('T')[0];
-                            const isPast = date &lt; today;
+                            const isPast = date < today;
                             const isOtherMonth = date.getMonth() !== month;
-                            const hasSlots = availableSlots &amp;&amp; availableSlots[dateKey] &amp;&amp; availableSlots[dateKey].length &gt; 0;
+                            const hasSlots = availableSlots && availableSlots[dateKey] && availableSlots[dateKey].length > 0;
                             
                             if (isOtherMonth) {
                                 dateDiv.classList.add('other-month');
@@ -1324,7 +1324,7 @@
                                 dateDiv.onclick = function() { selectDate(date, dateKey); };
                             }
                             
-                            if (currentSelectedDate &amp;&amp; currentSelectedDate.toDateString() === date.toDateString()) {
+                            if (currentSelectedDate && currentSelectedDate.toDateString() === date.toDateString()) {
                                 dateDiv.classList.add('selected');
                             }
                             
@@ -1414,9 +1414,9 @@
                         const todayKey = today.toISOString().split('T')[0];
                         
                         // Check if today has slots, otherwise find the first available date
-                        if (availableSlots &amp;&amp; availableSlots[todayKey] &amp;&amp; availableSlots[todayKey].length &gt; 0) {
+                        if (availableSlots && availableSlots[todayKey] && availableSlots[todayKey].length > 0) {
                             selectDate(today, todayKey);
-                        } else if (availableSlots &amp;&amp; Object.keys(availableSlots).length &gt; 0) {
+                        } else if (availableSlots && Object.keys(availableSlots).length > 0) {
                             // Find first available date
                             const firstDateKey = Object.keys(availableSlots)[0];
                             const firstDate = new Date(firstDateKey);
