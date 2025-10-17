@@ -33,17 +33,22 @@ class PesaPalController(http.Controller):
             notification_data = {
                 'OrderTrackingId': tracking_id,
                 'OrderMerchantReference': merchant_ref,
-                'status_code': status.get('payment_status_code'),
-                'status_description': status.get('description')
+                'status_code': status.get('status_code', 0),
+                'status_description': status.get('payment_status_description')
             }
             
+            _logger.info('PesaPal: Processing notification data: %s', notification_data)
             tx._handle_notification_data('pesapal', notification_data)
+            tx.env.cr.commit()
+            tx.invalidate_recordset()
+            _logger.info('PesaPal: Transaction state after processing: %s', tx.state)
         
         appointment = request.env['custom.appointment'].sudo().search([
             ('payment_transaction_id', '=', tx.id)
         ], limit=1)
         
         if appointment:
+            _logger.info('PesaPal: Found appointment %s with transaction state %s', appointment.id, tx.state)
             if tx.state == 'done':
                 appointment.write({
                     'payment_status': 'paid',
@@ -92,13 +97,14 @@ class PesaPalController(http.Controller):
             notification_data = {
                 'OrderTrackingId': tracking_id,
                 'OrderMerchantReference': merchant_ref,
-                'status_code': status.get('payment_status_code'),
-                'status_description': status.get('description')
+                'status_code': status.get('status_code', 0),
+                'status_description': status.get('payment_status_description')
             }
             
             try:
                 tx._handle_notification_data('pesapal', notification_data)
-                _logger.info('PesaPal IPN: Transaction %s processed successfully', tracking_id)
+                tx.env.cr.commit()
+                _logger.info('PesaPal IPN: Transaction %s processed successfully with state %s', tracking_id, tx.state)
             except Exception as e:
                 _logger.error('PesaPal IPN: Error processing transaction %s: %s', tracking_id, str(e))
                 return 'Error processing transaction'
