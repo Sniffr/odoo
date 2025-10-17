@@ -24,7 +24,6 @@
         'views/staff_dashboard_views.xml',
         'views/branch_views.xml',
         'views/service_views.xml',
-        'views/service_payment_views.xml',
         'views/service_category_views.xml',
         'views/appointment_views.xml',
         'views/website_templates.xml',
