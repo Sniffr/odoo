@@ -6,7 +6,7 @@
         <field name="model">company.service</field>
         <field name="inherit_id" ref="service_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@string='Booking Settings']" position="after">
+            <xpath expr="//field[@name='notes']/.." position="after">
                 <page string="Payment Settings">
                     <group>
                         <group>
