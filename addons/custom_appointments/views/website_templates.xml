@@ -1315,12 +1315,16 @@
                                 dateDiv.classList.add('other-month');
                             } else if (isPast) {
                                 dateDiv.classList.add('disabled');
-                            } else if (hasSlots) {
-                                dateDiv.classList.add('has-slots');
+                            } else {
+                                // Make all future/current dates clickable
+                                dateDiv.classList.add('clickable');
+                                if (hasSlots) {
+                                    dateDiv.classList.add('has-slots');
+                                }
                                 dateDiv.onclick = function() { selectDate(date, dateKey); };
                             }
                             
-                            if (currentSelectedDate && currentSelectedDate.toDateString() === date.toDateString()) {
+                            if (currentSelectedDate &amp;&amp; currentSelectedDate.toDateString() === date.toDateString()) {
                                 dateDiv.classList.add('selected');
                             }
                             
@@ -1404,10 +1408,22 @@
                     document.addEventListener('DOMContentLoaded', function() {
                         renderCalendar();
                         
-                        if (availableSlots &amp;&amp; Object.keys(availableSlots).length &gt; 0) {
-                            const firstDate = Object.keys(availableSlots)[0];
-                            const date = new Date(firstDate);
-                            selectDate(date, firstDate);
+                        // Auto-select today's date or the first available date
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const todayKey = today.toISOString().split('T')[0];
+                        
+                        // Check if today has slots, otherwise find the first available date
+                        if (availableSlots &amp;&amp; availableSlots[todayKey] &amp;&amp; availableSlots[todayKey].length &gt; 0) {
+                            selectDate(today, todayKey);
+                        } else if (availableSlots &amp;&amp; Object.keys(availableSlots).length &gt; 0) {
+                            // Find first available date
+                            const firstDateKey = Object.keys(availableSlots)[0];
+                            const firstDate = new Date(firstDateKey);
+                            selectDate(firstDate, firstDateKey);
+                        } else {
+                            // No slots available, just select today to show it
+                            selectDate(today, todayKey);
                         }
                     });
                 ]]></script>
