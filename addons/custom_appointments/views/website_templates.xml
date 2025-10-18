@@ -70,7 +70,7 @@
                                             <t t-foreach="branches" t-as="branch">
                                                 <div class="col-md-6 mb-3">
                                                     <div class="branch-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
-                                                        <div class="card h-100" style="border-radius: 12px; border: 2px solid transparent; box-shadow: 0 3px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                                                        <div class="card h-100" t-att-style="'border-radius: 12px; border: 2px solid ' + ('#ff69b4' if selected_branch and branch.id == selected_branch.id else 'transparent') + '; box-shadow: 0 3px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; background: ' + ('#fff5f8' if selected_branch and branch.id == selected_branch.id else '') + ';'">
                                                             <div class="card-body p-4">
                                                                 <div class="d-flex flex-column h-100">
                                                                     <div>
@@ -99,8 +99,8 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mt-auto text-right">
-                                                                        <span class="badge badge-light px-3 py-2" style="border-radius: 50px; visibility: hidden;">
-                                                                            <i class="fa fa-check-circle mr-1"></i>
+                                                                        <span class="badge px-3 py-2 selection-indicator" t-att-class="'badge-success' if selected_branch and branch.id == selected_branch.id else 'badge-light'" t-att-style="'border-radius: 50px; ' + ('visibility: visible;' if selected_branch and branch.id == selected_branch.id else 'visibility: hidden;')">
+                                                                            <i class="fa fa-check-circle mr-1"></i><t t-if="selected_branch and branch.id == selected_branch.id">Selected</t>
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -515,36 +515,8 @@
                     }
 
                     function selectBranch(element, branchId) {
-                        // Remove previous selection
-                        document.querySelectorAll('.branch-card .card').forEach(card => {
-                            card.style.borderColor = 'transparent';
-                            card.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)';
-                            card.style.background = '';
-                            card.style.transform = '';
-
-                            // Hide selection indicator on all branch cards
-                            const indicator = card.querySelector('.selection-indicator');
-                            if (indicator) {
-                                indicator.style.display = 'none';
-                            }
-                        });
-
-                        // Highlight selected branch with border and styling
-                        const card = element.querySelector('.card');
-                        card.style.borderColor = '#ff69b4';
-                        card.style.boxShadow = '0 5px 15px rgba(255,105,180,0.2)';
-                        card.style.background = '#fff5f8';
-                        card.style.transform = 'translateY(-5px)';
-
-                        // Show selection indicator for selected branch
-                        const indicator = card.querySelector('.selection-indicator');
-                        if (indicator) {
-                            indicator.style.display = 'block';
-                            indicator.className = 'badge badge-success px-3 py-2 selection-indicator';
-                            indicator.style.borderRadius = '50px';
-                        }
-
                         selectedBranch = branchId;
+                        window.location.href = '/appointments?branch_id=' + branchId;
                     }
 
                     function proceedToServices() {

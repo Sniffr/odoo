@@ -10,18 +10,35 @@ class AppointmentController(http.Controller):
     @http.route('/appointments', type='http', auth='public', website=True)
     def appointment_booking(self, **kwargs):
         """Main appointment booking page - Location and staff selection"""
-        staff_members = request.env['custom.staff.member'].sudo().search([
-            ('is_bookable', '=', True),
-            ('active', '=', True)
-        ], order='name')
+        branch_id = kwargs.get('branch_id')
         
         branches = request.env['custom.branch'].sudo().search([
             ('active', '=', True)
         ], order='name')
         
+        selected_branch = None
+        if branch_id:
+            selected_branch = request.env['custom.branch'].sudo().browse(int(branch_id))
+        elif branches:
+            main_branch = request.env['custom.branch'].sudo().search([
+                ('is_main_branch', '=', True),
+                ('active', '=', True)
+            ], limit=1)
+            selected_branch = main_branch if main_branch else branches[0]
+        
+        staff_domain = [
+            ('is_bookable', '=', True),
+            ('active', '=', True)
+        ]
+        if selected_branch:
+            staff_domain.append(('branch_id', '=', selected_branch.id))
+        
+        staff_members = request.env['custom.staff.member'].sudo().search(staff_domain, order='name')
+        
         return request.render('custom_appointments.appointment_booking_page', {
             'staff_members': staff_members,
             'branches': branches,
+            'selected_branch': selected_branch,
         })
 
     @http.route('/appointments/services', type='http', auth='public', website=True)
