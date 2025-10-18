@@ -139,13 +139,11 @@ class AppointmentController(http.Controller):
         slots = []
         current_time = start_hour
         
-        slot_interval = 0.5  # 30 minutes
-        
         while current_time + service_duration <= end_hour:
             slot_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
             
             if is_today and slot_datetime <= now:
-                current_time += slot_interval
+                current_time += service_duration
                 continue
             
             if not self._has_conflict(staff, slot_datetime, service_duration, service):
@@ -155,7 +153,7 @@ class AppointmentController(http.Controller):
                     'display_time': slot_datetime.strftime('%I:%M %p'),
                 })
             
-            current_time += slot_interval
+            current_time += service_duration
         
         return slots
 
