@@ -928,13 +928,16 @@
     <template id="booking_form_page" name="Book Appointment">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
+                <!-- FullCalendar CSS -->
+                <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet"/>
+                
                 <!-- Hero Section -->
                 <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
                     <div class="container">
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h1 class="display-5 font-weight-bold text-dark mb-2">Book Your Appointment</h1>
-                                <p class="text-muted mb-0">Select your preferred time slot</p>
+                                <p class="text-muted mb-0">Select your preferred date and time</p>
                             </div>
                         </div>
                     </div>
@@ -942,55 +945,28 @@
 
                 <div class="container">
                     <div class="row">
-                        <!-- Left Panel - Time Slots -->
+                        <!-- Left Panel - Calendar -->
                         <div class="col-lg-8 mb-4">
                             <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
                                 <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
-                                    <h4 class="font-weight-bold mb-0">Available Time Slots</h4>
-                                    <p class="mb-0 opacity-75">Choose your preferred appointment time</p>
+                                    <h4 class="font-weight-bold mb-0">Select Date &amp; Time</h4>
+                                    <p class="mb-0 opacity-75">Click on a date to view available time slots</p>
                                 </div>
                                 <div class="card-body p-4">
-                                    <!-- Date Navigation -->
-                                    <div class="date-navigation mb-4">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <button class="btn" style="background: #fff5f8; color: #ff69b4; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; box-shadow: 0 3px 8px rgba(255,105,180,0.15); transition: all 0.3s ease;" onclick="previousWeek()">
-                                                        <i class="fa fa-chevron-left mr-1"></i> Previous Week
-                                                    </button>
-                                                    <h6 class="mb-0 font-weight-bold" id="current-week" style="color: #555;">October 14 - October 20, 2025</h6>
-                                                    <button class="btn" style="background: #fff5f8; color: #ff69b4; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; box-shadow: 0 3px 8px rgba(255,105,180,0.15); transition: all 0.3s ease;" onclick="nextWeek()">
-                                                        Next Week <i class="fa fa-chevron-right ml-1"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                    <!-- Calendar Container -->
+                                    <div id="calendar" style="min-height: 500px;"></div>
+                                    
+                                    <!-- Time Slots Container (shown after date selection) -->
+                                    <div id="time-slots-section" style="display: none; margin-top: 30px;">
+                                        <div class="date-header p-3 mb-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; border-left: 4px solid #ff69b4;">
+                                            <h5 class="font-weight-bold mb-0" style="color: #333;">
+                                                <i class="fa fa-clock-o mr-2" style="color: #ff69b4;"></i>
+                                                Available Times for <span id="selected-date-display"></span>
+                                            </h5>
                                         </div>
-                                    </div>
-
-                                    <!-- Time Slots Grid -->
-                                    <div class="time-slots-container">
-                                        <t t-foreach="available_slots.items()" t-as="date_slots">
-                                            <div class="date-section mb-4">
-                                                <div class="date-header p-2 pl-3 mb-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; border-left: 4px solid #ff69b4;">
-                                                    <h6 class="font-weight-bold mb-0" style="color: #333;">
-                                                        <i class="fa fa-calendar-day mr-2" style="color: #ff69b4;"></i>
-                                                        <t t-esc="date_slots[0]"/>
-                                                    </h6>
-                                                </div>
-                                                <div class="row">
-                                                    <t t-foreach="date_slots[1]" t-as="slot">
-                                                        <div class="col-md-3 col-sm-4 col-6 mb-3">
-                                                            <button class="btn btn-outline-primary time-slot-btn w-100"
-                                                                    style="border-radius: 20px; padding: 10px; transition: all 0.3s ease; border-color: #ff69b4; color: #ff69b4; font-weight: 500;"
-                                                                    t-att-onclick="'selectTimeSlot(this, \'' + slot['datetime'] + '\')'">
-                                                                <i class="fa fa-clock-o mr-1"></i>
-                                                                <t t-esc="slot['time']"/>
-                                                            </button>
-                                                        </div>
-                                                    </t>
-                                                </div>
-                                            </div>
-                                        </t>
+                                        <div id="time-slots-container" class="row">
+                                            <!-- Time slots will be dynamically loaded here -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1179,11 +1155,14 @@
                     </div>
                 </div>
 
-                <!-- Time Slot Selection JavaScript -->
+                <!-- FullCalendar JavaScript -->
+                <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+                
+                <!-- Custom Booking JavaScript -->
                 <script>
                     let selectedDateTime = null;
-                    // Track current week for navigation
-                    let currentWeekStart = new Date('2025-10-14'); // Default to Oct 14, 2025
+                    let calendar = null;
+                    let availableSlotsData = <t t-raw="available_slots_json or '{}'"/>;
 
                     function selectTimeSlot(button, datetime) {
                         // Remove previous selection
@@ -1211,93 +1190,193 @@
                         
                         // Enable book button
                         document.getElementById('book-btn').disabled = false;
+                        
+                        // Scroll to booking form
+                        document.querySelector('.customer-form-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     }
-
 
                     function getDayName(date) {
                         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                         return days[date.getDay()];
                     }
 
-                    // Format date to include day name
-                    function formatDate(date) {
+                    function formatDateDisplay(dateStr) {
+                        const date = new Date(dateStr);
                         const dayName = getDayName(date);
-                        return `${dayName}, ${date.toLocaleDateString()}`;
+                        return `${dayName}, ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
                     }
 
-                    // Format the week range with day names
-                    function formatWeekRange(startDate) {
-                        const endDate = new Date(startDate);
-                        endDate.setDate(endDate.getDate() + 6); // End date is 6 days after start date
-
-                        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-                    }
-
-                    function previousWeek() {
-                        // Move to previous week
-                        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-                        updateWeekDisplay();
-                        loadWeekTimeSlots();
-                    }
-
-                    function nextWeek() {
-                        // Move to next week
-                        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-                        updateWeekDisplay();
-                        loadWeekTimeSlots();
-                    }
-
-                    function updateWeekDisplay() {
-                        // Update the week display text
-                        const weekDisplay = document.getElementById('current-week');
-                        weekDisplay.textContent = formatWeekRange(currentWeekStart);
-                    }
-
-                    function loadWeekTimeSlots() {
-                        // Placeholder for AJAX call to load slots for the selected week
-                        console.log('Loading slots for week starting:', currentWeekStart.toISOString());
-
-                        // Here you would typically make an AJAX call to fetch time slots
-                        // For now, just show a loading message
-                        const timeSlotsContainer = document.querySelector('.time-slots-container');
-                        if (timeSlotsContainer) {
-                            timeSlotsContainer.innerHTML = '<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Loading time slots...</p></div>';
-
-                            // Simulate AJAX delay
-                            setTimeout(() => {
-                                // In a real implementation, this would be replaced with actual data from the server
-                                timeSlotsContainer.innerHTML = '<div class="text-center p-5"><p>Please refresh the page to see available time slots for the selected week.</p></div>';
-                            }, 1000);
+                    function loadTimeSlotsForDate(dateStr) {
+                        const timeSlotsSection = document.getElementById('time-slots-section');
+                        const timeSlotsContainer = document.getElementById('time-slots-container');
+                        const dateDisplay = document.getElementById('selected-date-display');
+                        
+                        // Show the time slots section
+                        timeSlotsSection.style.display = 'block';
+                        dateDisplay.textContent = formatDateDisplay(dateStr);
+                        
+                        // Get slots for this date
+                        const slots = availableSlotsData[dateStr] || [];
+                        
+                        if (slots.length === 0) {
+                            timeSlotsContainer.innerHTML = '<div class="col-12 text-center p-4"><p class="text-muted">No available time slots for this date.</p></div>';
+                            return;
                         }
+                        
+                        // Build time slots HTML
+                        let slotsHTML = '';
+                        slots.forEach(slot => {
+                            slotsHTML += `
+                                <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                    <button class="btn btn-outline-primary time-slot-btn w-100"
+                                            style="border-radius: 20px; padding: 12px; transition: all 0.3s ease; border-color: #ff69b4; color: #ff69b4; font-weight: 500;"
+                                            onclick="selectTimeSlot(this, '${slot.datetime}')">
+                                        <i class="fa fa-clock-o mr-1"></i>
+                                        ${slot.time}
+                                    </button>
+                                </div>
+                            `;
+                        });
+                        
+                        timeSlotsContainer.innerHTML = slotsHTML;
+                        
+                        // Scroll to time slots
+                        timeSlotsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
 
-                    // Initialize days of the week on page load
+                    // Initialize FullCalendar
                     document.addEventListener('DOMContentLoaded', function() {
-                        // Initialize the current week display
-                        updateWeekDisplay();
-
-                        // Add day of week to each date section
-                        document.querySelectorAll('.date-section').forEach(section => {
-                            const dateHeader = section.querySelector('.date-header h6');
-                            if (dateHeader) {
-                                const dateText = dateHeader.textContent.trim();
-                                // Extract the date part (format is typically MM/DD/YYYY or similar)
-                                const dateString = dateText.replace(/.*calendar-day mr-2.*/, '').trim();
-
-                                try {
-                                    const date = new Date(dateString);
-                                    if (!isNaN(date.getTime())) {
-                                        // Update the header text to include the day name
-                                        const dayName = getDayName(date);
-                                        dateHeader.innerHTML = `<i class="fa fa-calendar-day mr-2" style="color: #ff69b4;"></i>${dayName}, ${date.toLocaleDateString()}`;
-                                    }
-                                } catch (e) {
-                                    console.error('Error parsing date:', e);
+                        const calendarEl = document.getElementById('calendar');
+                        
+                        // Prepare events for calendar (dates with available slots)
+                        const events = [];
+                        for (const [dateStr, slots] of Object.entries(availableSlotsData)) {
+                            if (slots &amp;&amp; slots.length > 0) {
+                                events.push({
+                                    start: dateStr,
+                                    display: 'background',
+                                    backgroundColor: '#fff5f8',
+                                    classNames: ['available-date']
+                                });
+                            }
+                        }
+                        
+                        calendar = new FullCalendar.Calendar(calendarEl, {
+                            initialView: 'dayGridMonth',
+                            headerToolbar: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: ''
+                            },
+                            height: 'auto',
+                            events: events,
+                            dateClick: function(info) {
+                                const dateStr = info.dateStr;
+                                
+                                // Remove previous date selection
+                                document.querySelectorAll('.fc-day').forEach(day => {
+                                    day.classList.remove('selected-date');
+                                });
+                                
+                                // Highlight selected date
+                                info.dayEl.classList.add('selected-date');
+                                
+                                // Load time slots for this date
+                                loadTimeSlotsForDate(dateStr);
+                            },
+                            dayCellClassNames: function(arg) {
+                                const dateStr = arg.date.toISOString().split('T')[0];
+                                if (availableSlotsData[dateStr] &amp;&amp; availableSlotsData[dateStr].length > 0) {
+                                    return ['has-slots'];
                                 }
+                                return [];
+                            },
+                            validRange: {
+                                start: new Date().toISOString().split('T')[0]
                             }
                         });
+                        
+                        calendar.render();
                     });
                 </script>
+                
+                <!-- Custom Calendar Styles -->
+                <style>
+                    /* FullCalendar customization */
+                    #calendar {
+                        font-family: inherit;
+                    }
+                    
+                    .fc .fc-button-primary {
+                        background-color: #ff69b4;
+                        border-color: #ff69b4;
+                    }
+                    
+                    .fc .fc-button-primary:hover {
+                        background-color: #ff8da1;
+                        border-color: #ff8da1;
+                    }
+                    
+                    .fc .fc-button-primary:not(:disabled):active,
+                    .fc .fc-button-primary:not(:disabled).fc-button-active {
+                        background-color: #ff69b4;
+                        border-color: #ff69b4;
+                    }
+                    
+                    .fc-day.has-slots {
+                        cursor: pointer;
+                        position: relative;
+                    }
+                    
+                    .fc-day.has-slots:hover {
+                        background-color: #fff5f8 !important;
+                    }
+                    
+                    .fc-day.has-slots .fc-daygrid-day-number {
+                        color: #ff69b4;
+                        font-weight: 600;
+                    }
+                    
+                    .fc-day.has-slots::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 5px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 6px;
+                        height: 6px;
+                        background-color: #ff69b4;
+                        border-radius: 50%;
+                    }
+                    
+                    .fc-day.selected-date {
+                        background-color: #fff5f8 !important;
+                        border: 2px solid #ff69b4 !important;
+                    }
+                    
+                    .fc .fc-daygrid-day.fc-day-today {
+                        background-color: #f0f8ff !important;
+                    }
+                    
+                    .fc .fc-toolbar-title {
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        color: #333;
+                    }
+                    
+                    .time-slot-btn:hover {
+                        background-color: #ff69b4 !important;
+                        color: white !important;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+                    }
+                    
+                    .time-slot-btn.btn-primary {
+                        background-color: #ff69b4 !important;
+                        border-color: #ff69b4 !important;
+                        color: white !important;
+                    }
+                </style>
             </div>
         </t>
     </template>

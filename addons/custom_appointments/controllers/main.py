@@ -78,10 +78,14 @@ class AppointmentController(http.Controller):
             
             available_slots = self._get_available_slots(service, staff)
             
+            import json
+            available_slots_json = json.dumps(available_slots)
+            
             return request.render('custom_appointments.booking_form_page', {
                 'service': service,
                 'staff': staff,
                 'available_slots': available_slots,
+                'available_slots_json': available_slots_json,
             })
         
         elif request.httprequest.method == 'POST':
