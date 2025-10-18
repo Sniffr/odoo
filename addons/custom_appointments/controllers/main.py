@@ -15,7 +15,7 @@ class AppointmentController(http.Controller):
             ('active', '=', True)
         ], order='name')
         
-        branches = request.env['res.company'].sudo().search([
+        branches = request.env['custom.branch'].sudo().search([
             ('active', '=', True)
         ], order='name')
         
@@ -35,17 +35,20 @@ class AppointmentController(http.Controller):
             ('active', '=', True)
         ], order='sequence, name')
         
-        staff_members = request.env['custom.staff.member'].sudo().search([
-            ('is_bookable', '=', True),
-            ('active', '=', True)
-        ], order='name')
-        
         selected_branch = None
         selected_staff = None
 
-        # Get selected branch details if branch_id provided
         if branch_id:
-            selected_branch = request.env['res.company'].sudo().browse(int(branch_id))
+            selected_branch = request.env['custom.branch'].sudo().browse(int(branch_id))
+
+        staff_domain = [
+            ('is_bookable', '=', True),
+            ('active', '=', True)
+        ]
+        if branch_id:
+            staff_domain.append(('branch_id', '=', int(branch_id)))
+        
+        staff_members = request.env['custom.staff.member'].sudo().search(staff_domain, order='name')
 
         # Get selected staff details if staff_id provided
         if staff_id and staff_id != 'any':
