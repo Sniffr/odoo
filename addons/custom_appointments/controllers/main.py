@@ -118,7 +118,7 @@ class AppointmentController(http.Controller):
         return slots_by_date
 
     def _get_slots_for_date(self, service, staff, date):
-        """Get available time slots for a specific date"""
+        """Get available time slots for a specific date based on staff availability and service duration"""
         weekday = date.weekday()  # 0=Monday, 6=Sunday
         day_fields = [
             'monday_available', 'tuesday_available', 'wednesday_available',
@@ -130,33 +130,53 @@ class AppointmentController(http.Controller):
         
         start_hour = staff.start_time
         end_hour = staff.end_time
+        
         service_duration = service.duration
+        
+        now = datetime.now()
+        is_today = date == now.date()
         
         slots = []
         current_time = start_hour
         
+        slot_interval = 0.5  # 30 minutes
+        
         while current_time + service_duration <= end_hour:
             slot_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
             
-            if not self._has_conflict(staff, slot_datetime, service_duration):
+            if is_today and slot_datetime <= now:
+                current_time += slot_interval
+                continue
+            
+            if not self._has_conflict(staff, slot_datetime, service_duration, service):
                 slots.append({
                     'time': slot_datetime.strftime('%H:%M'),
                     'datetime': slot_datetime.isoformat(),
+                    'display_time': slot_datetime.strftime('%I:%M %p'),
                 })
             
-            current_time += 0.5
+            current_time += slot_interval
         
         return slots
 
-    def _has_conflict(self, staff, start_datetime, duration_hours):
-        """Check if a time slot conflicts with existing appointments"""
+    def _has_conflict(self, staff, start_datetime, duration_hours, service=None):
+        """Check if a time slot conflicts with existing appointments including buffer time"""
         end_datetime = start_datetime + timedelta(hours=duration_hours)
+        
+        buffer_before = 0
+        buffer_after = 0
+        if service:
+            buffer_before = service.preparation_time if hasattr(service, 'preparation_time') else 0
+            buffer_after = service.cleanup_time if hasattr(service, 'cleanup_time') else 0
+        
+        check_start = start_datetime - timedelta(hours=buffer_before)
+        check_end = end_datetime + timedelta(hours=buffer_after)
         
         existing_appointments = request.env['custom.appointment'].sudo().search([
             ('staff_member_id', '=', staff.id),
-            ('state', 'in', ['confirmed', 'in_progress']),
-            ('start', '<', end_datetime),
-            ('stop', '>', start_datetime),
+            ('state', 'in', ['draft', 'confirmed', 'in_progress']),
+            ('start', '<', check_end),
+            ('stop', '>', check_start),
         ])
         
         return len(existing_appointments) > 0
@@ -181,7 +201,7 @@ class AppointmentController(http.Controller):
             start_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '+00:00'))
             end_dt = start_dt + timedelta(hours=service.duration)
             
-            if self._has_conflict(staff, start_dt, service.duration):
+            if self._has_conflict(staff, start_dt, service.duration, service):
                 raise ValueError("Time slot is no longer available")
             
             appointment_vals = {
