@@ -55,6 +55,11 @@ class AppointmentController(http.Controller):
         selected_branch = None
         selected_staff = None
 
+        if staff_id and staff_id != 'any':
+            selected_staff = request.env['custom.staff.member'].sudo().browse(int(staff_id))
+            if selected_staff.exists() and selected_staff.branch_id:
+                selected_branch = selected_staff.branch_id
+
         if branch_id:
             selected_branch = request.env['custom.branch'].sudo().browse(int(branch_id))
 
@@ -64,12 +69,10 @@ class AppointmentController(http.Controller):
         ]
         if branch_id:
             staff_domain.append(('branch_id', '=', int(branch_id)))
+        elif selected_branch:
+            staff_domain.append(('branch_id', '=', selected_branch.id))
         
         staff_members = request.env['custom.staff.member'].sudo().search(staff_domain, order='name')
-
-        # Get selected staff details if staff_id provided
-        if staff_id and staff_id != 'any':
-            selected_staff = request.env['custom.staff.member'].sudo().browse(int(staff_id))
 
         return request.render('custom_appointments.service_selection_page', {
             'services': services,
