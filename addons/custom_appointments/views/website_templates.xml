@@ -442,6 +442,13 @@
                 <script>
                     let selectedStaff = null;
                     let selectedBranch = null;
+                    
+                    // Initialize selectedBranch from URL parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const branchIdFromUrl = urlParams.get('branch_id');
+                    if (branchIdFromUrl) {
+                        selectedBranch = branchIdFromUrl;
+                    }
 
                     function selectStaff(element, staffId) {
                         // Remove previous selection
