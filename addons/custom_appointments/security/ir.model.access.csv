@@ -1,8 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_custom_staff_member_user,custom.staff.member.user,model_custom_staff_member,base.group_user,1,1,1,1
+access_custom_staff_member_public,custom.staff.member.public,model_custom_staff_member,base.group_public,1,0,0,0
 access_custom_branch_user,custom.branch.user,model_custom_branch,base.group_user,1,1,1,1
+access_custom_branch_public,custom.branch.public,model_custom_branch,base.group_public,1,0,0,0
 access_company_service_user,company.service.user,model_company_service,base.group_user,1,1,1,1
+access_company_service_public,company.service.public,model_company_service,base.group_public,1,0,0,0
 access_service_category_user,service.category.user,model_service_category,base.group_user,1,1,1,1
+access_service_category_public,service.category.public,model_service_category,base.group_public,1,0,0,0
 access_custom_appointment_user,custom.appointment.user,model_custom_appointment,base.group_user,1,1,1,1
 access_custom_appointment_public,custom.appointment.public,model_custom_appointment,base.group_public,1,1,1,0
 access_employee_import_wizard_user,employee.import.wizard.user,model_employee_import_wizard,base.group_user,1,1,1,1
