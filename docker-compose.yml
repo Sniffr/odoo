@@ -19,6 +19,7 @@ services:
       - db
     ports:
       - "8069:8069"
+      - "8070:8070"
       - "8072:8072"
     environment:
       - HOST=db
