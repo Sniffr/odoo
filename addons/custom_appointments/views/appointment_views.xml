@@ -43,6 +43,7 @@
                             <field name="branch_id"/>
                         </group>
                         <group string="Customer Information">
+                            <field name="partner_id"/>
                             <field name="customer_name"/>
                             <field name="customer_email"/>
                             <field name="customer_phone"/>

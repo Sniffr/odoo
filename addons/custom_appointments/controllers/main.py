@@ -311,13 +311,21 @@ class AppointmentController(http.Controller):
             
             amount_to_charge = appointment.service_id.get_amount_to_charge()
             
+            if not appointment.partner_id:
+                partner = appointment._find_or_create_partner(
+                    appointment.customer_name,
+                    appointment.customer_email,
+                    appointment.customer_phone
+                )
+                appointment.partner_id = partner.id
+            
             transaction_vals = {
                 'amount': amount_to_charge,
                 'currency_id': appointment.currency_id.id,
                 'provider_id': acquirer.id,
                 'payment_method_id': payment_method.id,
                 'reference': unique_ref,
-                'partner_id': request.env.user.partner_id.id if request.env.user != request.env.ref('base.public_user') else False,
+                'partner_id': appointment.partner_id.id,
                 'partner_name': appointment.customer_name,
                 'partner_email': appointment.customer_email,
             }

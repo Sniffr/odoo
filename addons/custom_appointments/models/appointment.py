@@ -13,6 +13,8 @@ class Appointment(models.Model):
     customer_name = fields.Char(string='Customer Name', required=True)
     customer_email = fields.Char(string='Customer Email', required=True)
     customer_phone = fields.Char(string='Customer Phone')
+    partner_id = fields.Many2one('res.partner', string='Customer', ondelete='set null', 
+                                 help='Customer partner record for CRM and payment tracking')
     
     service_id = fields.Many2one('company.service', string='Service', required=True, ondelete='cascade')
     staff_member_id = fields.Many2one('custom.staff.member', string='Staff Member', required=True, ondelete='cascade')
@@ -83,6 +85,27 @@ class Appointment(models.Model):
         if self.start and self.service_id and self.service_id.duration:
             self.stop = self.start + timedelta(hours=self.service_id.duration)
     
+    def _find_or_create_partner(self, name, email, phone=None):
+        """Find existing partner by email or create a new one"""
+        Partner = self.env['res.partner'].sudo()
+        
+        partner = Partner.search([('email', '=', email)], limit=1)
+        
+        if partner:
+            if phone and not partner.phone:
+                partner.write({'phone': phone})
+            return partner
+        
+        partner_vals = {
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'customer_rank': 1,
+            'is_company': False,
+        }
+        
+        return Partner.create(partner_vals)
+    
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -94,6 +117,14 @@ class Appointment(models.Model):
                 staff = self.env['custom.staff.member'].browse(vals['staff_member_id'])
                 if staff.employee_id and staff.employee_id.user_id:
                     vals['user_id'] = staff.employee_id.user_id.id
+            
+            if not vals.get('partner_id') and vals.get('customer_email'):
+                partner = self._find_or_create_partner(
+                    vals.get('customer_name'),
+                    vals.get('customer_email'),
+                    vals.get('customer_phone')
+                )
+                vals['partner_id'] = partner.id
         
         appointments = super(Appointment, self).create(vals_list)
         appointments._create_calendar_event()
