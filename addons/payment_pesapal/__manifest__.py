@@ -1,6 +1,6 @@
 {
     'name': 'Payment Provider: PesaPal',
-    'version': '1.0',
+    'version': '1.1',
     'category': 'Accounting/Payment Providers',
     'sequence': 351,
     'summary': 'PesaPal Payment Gateway - Hosted Checkout',
