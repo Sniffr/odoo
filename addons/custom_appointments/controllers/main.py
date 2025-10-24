@@ -304,6 +304,9 @@ class AppointmentController(http.Controller):
                 ], limit=1)
             
             if not payment_method:
+                payment_method = request.env['payment.method'].sudo().search([], limit=1)
+            
+            if not payment_method:
                 raise ValueError("No payment method available. Please contact support.")
             
             import time
