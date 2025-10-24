@@ -6,23 +6,38 @@ _logger = logging.getLogger(__name__)
 
 
 def post_init_hook(env):
-    """Activate card and pesapal payment methods after module installation"""
-    card_method = env['payment.method'].search([('code', '=', 'card')], limit=1)
-    if card_method:
-        if not card_method.active:
-            card_method.active = True
-            _logger.info('PesaPal module: Activated card payment method (ID: %s)', card_method.id)
-        else:
-            _logger.info('PesaPal module: Card payment method already active (ID: %s)', card_method.id)
-    else:
-        _logger.warning('PesaPal module: Card payment method not found in database')
+    """Create and activate payment methods for PesaPal after module installation"""
+    PaymentMethod = env['payment.method'].sudo()
     
-    pesapal_method = env['payment.method'].search([('code', '=', 'pesapal')], limit=1)
-    if pesapal_method:
-        if not pesapal_method.active:
-            pesapal_method.active = True
-            _logger.info('PesaPal module: Activated pesapal payment method (ID: %s)', pesapal_method.id)
+    payment_methods_data = [
+        {
+            'name': 'Card',
+            'code': 'card',
+            'active': True,
+        },
+        {
+            'name': 'PesaPal',
+            'code': 'pesapal',
+            'active': True,
+        },
+        {
+            'name': 'Mobile Money',
+            'code': 'mobile_money',
+            'active': True,
+        },
+    ]
+    
+    for method_data in payment_methods_data:
+        existing_method = PaymentMethod.search([('code', '=', method_data['code'])], limit=1)
+        
+        if existing_method:
+            if not existing_method.active:
+                existing_method.active = True
+                _logger.info('PesaPal module: Activated %s payment method (ID: %s)', method_data['name'], existing_method.id)
+            else:
+                _logger.info('PesaPal module: %s payment method already active (ID: %s)', method_data['name'], existing_method.id)
         else:
-            _logger.info('PesaPal module: PesaPal payment method already active (ID: %s)', pesapal_method.id)
-    else:
-        _logger.info('PesaPal module: PesaPal payment method not found (will be created by Odoo)')
+            new_method = PaymentMethod.create(method_data)
+            _logger.info('PesaPal module: Created %s payment method (ID: %s)', method_data['name'], new_method.id)
+    
+    env.cr.commit()
