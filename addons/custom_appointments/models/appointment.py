@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 
 
@@ -84,6 +85,38 @@ class Appointment(models.Model):
     def _onchange_start_time(self):
         if self.start and self.service_id and self.service_id.duration:
             self.stop = self.start + timedelta(hours=self.service_id.duration)
+    
+    @api.constrains('staff_member_id', 'start', 'stop', 'state')
+    def _check_staff_availability(self):
+        """Validate that the staff member doesn't have overlapping appointments"""
+        for appointment in self:
+            # Skip validation for cancelled appointments
+            if appointment.state == 'cancelled':
+                continue
+            
+            if not appointment.start or not appointment.stop or not appointment.staff_member_id:
+                continue
+            
+            # Search for conflicting appointments
+            domain = [
+                ('staff_member_id', '=', appointment.staff_member_id.id),
+                ('id', '!=', appointment.id),  # Exclude current appointment
+                ('state', 'in', ['draft', 'confirmed', 'in_progress']),  # Only active appointments
+                ('start', '<', appointment.stop),
+                ('stop', '>', appointment.start),
+            ]
+            
+            conflicting_appointments = self.search(domain, limit=1)
+            
+            if conflicting_appointments:
+                raise ValidationError(_(
+                    'The staff member "%s" already has an appointment scheduled from %s to %s. '
+                    'Please choose a different time slot or staff member.'
+                ) % (
+                    appointment.staff_member_id.name,
+                    conflicting_appointments.start.strftime('%Y-%m-%d %H:%M'),
+                    conflicting_appointments.stop.strftime('%Y-%m-%d %H:%M')
+                ))
     
     def _find_or_create_partner(self, name, email, phone=None):
         """Find existing partner by email or create a new one"""
