@@ -14,7 +14,8 @@ services:
     restart: unless-stopped
 
   odoo:
-    image: odoo:18.0
+    build: .
+    image: odoo-custom:18.0
     depends_on:
       - db
     ports:
