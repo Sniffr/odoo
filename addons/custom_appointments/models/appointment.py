@@ -3,6 +3,9 @@ from datetime import datetime, timedelta
 import base64
 from icalendar import Calendar, Event as ICalEvent
 import pytz
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class Appointment(models.Model):
@@ -279,12 +282,20 @@ class Appointment(models.Model):
         """Send confirmation email to customer and SMS if phone is provided"""
         for appointment in self:
             if appointment.customer_email:
+                _logger.info(f"Sending confirmation email to customer {appointment.customer_name} ({appointment.customer_email}) for appointment {appointment.id}")
                 template = self.env.ref('custom_appointments.appointment_confirmation_email', raise_if_not_found=False)
                 if template:
-                    ics_attachment = appointment._generate_ics_attachment()
-                    template.send_mail(appointment.id, force_send=True, email_values={
-                        'attachment_ids': [(4, ics_attachment.id)]
-                    })
+                    try:
+                        ics_attachment = appointment._generate_ics_attachment()
+                        _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for appointment {appointment.id}")
+                        template.send_mail(appointment.id, force_send=True, email_values={
+                            'attachment_ids': [(4, ics_attachment.id)]
+                        })
+                        _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
+                    except Exception as e:
+                        _logger.error(f"Failed to send confirmation email to {appointment.customer_email}: {str(e)}", exc_info=True)
+                else:
+                    _logger.warning(f"Confirmation email template not found for appointment {appointment.id}")
             
             if appointment.customer_phone:
                 self._send_sms_notification(
@@ -296,9 +307,16 @@ class Appointment(models.Model):
         """Send cancellation email to customer and SMS if phone is provided"""
         for appointment in self:
             if appointment.customer_email:
+                _logger.info(f"Sending cancellation email to customer {appointment.customer_name} ({appointment.customer_email}) for appointment {appointment.id}")
                 template = self.env.ref('custom_appointments.appointment_cancellation_email', raise_if_not_found=False)
                 if template:
-                    template.send_mail(appointment.id, force_send=True)
+                    try:
+                        template.send_mail(appointment.id, force_send=True)
+                        _logger.info(f"Successfully sent cancellation email to {appointment.customer_email}")
+                    except Exception as e:
+                        _logger.error(f"Failed to send cancellation email to {appointment.customer_email}: {str(e)}", exc_info=True)
+                else:
+                    _logger.warning(f"Cancellation email template not found for appointment {appointment.id}")
             
             if appointment.customer_phone:
                 self._send_sms_notification(
@@ -310,12 +328,20 @@ class Appointment(models.Model):
         """Send notification to staff member about new appointment"""
         for appointment in self:
             if appointment.staff_member_id.email:
+                _logger.info(f"Sending notification email to staff {appointment.staff_member_id.name} ({appointment.staff_member_id.email}) for appointment {appointment.id}")
                 template = self.env.ref('custom_appointments.staff_notification_email', raise_if_not_found=False)
                 if template:
-                    ics_attachment = appointment._generate_ics_attachment()
-                    template.send_mail(appointment.id, force_send=True, email_values={
-                        'attachment_ids': [(4, ics_attachment.id)]
-                    })
+                    try:
+                        ics_attachment = appointment._generate_ics_attachment()
+                        _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for staff notification")
+                        template.send_mail(appointment.id, force_send=True, email_values={
+                            'attachment_ids': [(4, ics_attachment.id)]
+                        })
+                        _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
+                    except Exception as e:
+                        _logger.error(f"Failed to send staff notification to {appointment.staff_member_id.email}: {str(e)}", exc_info=True)
+                else:
+                    _logger.warning(f"Staff notification email template not found for appointment {appointment.id}")
     
     def _send_reminder_notifications(self):
         """Send reminder notifications (to be called by scheduled action)"""
