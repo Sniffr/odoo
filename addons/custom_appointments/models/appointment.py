@@ -291,6 +291,8 @@ class Appointment(models.Model):
                         
                         template_ctx = template.with_context(lang='en_US')
                         template_ctx.send_mail(appointment.id, force_send=True, email_values={
+                            'email_to': appointment.customer_email,
+                            'email_from': appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost',
                             'attachment_ids': [(4, ics_attachment.id)]
                         })
                         _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
@@ -313,7 +315,10 @@ class Appointment(models.Model):
                 template = self.env.ref('custom_appointments.appointment_cancellation_email', raise_if_not_found=False)
                 if template:
                     try:
-                        template.send_mail(appointment.id, force_send=True)
+                        template.send_mail(appointment.id, force_send=True, email_values={
+                            'email_to': appointment.customer_email,
+                            'email_from': appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost',
+                        })
                         _logger.info(f"Successfully sent cancellation email to {appointment.customer_email}")
                     except Exception as e:
                         _logger.error(f"Failed to send cancellation email to {appointment.customer_email}: {str(e)}", exc_info=True)
@@ -339,6 +344,8 @@ class Appointment(models.Model):
                         
                         template_ctx = template.with_context(lang=appointment.staff_member_id.lang if hasattr(appointment.staff_member_id, 'lang') else 'en_US')
                         mail_id = template_ctx.send_mail(appointment.id, force_send=True, email_values={
+                            'email_to': appointment.staff_member_id.email,
+                            'email_from': self.env.user.company_id.email or 'noreply@localhost',
                             'attachment_ids': [(4, ics_attachment.id)]
                         })
                         _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email} (mail_id: {mail_id})")
@@ -353,7 +360,10 @@ class Appointment(models.Model):
             if appointment.customer_email:
                 template = self.env.ref('custom_appointments.appointment_reminder_email', raise_if_not_found=False)
                 if template:
-                    template.send_mail(appointment.id, force_send=True)
+                    template.send_mail(appointment.id, force_send=True, email_values={
+                        'email_to': appointment.customer_email,
+                        'email_from': appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost',
+                    })
             
             if appointment.customer_phone:
                 self._send_sms_notification(
