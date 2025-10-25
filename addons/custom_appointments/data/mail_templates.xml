@@ -148,6 +148,7 @@
         <field name="subject">New Appointment Booked - {{ object.name }}</field>
         <field name="email_from">{{ (user.company_id.email or 'noreply@localhost') }}</field>
         <field name="email_to">{{ object.staff_member_id.email }}</field>
+        <field name="render_model">custom.appointment</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">

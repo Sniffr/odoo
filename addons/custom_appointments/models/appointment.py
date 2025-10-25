@@ -134,7 +134,6 @@ class Appointment(models.Model):
         
         appointments = super(Appointment, self).create(vals_list)
         appointments._create_calendar_event()
-        appointments._send_staff_notification()
         return appointments
     
     def _create_calendar_event(self):
@@ -176,6 +175,7 @@ class Appointment(models.Model):
             raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
         self._send_confirmation_notifications()
+        self._send_staff_notification()
         return True
     
     def action_start(self):
@@ -288,7 +288,9 @@ class Appointment(models.Model):
                     try:
                         ics_attachment = appointment._generate_ics_attachment()
                         _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for appointment {appointment.id}")
-                        template.send_mail(appointment.id, force_send=True, email_values={
+                        
+                        template_ctx = template.with_context(lang='en_US')
+                        template_ctx.send_mail(appointment.id, force_send=True, email_values={
                             'attachment_ids': [(4, ics_attachment.id)]
                         })
                         _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
@@ -334,10 +336,12 @@ class Appointment(models.Model):
                     try:
                         ics_attachment = appointment._generate_ics_attachment()
                         _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for staff notification")
-                        template.send_mail(appointment.id, force_send=True, email_values={
+                        
+                        template_ctx = template.with_context(lang=appointment.staff_member_id.lang if hasattr(appointment.staff_member_id, 'lang') else 'en_US')
+                        mail_id = template_ctx.send_mail(appointment.id, force_send=True, email_values={
                             'attachment_ids': [(4, ics_attachment.id)]
                         })
-                        _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
+                        _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email} (mail_id: {mail_id})")
                     except Exception as e:
                         _logger.error(f"Failed to send staff notification to {appointment.staff_member_id.email}: {str(e)}", exc_info=True)
                 else:
