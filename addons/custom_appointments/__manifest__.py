@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.0.9',
+    'version': '1.1.0',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -12,6 +12,7 @@
         - Service catalog with pricing and categories
         - Staff availability and booking system
         - Appointment booking with calendar integration
+        - Email notifications with calendar invites (.ics files)
         - Integration with company structure
     ''',
     'author': 'Custom Development',
@@ -35,6 +36,9 @@
         'data/services_demo_data.xml',
         'data/appointment_demo_data.xml',
     ],
+    'external_dependencies': {
+        'python': ['icalendar'],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,
