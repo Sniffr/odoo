@@ -1,5 +1,8 @@
 from odoo import models, fields, api
 from datetime import datetime, timedelta
+import base64
+from icalendar import Calendar, Event as ICalEvent
+import pytz
 
 
 class Appointment(models.Model):
@@ -206,13 +209,82 @@ class Appointment(models.Model):
         
         return my_appointments
     
+    def _generate_ics_attachment(self):
+        """Generate .ics calendar invite file for the appointment"""
+        self.ensure_one()
+        
+        cal = Calendar()
+        cal.add('prodid', '-//Odoo Appointment System//EN')
+        cal.add('version', '2.0')
+        cal.add('method', 'REQUEST')
+        
+        event = ICalEvent()
+        event.add('summary', self.name)
+        event.add('dtstart', self.start)
+        event.add('dtend', self.stop)
+        event.add('dtstamp', datetime.now())
+        
+        location_parts = []
+        if self.branch_id:
+            if self.branch_id.name:
+                location_parts.append(self.branch_id.name)
+            if self.branch_id.street:
+                location_parts.append(self.branch_id.street)
+            if self.branch_id.city:
+                location_parts.append(self.branch_id.city)
+        
+        if location_parts:
+            event.add('location', ', '.join(location_parts))
+        
+        description_parts = [
+            f"Service: {self.service_id.name}",
+            f"Staff Member: {self.staff_member_id.name}",
+            f"Duration: {self.duration} hours",
+        ]
+        
+        if self.branch_id and self.branch_id.phone:
+            description_parts.append(f"Contact: {self.branch_id.phone}")
+        
+        if self.description:
+            description_parts.append(f"\nNotes: {self.description}")
+        
+        event.add('description', '\n'.join(description_parts))
+        event.add('uid', f'appointment-{self.id}@{self.env.company.name.replace(" ", "-")}')
+        event.add('priority', 5)
+        event.add('sequence', 0)
+        event.add('status', 'CONFIRMED')
+        
+        if self.customer_email:
+            event.add('attendee', f'MAILTO:{self.customer_email}')
+        
+        if self.staff_member_id.email:
+            event.add('organizer', f'MAILTO:{self.staff_member_id.email}')
+        
+        cal.add_component(event)
+        
+        ics_content = cal.to_ical()
+        ics_base64 = base64.b64encode(ics_content)
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': f'appointment_{self.id}.ics',
+            'datas': ics_base64,
+            'res_model': 'custom.appointment',
+            'res_id': self.id,
+            'mimetype': 'text/calendar',
+        })
+        
+        return attachment
+    
     def _send_confirmation_notifications(self):
         """Send confirmation email to customer and SMS if phone is provided"""
         for appointment in self:
             if appointment.customer_email:
                 template = self.env.ref('custom_appointments.appointment_confirmation_email', raise_if_not_found=False)
                 if template:
-                    template.send_mail(appointment.id, force_send=True)
+                    ics_attachment = appointment._generate_ics_attachment()
+                    template.send_mail(appointment.id, force_send=True, email_values={
+                        'attachment_ids': [(4, ics_attachment.id)]
+                    })
             
             if appointment.customer_phone:
                 self._send_sms_notification(
@@ -240,7 +312,10 @@ class Appointment(models.Model):
             if appointment.staff_member_id.email:
                 template = self.env.ref('custom_appointments.staff_notification_email', raise_if_not_found=False)
                 if template:
-                    template.send_mail(appointment.id, force_send=True)
+                    ics_attachment = appointment._generate_ics_attachment()
+                    template.send_mail(appointment.id, force_send=True, email_values={
+                        'attachment_ids': [(4, ics_attachment.id)]
+                    })
     
     def _send_reminder_notifications(self):
         """Send reminder notifications (to be called by scheduled action)"""
