@@ -290,16 +290,12 @@ class Appointment(models.Model):
                         _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for appointment {appointment.id}")
                         
                         email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
-                        subject = template._render_field('subject', [appointment.id])[appointment.id]
-                        body_html = template._render_field('body_html', [appointment.id])[appointment.id]
                         
-                        mail_values = {
-                            'subject': subject,
-                            'body_html': body_html,
-                            'email_to': appointment.customer_email,
-                            'email_from': email_from,
-                            'attachment_ids': [(4, ics_attachment.id)],
-                        }
+                        mail_values = template.generate_email([appointment.id])[appointment.id]
+                        mail_values['email_to'] = appointment.customer_email
+                        mail_values['email_from'] = email_from
+                        mail_values['attachment_ids'] = [(4, ics_attachment.id)]
+                        
                         mail = self.env['mail.mail'].sudo().create(mail_values)
                         mail.send()
                         _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
@@ -323,15 +319,11 @@ class Appointment(models.Model):
                 if template:
                     try:
                         email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
-                        subject = template._render_field('subject', [appointment.id])[appointment.id]
-                        body_html = template._render_field('body_html', [appointment.id])[appointment.id]
                         
-                        mail_values = {
-                            'subject': subject,
-                            'body_html': body_html,
-                            'email_to': appointment.customer_email,
-                            'email_from': email_from,
-                        }
+                        mail_values = template.generate_email([appointment.id])[appointment.id]
+                        mail_values['email_to'] = appointment.customer_email
+                        mail_values['email_from'] = email_from
+                        
                         mail = self.env['mail.mail'].sudo().create(mail_values)
                         mail.send()
                         _logger.info(f"Successfully sent cancellation email to {appointment.customer_email}")
@@ -358,16 +350,12 @@ class Appointment(models.Model):
                         _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for staff notification")
                         
                         email_from = self.env.user.company_id.email or 'noreply@localhost'
-                        subject = template._render_field('subject', [appointment.id])[appointment.id]
-                        body_html = template._render_field('body_html', [appointment.id])[appointment.id]
                         
-                        mail_values = {
-                            'subject': subject,
-                            'body_html': body_html,
-                            'email_to': appointment.staff_member_id.email,
-                            'email_from': email_from,
-                            'attachment_ids': [(4, ics_attachment.id)],
-                        }
+                        mail_values = template.generate_email([appointment.id])[appointment.id]
+                        mail_values['email_to'] = appointment.staff_member_id.email
+                        mail_values['email_from'] = email_from
+                        mail_values['attachment_ids'] = [(4, ics_attachment.id)]
+                        
                         mail = self.env['mail.mail'].sudo().create(mail_values)
                         mail.send()
                         _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
@@ -383,15 +371,11 @@ class Appointment(models.Model):
                 template = self.env.ref('custom_appointments.appointment_reminder_email', raise_if_not_found=False)
                 if template:
                     email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
-                    subject = template._render_field('subject', [appointment.id])[appointment.id]
-                    body_html = template._render_field('body_html', [appointment.id])[appointment.id]
                     
-                    mail_values = {
-                        'subject': subject,
-                        'body_html': body_html,
-                        'email_to': appointment.customer_email,
-                        'email_from': email_from,
-                    }
+                    mail_values = template.generate_email([appointment.id])[appointment.id]
+                    mail_values['email_to'] = appointment.customer_email
+                    mail_values['email_from'] = email_from
+                    
                     mail = self.env['mail.mail'].sudo().create(mail_values)
                     mail.send()
             
