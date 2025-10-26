@@ -4,9 +4,7 @@
     <record id="appointment_confirmation_email" model="mail.template">
         <field name="name">Appointment Confirmation</field>
         <field name="model_id" ref="model_custom_appointment"/>
-        <field name="subject">Appointment Confirmed - {{ object.name }}</field>
-        <field name="email_from">{{ (object.branch_id.email or user.company_id.email or 'noreply@localhost') }}</field>
-        <field name="email_to">{{ object.customer_email }}</field>
+        <field name="subject">Appointment Confirmed - ${object.name}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
@@ -18,7 +16,7 @@
                 
                 <div style="margin-bottom: 25px;">
                     <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {{ object.customer_name }},
+                        Dear ${object.customer_name},
                     </p>
                     <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
                         Your appointment has been confirmed! We're looking forward to seeing you.
@@ -30,27 +28,27 @@
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.service_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.service_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.staff_member_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.staff_member_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a') }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a')}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.duration }} hours</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.duration} hours</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.branch_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.branch_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Price:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.price }} {{ object.currency_id.symbol }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.price} ${object.currency_id.symbol}</td>
                         </tr>
                     </table>
                 </div>
@@ -64,15 +62,15 @@
 
                 <div style="text-align: center; margin-bottom: 20px;">
                     <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        Questions? Contact us at {{ object.branch_id.phone or user.company_id.phone }} 
-                        or {{ object.branch_id.email or user.company_id.email }}
+                        Questions? Contact us at ${object.branch_id.phone or user.company_id.phone} 
+                        or ${object.branch_id.email or user.company_id.email}
                     </p>
                 </div>
 
                 <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
                     <p style="color: #b2bec3; font-size: 12px; margin: 0;">
-                        {{ user.company_id.name }}<br/>
-                        {{ object.branch_id.street }}, {{ object.branch_id.city }}
+                        ${user.company_id.name}<br/>
+                        ${object.branch_id.street}, ${object.branch_id.city}
                     </p>
                 </div>
             </div>
@@ -86,9 +84,7 @@
     <record id="appointment_reminder_email" model="mail.template">
         <field name="name">Appointment Reminder</field>
         <field name="model_id" ref="model_custom_appointment"/>
-        <field name="subject">Reminder: Your appointment tomorrow - {{ object.name }}</field>
-        <field name="email_from">{{ (object.branch_id.email or user.company_id.email or 'noreply@localhost') }}</field>
-        <field name="email_to">{{ object.customer_email }}</field>
+        <field name="subject">Reminder: Your appointment tomorrow - ${object.name}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
@@ -100,7 +96,7 @@
                 
                 <div style="margin-bottom: 25px;">
                     <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {{ object.customer_name }},
+                        Dear ${object.customer_name},
                     </p>
                     <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
                         This is a friendly reminder about your upcoming appointment.
@@ -112,26 +108,26 @@
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #856404; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.service_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.service_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #856404;">Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ format_datetime(object.start, tz=user.tz, dt_format='h:mm a') }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${format_datetime(object.start, tz=user.tz, dt_format='h:mm a')}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #856404;">Staff:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.staff_member_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.staff_member_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #856404;">Location:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.branch_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.branch_id.name}</td>
                         </tr>
                     </table>
                 </div>
 
                 <div style="text-align: center; margin-bottom: 20px;">
                     <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        Please arrive 10 minutes early. Need to reschedule? Call us at {{ object.branch_id.phone or user.company_id.phone }}
+                        Please arrive 10 minutes early. Need to reschedule? Call us at ${object.branch_id.phone or user.company_id.phone}
                     </p>
                 </div>
             </div>
@@ -145,9 +141,8 @@
     <record id="staff_notification_email" model="mail.template">
         <field name="name">New Appointment - Staff Notification</field>
         <field name="model_id" ref="model_custom_appointment"/>
-        <field name="subject">New Appointment Booked - {{ object.name }}</field>
-        <field name="email_from">{{ (user.company_id.email or 'noreply@localhost') }}</field>
-        <field name="email_to">{{ object.staff_member_id.email }}</field>
+        <field name="subject">New Appointment Booked - ${object.name}</field>
+        <field name="auto_delete" eval="True"/>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
@@ -159,7 +154,7 @@
                 
                 <div style="margin-bottom: 25px;">
                     <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Hello {{ object.staff_member_id.name }},
+                        Hello ${object.staff_member_id.name},
                     </p>
                     <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
                         A new appointment has been booked with you.
@@ -171,27 +166,27 @@
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c; width: 30%;">Customer:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.customer_name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.customer_name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c;">Email:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.customer_email }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.customer_email}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c;">Phone:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.customer_phone or 'Not provided' }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.customer_phone or 'Not provided'}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.service_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.service_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a') }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a')}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #00695c;">Duration:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.duration }} hours</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.duration} hours</td>
                         </tr>
                     </table>
                 </div>
@@ -212,9 +207,7 @@
     <record id="appointment_cancellation_email" model="mail.template">
         <field name="name">Appointment Cancellation</field>
         <field name="model_id" ref="model_custom_appointment"/>
-        <field name="subject">Appointment Cancelled - {{ object.name }}</field>
-        <field name="email_from">{{ (object.branch_id.email or user.company_id.email or 'noreply@localhost') }}</field>
-        <field name="email_to">{{ object.customer_email }}</field>
+        <field name="subject">Appointment Cancelled - ${object.name}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
@@ -226,7 +219,7 @@
                 
                 <div style="margin-bottom: 25px;">
                     <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {{ object.customer_name }},
+                        Dear ${object.customer_name},
                     </p>
                     <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
                         Your appointment has been cancelled. We apologize for any inconvenience.
@@ -238,22 +231,22 @@
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #d63031; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.service_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.service_id.name}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #d63031;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a') }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${format_datetime(object.start, tz=user.tz, dt_format='EEEE, MMMM d, y - h:mm a')}</td>
                         </tr>
                         <tr>
                             <td style="padding: 8px 0; font-weight: bold; color: #d63031;">Staff Member:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{{ object.staff_member_id.name }}</td>
+                            <td style="padding: 8px 0; color: #2d3436;">${object.staff_member_id.name}</td>
                         </tr>
                     </table>
                 </div>
 
                 <div style="text-align: center; margin-bottom: 20px;">
                     <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        To book a new appointment, please contact us at {{ object.branch_id.phone or user.company_id.phone }}
+                        To book a new appointment, please contact us at ${object.branch_id.phone or user.company_id.phone}
                         or visit our website.
                     </p>
                 </div>

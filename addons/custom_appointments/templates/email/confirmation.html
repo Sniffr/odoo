@@ -1,0 +1,71 @@
+<div style="margin: 0px; padding: 0px;">
+    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
+        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
+            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #6c5ce7; margin: 0; font-size: 28px;">Appointment Confirmed!</h1>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
+                        Dear {customer_name},
+                    </p>
+                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
+                        Your appointment has been confirmed! We're looking forward to seeing you.
+                    </p>
+                </div>
+
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                    <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px;">Appointment Details</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{service_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{staff_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{duration} hours</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{branch_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Price:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{price} {currency_symbol}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #e8f4fd; border-left: 4px solid #0984e3; padding: 15px; margin-bottom: 25px;">
+                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
+                        <strong>Important:</strong> Please arrive 10 minutes early for your appointment. 
+                        If you need to reschedule or cancel, please contact us at least 24 hours in advance.
+                    </p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: #636e72; font-size: 14px; margin: 0;">
+                        Questions? Contact us at {branch_phone} 
+                        or {branch_email}
+                    </p>
+                </div>
+
+                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
+                        {company_name}<br/>
+                        {branch_address}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

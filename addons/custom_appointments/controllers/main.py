@@ -344,8 +344,8 @@ class AppointmentController(http.Controller):
                     'payment_date': fields.Datetime.now(),
                     'payment_method': acquirer.name,
                     'payment_reference': transaction.reference,
-                    'state': 'confirmed'
                 })
+                appointment.action_confirm()
                 return request.redirect(f'/appointments/payment/success?appointment_id={appointment.id}')
             
             elif acquirer.code == 'mpesa':
@@ -409,9 +409,8 @@ class AppointmentController(http.Controller):
                         'payment_date': fields.Datetime.now(),
                         'payment_method': transaction.provider_id.name,
                         'payment_reference': transaction.reference,
-                        'state': 'confirmed'
                     })
-                    appointment._send_confirmation_notifications()
+                    appointment.action_confirm()
                 elif transaction.state in ['cancel', 'error']:
                     appointment.write({
                         'payment_status': 'failed'
