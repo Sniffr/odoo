@@ -278,85 +278,33 @@ class Appointment(models.Model):
         
         return attachment
     
+    def _load_email_template(self, template_name):
+        """Load HTML email template from file"""
+        import os
+        module_path = os.path.dirname(os.path.dirname(__file__))
+        template_path = os.path.join(module_path, 'templates', 'email', f'{template_name}.html')
+        with open(template_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    
     def _generate_confirmation_email_html(self):
         """Generate HTML for confirmation email"""
         self.ensure_one()
-        start_formatted = self.start.strftime('%A, %B %d, %Y - %I:%M %p')
+        template = self._load_email_template('confirmation')
         
-        html = f"""
-<div style="margin: 0px; padding: 0px;">
-    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
-        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
-            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #6c5ce7; margin: 0; font-size: 28px;">Appointment Confirmed!</h1>
-                </div>
-                
-                <div style="margin-bottom: 25px;">
-                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {self.customer_name},
-                    </p>
-                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
-                        Your appointment has been confirmed! We're looking forward to seeing you.
-                    </p>
-                </div>
-
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                    <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px;">Appointment Details</h3>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.service_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.staff_member_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.duration} hours</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.branch_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Price:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.price} {self.currency_id.symbol}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="background-color: #e8f4fd; border-left: 4px solid #0984e3; padding: 15px; margin-bottom: 25px;">
-                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
-                        <strong>Important:</strong> Please arrive 10 minutes early for your appointment. 
-                        If you need to reschedule or cancel, please contact us at least 24 hours in advance.
-                    </p>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        Questions? Contact us at {self.branch_id.phone or self.env.user.company_id.phone} 
-                        or {self.branch_id.email or self.env.user.company_id.email}
-                    </p>
-                </div>
-
-                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
-                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
-                        {self.env.user.company_id.name}<br/>
-                        {self.branch_id.street}, {self.branch_id.city}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-        return html
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            price=self.price,
+            currency_symbol=self.currency_id.symbol,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
     
     def _send_confirmation_notifications(self):
         """Send confirmation email to customer and SMS if phone is provided"""
@@ -392,74 +340,19 @@ class Appointment(models.Model):
     def _generate_cancellation_email_html(self):
         """Generate HTML for cancellation email"""
         self.ensure_one()
-        start_formatted = self.start.strftime('%A, %B %d, %Y - %I:%M %p')
+        template = self._load_email_template('cancellation')
         
-        html = f"""
-<div style="margin: 0px; padding: 0px;">
-    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
-        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
-            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #d63031; margin: 0; font-size: 28px;">Appointment Cancelled</h1>
-                </div>
-                
-                <div style="margin-bottom: 25px;">
-                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {self.customer_name},
-                    </p>
-                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
-                        Your appointment has been cancelled as requested.
-                    </p>
-                </div>
-
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                    <h3 style="color: #d63031; margin-top: 0; margin-bottom: 15px;">Cancelled Appointment Details</h3>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.service_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.staff_member_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.branch_id.name}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 25px;">
-                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
-                        <strong>Need to reschedule?</strong> We'd love to see you again! 
-                        Please contact us or visit our website to book a new appointment.
-                    </p>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        Questions? Contact us at {self.branch_id.phone or self.env.user.company_id.phone} 
-                        or {self.branch_id.email or self.env.user.company_id.email}
-                    </p>
-                </div>
-
-                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
-                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
-                        {self.env.user.company_id.name}<br/>
-                        {self.branch_id.street}, {self.branch_id.city}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-        return html
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            branch_name=self.branch_id.name,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
     
     def _send_cancellation_notifications(self):
         """Send cancellation email to customer and SMS if phone is provided"""
@@ -491,79 +384,20 @@ class Appointment(models.Model):
     def _generate_staff_notification_email_html(self):
         """Generate HTML for staff notification email"""
         self.ensure_one()
-        start_formatted = self.start.strftime('%A, %B %d, %Y - %I:%M %p')
+        template = self._load_email_template('staff_notification')
         
-        html = f"""
-<div style="margin: 0px; padding: 0px;">
-    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
-        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
-            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #0984e3; margin: 0; font-size: 28px;">New Appointment Booked</h1>
-                </div>
-                
-                <div style="margin-bottom: 25px;">
-                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Hello {self.staff_member_id.name},
-                    </p>
-                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
-                        A new appointment has been booked with you. Please review the details below.
-                    </p>
-                </div>
-
-                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                    <h3 style="color: #0984e3; margin-top: 0; margin-bottom: 15px;">Appointment Details</h3>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Customer:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.customer_name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Email:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.customer_email}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Phone:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.customer_phone or 'Not provided'}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.service_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.duration} hours</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.branch_id.name}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="background-color: #e8f4fd; border-left: 4px solid #0984e3; padding: 15px; margin-bottom: 25px;">
-                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
-                        <strong>Note:</strong> This appointment has been automatically added to your calendar. 
-                        Please ensure you're available at the scheduled time.
-                    </p>
-                </div>
-
-                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
-                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
-                        {self.env.user.company_id.name}<br/>
-                        {self.branch_id.street}, {self.branch_id.city}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-        return html
+        return template.format(
+            staff_name=self.staff_member_id.name,
+            customer_name=self.customer_name,
+            customer_email=self.customer_email,
+            customer_phone=self.customer_phone or 'Not provided',
+            service_name=self.service_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
     
     def _send_staff_notification(self):
         """Send notification to staff member about new appointment"""
@@ -593,78 +427,20 @@ class Appointment(models.Model):
     def _generate_reminder_email_html(self):
         """Generate HTML for reminder email"""
         self.ensure_one()
-        start_formatted = self.start.strftime('%A, %B %d, %Y - %I:%M %p')
+        template = self._load_email_template('reminder')
         
-        html = f"""
-<div style="margin: 0px; padding: 0px;">
-    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
-        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
-            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #fdcb6e; margin: 0; font-size: 28px;">Appointment Reminder</h1>
-                </div>
-                
-                <div style="margin-bottom: 25px;">
-                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
-                        Dear {self.customer_name},
-                    </p>
-                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
-                        This is a friendly reminder about your upcoming appointment tomorrow.
-                    </p>
-                </div>
-
-                <div style="background-color: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-                    <h3 style="color: #e17055; margin-top: 0; margin-bottom: 15px;">Appointment Details</h3>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.service_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.staff_member_id.name}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.duration} hours</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
-                            <td style="padding: 8px 0; color: #2d3436;">{self.branch_id.name}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="background-color: #e8f4fd; border-left: 4px solid #0984e3; padding: 15px; margin-bottom: 25px;">
-                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
-                        <strong>Important:</strong> Please arrive 10 minutes early. 
-                        If you need to cancel or reschedule, please contact us as soon as possible.
-                    </p>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <p style="color: #636e72; font-size: 14px; margin: 0;">
-                        Questions? Contact us at {self.branch_id.phone or self.env.user.company_id.phone} 
-                        or {self.branch_id.email or self.env.user.company_id.email}
-                    </p>
-                </div>
-
-                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
-                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
-                        {self.env.user.company_id.name}<br/>
-                        {self.branch_id.street}, {self.branch_id.city}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-"""
-        return html
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
     
     def _send_reminder_notifications(self):
         """Send reminder notifications (to be called by scheduled action)"""

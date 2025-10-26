@@ -1,0 +1,68 @@
+<div style="margin: 0px; padding: 0px;">
+    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
+        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
+            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #0984e3; margin: 0; font-size: 28px;">New Appointment Booked</h1>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
+                        Hello {staff_name},
+                    </p>
+                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
+                        A new appointment has been booked with you. Please review the details below.
+                    </p>
+                </div>
+
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                    <h3 style="color: #0984e3; margin-top: 0; margin-bottom: 15px;">Appointment Details</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Customer:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{customer_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Email:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{customer_email}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Phone:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{customer_phone}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Service:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{service_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date &amp; Time:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{start_formatted}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Duration:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{duration} hours</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Branch:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{branch_name}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="background-color: #e8f4fd; border-left: 4px solid #0984e3; padding: 15px; margin-bottom: 25px;">
+                    <p style="margin: 0; color: #2d3436; font-size: 14px;">
+                        <strong>Note:</strong> This appointment has been automatically added to your calendar. 
+                        Please ensure you're available at the scheduled time.
+                    </p>
+                </div>
+
+                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
+                        {company_name}<br/>
+                        {branch_address}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
