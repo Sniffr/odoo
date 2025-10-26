@@ -406,7 +406,7 @@ class Appointment(models.Model):
                 _logger.info(f"Sending notification email to staff {appointment.staff_member_id.name} ({appointment.staff_member_id.email}) for appointment {appointment.id}")
                 try:
                     ics_attachment = appointment._generate_ics_attachment()
-                    _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for staff notification")
+                    _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}, name: {ics_attachment.name}, mimetype: {ics_attachment.mimetype}) for staff notification")
                     
                     subject = f"New Appointment Booked - {appointment.name}"
                     body_html = appointment._generate_staff_notification_email_html()
@@ -419,6 +419,7 @@ class Appointment(models.Model):
                         'email_from': email_from,
                         'attachment_ids': [(4, ics_attachment.id)],
                     })
+                    _logger.info(f"Created mail record (ID: {mail.id}) with attachment IDs: {mail.attachment_ids.ids}")
                     mail.send()
                     _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
                 except Exception as e:
