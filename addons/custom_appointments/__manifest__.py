@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.1.0',
+    'version': '1.1.1',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -14,6 +14,8 @@
         - Appointment booking with calendar integration
         - Email notifications with calendar invites (.ics files)
         - Integration with company structure
+        - Automatic conflict detection for manual and website bookings
+        - Prevents double booking of staff members
     ''',
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
