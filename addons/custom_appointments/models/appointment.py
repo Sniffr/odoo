@@ -1,5 +1,11 @@
 from odoo import models, fields, api
 from datetime import datetime, timedelta
+import base64
+from icalendar import Calendar, Event as ICalEvent
+import pytz
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class Appointment(models.Model):
@@ -128,7 +134,6 @@ class Appointment(models.Model):
         
         appointments = super(Appointment, self).create(vals_list)
         appointments._create_calendar_event()
-        appointments._send_staff_notification()
         return appointments
     
     def _create_calendar_event(self):
@@ -170,6 +175,7 @@ class Appointment(models.Model):
             raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
         self._send_confirmation_notifications()
+        self._send_staff_notification()
         return True
     
     def action_start(self):
@@ -206,13 +212,124 @@ class Appointment(models.Model):
         
         return my_appointments
     
+    def _generate_ics_attachment(self):
+        """Generate .ics calendar invite file for the appointment"""
+        self.ensure_one()
+        
+        cal = Calendar()
+        cal.add('prodid', '-//Odoo Appointment System//EN')
+        cal.add('version', '2.0')
+        cal.add('method', 'REQUEST')
+        
+        event = ICalEvent()
+        event.add('summary', self.name)
+        event.add('dtstart', self.start)
+        event.add('dtend', self.stop)
+        event.add('dtstamp', datetime.now())
+        
+        location_parts = []
+        if self.branch_id:
+            if self.branch_id.name:
+                location_parts.append(self.branch_id.name)
+            if self.branch_id.street:
+                location_parts.append(self.branch_id.street)
+            if self.branch_id.city:
+                location_parts.append(self.branch_id.city)
+        
+        if location_parts:
+            event.add('location', ', '.join(location_parts))
+        
+        description_parts = [
+            f"Service: {self.service_id.name}",
+            f"Staff Member: {self.staff_member_id.name}",
+            f"Duration: {self.duration} hours",
+        ]
+        
+        if self.branch_id and self.branch_id.phone:
+            description_parts.append(f"Contact: {self.branch_id.phone}")
+        
+        if self.description:
+            description_parts.append(f"\nNotes: {self.description}")
+        
+        event.add('description', '\n'.join(description_parts))
+        event.add('uid', f'appointment-{self.id}@{self.env.company.name.replace(" ", "-")}')
+        event.add('priority', 5)
+        event.add('sequence', 0)
+        event.add('status', 'CONFIRMED')
+        
+        if self.customer_email:
+            event.add('attendee', f'MAILTO:{self.customer_email}')
+        
+        if self.staff_member_id.email:
+            event.add('organizer', f'MAILTO:{self.staff_member_id.email}')
+        
+        cal.add_component(event)
+        
+        ics_content = cal.to_ical()
+        ics_base64 = base64.b64encode(ics_content)
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': f'appointment_{self.id}.ics',
+            'datas': ics_base64,
+            'res_model': 'custom.appointment',
+            'res_id': self.id,
+            'mimetype': 'text/calendar',
+        })
+        
+        return attachment
+    
+    def _load_email_template(self, template_name):
+        """Load HTML email template from file"""
+        import os
+        module_path = os.path.dirname(os.path.dirname(__file__))
+        template_path = os.path.join(module_path, 'templates', 'email', f'{template_name}.html')
+        with open(template_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    
+    def _generate_confirmation_email_html(self):
+        """Generate HTML for confirmation email"""
+        self.ensure_one()
+        template = self._load_email_template('confirmation')
+        
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            price=self.price,
+            currency_symbol=self.currency_id.symbol,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
+    
     def _send_confirmation_notifications(self):
         """Send confirmation email to customer and SMS if phone is provided"""
         for appointment in self:
             if appointment.customer_email:
-                template = self.env.ref('custom_appointments.appointment_confirmation_email', raise_if_not_found=False)
-                if template:
-                    template.send_mail(appointment.id, force_send=True)
+                _logger.info(f"Sending confirmation email to customer {appointment.customer_name} ({appointment.customer_email}) for appointment {appointment.id}")
+                try:
+                    ics_attachment = appointment._generate_ics_attachment()
+                    _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}) for appointment {appointment.id}")
+                    
+                    subject = f"Appointment Confirmed - {appointment.name}"
+                    body_html = appointment._generate_confirmation_email_html()
+                    email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
+                    
+                    mail = self.env['mail.mail'].sudo().create({
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': appointment.customer_email,
+                        'email_from': email_from,
+                        'attachment_ids': [(4, ics_attachment.id)],
+                    })
+                    mail.send()
+                    _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
+                except Exception as e:
+                    _logger.error(f"Failed to send confirmation email to {appointment.customer_email}: {str(e)}", exc_info=True)
             
             if appointment.customer_phone:
                 self._send_sms_notification(
@@ -220,13 +337,43 @@ class Appointment(models.Model):
                     f"Appointment confirmed! {appointment.service_id.name} with {appointment.staff_member_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')}. See you soon!"
                 )
     
+    def _generate_cancellation_email_html(self):
+        """Generate HTML for cancellation email"""
+        self.ensure_one()
+        template = self._load_email_template('cancellation')
+        
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            branch_name=self.branch_id.name,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
+    
     def _send_cancellation_notifications(self):
         """Send cancellation email to customer and SMS if phone is provided"""
         for appointment in self:
             if appointment.customer_email:
-                template = self.env.ref('custom_appointments.appointment_cancellation_email', raise_if_not_found=False)
-                if template:
-                    template.send_mail(appointment.id, force_send=True)
+                _logger.info(f"Sending cancellation email to customer {appointment.customer_name} ({appointment.customer_email}) for appointment {appointment.id}")
+                try:
+                    subject = f"Appointment Cancelled - {appointment.name}"
+                    body_html = appointment._generate_cancellation_email_html()
+                    email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
+                    
+                    mail = self.env['mail.mail'].sudo().create({
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': appointment.customer_email,
+                        'email_from': email_from,
+                    })
+                    mail.send()
+                    _logger.info(f"Successfully sent cancellation email to {appointment.customer_email}")
+                except Exception as e:
+                    _logger.error(f"Failed to send cancellation email to {appointment.customer_email}: {str(e)}", exc_info=True)
             
             if appointment.customer_phone:
                 self._send_sms_notification(
@@ -234,21 +381,83 @@ class Appointment(models.Model):
                     f"Your appointment for {appointment.service_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')} has been cancelled. Please contact us to reschedule."
                 )
     
+    def _generate_staff_notification_email_html(self):
+        """Generate HTML for staff notification email"""
+        self.ensure_one()
+        template = self._load_email_template('staff_notification')
+        
+        return template.format(
+            staff_name=self.staff_member_id.name,
+            customer_name=self.customer_name,
+            customer_email=self.customer_email,
+            customer_phone=self.customer_phone or 'Not provided',
+            service_name=self.service_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
+    
     def _send_staff_notification(self):
         """Send notification to staff member about new appointment"""
         for appointment in self:
             if appointment.staff_member_id.email:
-                template = self.env.ref('custom_appointments.staff_notification_email', raise_if_not_found=False)
-                if template:
-                    template.send_mail(appointment.id, force_send=True)
+                _logger.info(f"Sending notification email to staff {appointment.staff_member_id.name} ({appointment.staff_member_id.email}) for appointment {appointment.id}")
+                try:
+                    ics_attachment = appointment._generate_ics_attachment()
+                    _logger.info(f"Generated calendar invite attachment (ID: {ics_attachment.id}, name: {ics_attachment.name}, mimetype: {ics_attachment.mimetype}) for staff notification")
+                    
+                    subject = f"New Appointment Booked - {appointment.name}"
+                    body_html = appointment._generate_staff_notification_email_html()
+                    email_from = self.env.user.company_id.email or 'noreply@localhost'
+                    
+                    mail = self.env['mail.mail'].sudo().create({
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': appointment.staff_member_id.email,
+                        'email_from': email_from,
+                        'attachment_ids': [(4, ics_attachment.id)],
+                    })
+                    _logger.info(f"Created mail record (ID: {mail.id}) with attachment IDs: {mail.attachment_ids.ids}")
+                    mail.send()
+                    _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
+                except Exception as e:
+                    _logger.error(f"Failed to send staff notification to {appointment.staff_member_id.email}: {str(e)}", exc_info=True)
+    
+    def _generate_reminder_email_html(self):
+        """Generate HTML for reminder email"""
+        self.ensure_one()
+        template = self._load_email_template('reminder')
+        
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            duration=self.duration,
+            branch_name=self.branch_id.name,
+            branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
+            branch_email=self.branch_id.email or self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+            branch_address=f"{self.branch_id.street}, {self.branch_id.city}"
+        )
     
     def _send_reminder_notifications(self):
         """Send reminder notifications (to be called by scheduled action)"""
         for appointment in self:
             if appointment.customer_email:
-                template = self.env.ref('custom_appointments.appointment_reminder_email', raise_if_not_found=False)
-                if template:
-                    template.send_mail(appointment.id, force_send=True)
+                subject = f"Reminder: Your appointment tomorrow - {appointment.name}"
+                body_html = appointment._generate_reminder_email_html()
+                email_from = appointment.branch_id.email or self.env.user.company_id.email or 'noreply@localhost'
+                
+                mail = self.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'body_html': body_html,
+                    'email_to': appointment.customer_email,
+                    'email_from': email_from,
+                })
+                mail.send()
             
             if appointment.customer_phone:
                 self._send_sms_notification(
