@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Appointment Search View -->
+    <record id="appointment_search_view" model="ir.ui.view">
+        <field name="name">custom.appointment.search</field>
+        <field name="model">custom.appointment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="service_id"/>
+                <field name="staff_member_id"/>
+                <field name="branch_id"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Today" name="today" domain="[('start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter string="All" name="all" domain="[]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Staff Member" name="group_by_staff" context="{'group_by': 'staff_member_id'}"/>
+                    <filter string="Branch" name="group_by_branch" context="{'group_by': 'branch_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- Appointment List View -->
     <record id="appointment_list_view" model="ir.ui.view">
         <field name="name">custom.appointment.list</field>
@@ -148,6 +171,8 @@
         <field name="name">Appointments</field>
         <field name="res_model">custom.appointment</field>
         <field name="view_mode">list,form,calendar,kanban</field>
+        <field name="search_view_id" ref="appointment_search_view"/>
+        <field name="context">{'search_default_confirmed': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Schedule your first appointment!
