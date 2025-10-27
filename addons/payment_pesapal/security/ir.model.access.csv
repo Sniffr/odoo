@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pesapal_ipn_log_user,pesapal.ipn.log.user,model_pesapal_ipn_log,base.group_user,1,0,0,0
+access_pesapal_ipn_log_system,pesapal.ipn.log.system,model_pesapal_ipn_log,base.group_system,1,1,1,1
+access_pesapal_ipn_log_public,pesapal.ipn.log.public,model_pesapal_ipn_log,,1,1,1,0

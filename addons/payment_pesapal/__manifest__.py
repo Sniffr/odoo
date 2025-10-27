@@ -19,6 +19,7 @@ Features:
     """,
     'depends': ['payment'],
     'data': [
+        'security/ir.model.access.csv',
         'views/payment_pesapal_templates.xml',
         'views/payment_provider_views.xml',
         'data/payment_provider_data.xml',
