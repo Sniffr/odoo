@@ -354,13 +354,11 @@ class Appointment(models.Model):
         self.ensure_one()
         template = self._load_email_template('confirmation')
         
-        local_start = self._get_local_datetime(self.start)
-        
         return template.format(
             customer_name=self.customer_name,
             service_name=self.service_id.name,
             staff_name=self.staff_member_id.name,
-            start_formatted=local_start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
             duration=self.duration,
             branch_name=self.branch_id.name,
             price=self.price,
@@ -397,10 +395,9 @@ class Appointment(models.Model):
                     _logger.error(f"Failed to send confirmation email to {appointment.customer_email}: {str(e)}", exc_info=True)
             
             if appointment.customer_phone:
-                local_start = appointment._get_local_datetime(appointment.start)
                 self._send_sms_notification(
                     appointment.customer_phone,
-                    f"Appointment confirmed! {appointment.service_id.name} with {appointment.staff_member_id.name} on {local_start.strftime('%B %d at %I:%M %p')}. See you soon!"
+                    f"Appointment confirmed! {appointment.service_id.name} with {appointment.staff_member_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')}. See you soon!"
                 )
     
     def _generate_cancellation_email_html(self):
@@ -408,13 +405,11 @@ class Appointment(models.Model):
         self.ensure_one()
         template = self._load_email_template('cancellation')
         
-        local_start = self._get_local_datetime(self.start)
-        
         return template.format(
             customer_name=self.customer_name,
             service_name=self.service_id.name,
             staff_name=self.staff_member_id.name,
-            start_formatted=local_start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
             branch_name=self.branch_id.name,
             branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
             branch_email=self.branch_id.email or self.env.user.company_id.email,
@@ -444,10 +439,9 @@ class Appointment(models.Model):
                     _logger.error(f"Failed to send cancellation email to {appointment.customer_email}: {str(e)}", exc_info=True)
             
             if appointment.customer_phone:
-                local_start = appointment._get_local_datetime(appointment.start)
                 self._send_sms_notification(
                     appointment.customer_phone,
-                    f"Your appointment for {appointment.service_id.name} on {local_start.strftime('%B %d at %I:%M %p')} has been cancelled. Please contact us to reschedule."
+                    f"Your appointment for {appointment.service_id.name} on {appointment.start.strftime('%B %d at %I:%M %p')} has been cancelled. Please contact us to reschedule."
                 )
     
     def _generate_staff_notification_email_html(self):
@@ -455,15 +449,13 @@ class Appointment(models.Model):
         self.ensure_one()
         template = self._load_email_template('staff_notification')
         
-        local_start = self._get_local_datetime(self.start)
-        
         return template.format(
             staff_name=self.staff_member_id.name,
             customer_name=self.customer_name,
             customer_email=self.customer_email,
             customer_phone=self.customer_phone or 'Not provided',
             service_name=self.service_id.name,
-            start_formatted=local_start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
             duration=self.duration,
             branch_name=self.branch_id.name,
             company_name=self.env.user.company_id.name,
@@ -501,13 +493,11 @@ class Appointment(models.Model):
         self.ensure_one()
         template = self._load_email_template('reminder')
         
-        local_start = self._get_local_datetime(self.start)
-        
         return template.format(
             customer_name=self.customer_name,
             service_name=self.service_id.name,
             staff_name=self.staff_member_id.name,
-            start_formatted=local_start.strftime('%A, %B %d, %Y - %I:%M %p'),
+            start_formatted=self.start.strftime('%A, %B %d, %Y - %I:%M %p'),
             duration=self.duration,
             branch_name=self.branch_id.name,
             branch_phone=self.branch_id.phone or self.env.user.company_id.phone,
@@ -533,10 +523,9 @@ class Appointment(models.Model):
                 mail.send()
             
             if appointment.customer_phone:
-                local_start = appointment._get_local_datetime(appointment.start)
                 self._send_sms_notification(
                     appointment.customer_phone,
-                    f"Reminder: Your appointment for {appointment.service_id.name} is tomorrow at {local_start.strftime('%I:%M %p')} with {appointment.staff_member_id.name}."
+                    f"Reminder: Your appointment for {appointment.service_id.name} is tomorrow at {appointment.start.strftime('%I:%M %p')} with {appointment.staff_member_id.name}."
                 )
     
     def _send_sms_notification(self, phone_number, message):

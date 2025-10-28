@@ -223,7 +223,7 @@ class AppointmentController(http.Controller):
             if not service.exists() or not staff.exists():
                 raise ValueError("Invalid service or staff")
             
-            start_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '+00:00'))
+            start_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '').replace('+00:00', ''))
             end_dt = start_dt + timedelta(hours=service.duration)
             
             if self._has_conflict(staff, start_dt, service.duration, service):
