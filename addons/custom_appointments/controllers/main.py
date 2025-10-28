@@ -146,6 +146,8 @@ class AppointmentController(http.Controller):
 
     def _get_slots_for_date(self, service, staff, date):
         """Get available time slots for a specific date based on staff availability and service duration"""
+        import pytz
+        
         weekday = date.weekday()  # 0=Monday, 6=Sunday
         day_fields = [
             'monday_available', 'tuesday_available', 'wednesday_available',
@@ -160,24 +162,28 @@ class AppointmentController(http.Controller):
         
         service_duration = service.duration
         
-        now = datetime.now()
-        is_today = date == now.date()
+        eat_tz = pytz.timezone('Africa/Nairobi')
+        now_eat = datetime.now(eat_tz)
+        is_today = date == now_eat.date()
         
         slots = []
         current_time = start_hour
         
         while current_time + service_duration <= end_hour:
-            slot_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
+            slot_datetime_naive = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
             
-            if is_today and slot_datetime <= now:
+            if is_today and slot_datetime_naive <= now_eat.replace(tzinfo=None):
                 current_time += service_duration
                 continue
             
-            if not self._has_conflict(staff, slot_datetime, service_duration, service):
+            slot_datetime_eat = eat_tz.localize(slot_datetime_naive)
+            slot_datetime_utc = slot_datetime_eat.astimezone(pytz.utc).replace(tzinfo=None)
+            
+            if not self._has_conflict(staff, slot_datetime_utc, service_duration, service):
                 slots.append({
-                    'time': slot_datetime.strftime('%H:%M'),
-                    'datetime': slot_datetime.isoformat(),
-                    'display_time': slot_datetime.strftime('%I:%M %p'),
+                    'time': slot_datetime_naive.strftime('%H:%M'),
+                    'datetime': slot_datetime_naive.isoformat(),
+                    'display_time': slot_datetime_naive.strftime('%I:%M %p'),
                 })
             
             current_time += service_duration
@@ -209,6 +215,8 @@ class AppointmentController(http.Controller):
     def _process_booking(self, data):
         """Process the booking form submission"""
         try:
+            import pytz
+            
             service_id = int(data.get('service_id'))
             staff_id = int(data.get('staff_id'))
             appointment_datetime = data.get('appointment_datetime')
@@ -224,6 +232,7 @@ class AppointmentController(http.Controller):
                 raise ValueError("Invalid service or staff")
             
             start_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '').replace('+00:00', ''))
+
             end_dt = start_dt + timedelta(hours=service.duration)
             
             if self._has_conflict(staff, start_dt, service.duration, service):
