@@ -1700,7 +1700,7 @@
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="service.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="staff.name"/></p>
-                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y - %I:%M %p')"/></p>
                                         <p><strong>Duration:</strong> <t t-esc="service.duration"/> hours</p>
                                         <p><strong>Total:</strong> <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></p>
                                     </div>
@@ -1764,7 +1764,7 @@
                                         <h5 class="font-weight-bold mb-3">Appointment Summary</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
-                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y - %I:%M %p')"/></p>
                                         <p><strong>Duration:</strong> <t t-esc="appointment.service_id.duration"/> hours</p>
                                         
                                         <t t-if="appointment.service_id.fee_type == 'partial' and appointment.service_id.booking_fee > 0">
@@ -1941,7 +1941,7 @@
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
-                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y - %I:%M %p')"/></p>
                                         <p class="mb-0"><strong>Amount:</strong> <t t-esc="appointment.currency_id.symbol"/><t t-esc="appointment.price"/></p>
                                     </div>
                                     
@@ -2031,7 +2031,7 @@
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
-                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment.start"/></p>
+                                        <p><strong>Date &amp; Time:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y - %I:%M %p')"/></p>
                                         <p><strong>Amount Paid:</strong> <t t-esc="appointment.currency_id.symbol"/><t t-esc="appointment.paid_amount"/></p>
                                         <p class="mb-0"><strong>Reference:</strong> <t t-esc="appointment.payment_reference"/></p>
                                     </div>
