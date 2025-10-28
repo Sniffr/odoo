@@ -1458,7 +1458,7 @@
                     let calendar = null;
                     let availableSlotsData = <t t-raw="available_slots_json or '{}'"/>;
 
-                    function selectTimeSlot(button, datetime) {
+                    function selectTimeSlot(button, datetime, displayTime) {
                         // Remove previous selection
                         document.querySelectorAll('.time-slot-btn').forEach(btn => {
                             btn.classList.remove('btn-primary');
@@ -1476,9 +1476,10 @@
                         const timeDisplay = document.querySelector('.selected-time-display');
                         const timeText = document.getElementById('selected-time-text');
                         
+                        // Parse the datetime to get the date, but use the displayTime for the time portion
                         const date = new Date(datetime);
                         const dayName = getDayName(date);
-                        const formattedTime = dayName + ', ' + date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        const formattedTime = dayName + ', ' + date.toLocaleDateString() + ' at ' + displayTime;
                         timeText.textContent = formattedTime;
                         timeDisplay.style.display = 'block';
                         
@@ -1531,9 +1532,9 @@
                                 <div class="col-md-3 col-sm-4 col-6 mb-3">
                                     <button class="btn btn-outline-primary time-slot-btn w-100"
                                             style="border-radius: 20px; padding: 12px; transition: all 0.3s ease; border-color: #ff69b4; color: #ff69b4; font-weight: 500;"
-                                            onclick="selectTimeSlot(this, '${slot.datetime}')">
+                                            onclick="selectTimeSlot(this, '${slot.datetime}', '${slot.display_time}')">
                                         <i class="fa fa-clock-o mr-1"></i>
-                                        ${slot.time}
+                                        ${slot.display_time}
                                     </button>
                                 </div>
                             `;
