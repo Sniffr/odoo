@@ -146,7 +146,9 @@ class AppointmentController(http.Controller):
 
     def _get_slots_for_date(self, service, staff, date):
         """Get available time slots for a specific date based on staff availability and service duration"""
-        weekday = date.weekday()  # 0=Monday, 6=Sunday
+        import pytz
+        
+        weekday = date.weekday()
         day_fields = [
             'monday_available', 'tuesday_available', 'wednesday_available',
             'thursday_available', 'friday_available', 'saturday_available', 'sunday_available'
@@ -157,27 +159,35 @@ class AppointmentController(http.Controller):
         
         start_hour = staff.start_time
         end_hour = staff.end_time
-        
         service_duration = service.duration
         
-        now = datetime.now()
-        is_today = date == now.date()
+        tz_name = request.env['ir.config_parameter'].sudo().get_param('appointment.timezone', 'Africa/Nairobi')
+        try:
+            server_tz = pytz.timezone(tz_name)
+        except:
+            server_tz = pytz.timezone('Africa/Nairobi')
+        
+        now_server = datetime.now(server_tz)
+        is_today = date == now_server.date()
         
         slots = []
         current_time = start_hour
         
         while current_time + service_duration <= end_hour:
-            slot_datetime = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
+            slot_datetime_naive = datetime.combine(date, datetime.min.time()) + timedelta(hours=current_time)
             
-            if is_today and slot_datetime <= now:
+            if is_today and slot_datetime_naive <= now_server.replace(tzinfo=None):
                 current_time += service_duration
                 continue
             
-            if not self._has_conflict(staff, slot_datetime, service_duration, service):
+            slot_datetime_local = server_tz.localize(slot_datetime_naive)
+            slot_datetime_utc = slot_datetime_local.astimezone(pytz.utc).replace(tzinfo=None)
+            
+            if not self._has_conflict(staff, slot_datetime_utc, service_duration, service):
                 slots.append({
-                    'time': slot_datetime.strftime('%H:%M'),
-                    'datetime': slot_datetime.isoformat(),
-                    'display_time': slot_datetime.strftime('%I:%M %p'),
+                    'time': slot_datetime_naive.strftime('%H:%M'),
+                    'datetime': slot_datetime_naive.isoformat(),
+                    'display_time': slot_datetime_naive.strftime('%I:%M %p'),
                 })
             
             current_time += service_duration
@@ -209,6 +219,8 @@ class AppointmentController(http.Controller):
     def _process_booking(self, data):
         """Process the booking form submission"""
         try:
+            import pytz
+            
             service_id = int(data.get('service_id'))
             staff_id = int(data.get('staff_id'))
             appointment_datetime = data.get('appointment_datetime')
@@ -223,7 +235,15 @@ class AppointmentController(http.Controller):
             if not service.exists() or not staff.exists():
                 raise ValueError("Invalid service or staff")
             
-            start_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '').replace('+00:00', ''))
+            tz_name = request.env['ir.config_parameter'].sudo().get_param('appointment.timezone', 'Africa/Nairobi')
+            try:
+                server_tz = pytz.timezone(tz_name)
+            except:
+                server_tz = pytz.timezone('Africa/Nairobi')
+            
+            naive_dt = datetime.fromisoformat(appointment_datetime.replace('Z', '').replace('+00:00', ''))
+            local_dt = server_tz.localize(naive_dt)
+            start_dt = local_dt.astimezone(pytz.utc).replace(tzinfo=None)
             end_dt = start_dt + timedelta(hours=service.duration)
             
             if self._has_conflict(staff, start_dt, service.duration, service):
