@@ -56,12 +56,12 @@ class PesaPalController(http.Controller):
                     'payment_date': fields.Datetime.now(),
                     'payment_method': tx.provider_id.name,
                     'payment_reference': tx.reference,
-                    'state': 'confirmed'
                 })
                 try:
-                    appointment._send_confirmation_notifications()
+                    appointment.action_confirm()
+                    _logger.info('PesaPal: Appointment %s confirmed successfully', appointment.id)
                 except Exception as e:
-                    _logger.warning('Failed to send confirmation notifications: %s', str(e))
+                    _logger.warning('Failed to confirm appointment: %s', str(e))
                 
                 return request.redirect(f'/appointments/payment/success?appointment_id={appointment.id}')
             elif tx.state in ['cancel', 'error']:
@@ -153,14 +153,13 @@ class PesaPalController(http.Controller):
                         'payment_date': fields.Datetime.now(),
                         'payment_method': tx.provider_id.name,
                         'payment_reference': tx.reference,
-                        'state': 'confirmed'
                     })
                     
                     try:
-                        appointment._send_confirmation_notifications()
-                        _logger.info('PesaPal IPN: Sent confirmation notifications for appointment %s', appointment.id)
+                        appointment.action_confirm()
+                        _logger.info('PesaPal IPN: Appointment %s confirmed successfully via action_confirm()', appointment.id)
                     except Exception as e:
-                        _logger.warning('PesaPal IPN: Failed to send confirmation notifications: %s', str(e))
+                        _logger.warning('PesaPal IPN: Failed to confirm appointment: %s', str(e))
                     
                     ipn_log.mark_processed(transaction=tx, appointment=appointment)
                     _logger.info('PesaPal IPN: Appointment %s confirmed successfully via IPN', appointment.id)
