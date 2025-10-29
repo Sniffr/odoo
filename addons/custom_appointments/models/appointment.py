@@ -206,12 +206,23 @@ class Appointment(models.Model):
                 appointment.calendar_event_id.write(event_vals)
     
     def action_confirm(self):
+        _logger.info(f"=== action_confirm called for appointment {self.id} ===")
+        _logger.info(f"Payment status: {self.payment_status}, State: {self.state}")
+        _logger.info(f"Staff member: {self.staff_member_id.name} (ID: {self.staff_member_id.id})")
+        _logger.info(f"Staff email: {self.staff_member_id.email if self.staff_member_id.email else 'NOT SET'}")
+        
         if self.payment_status != 'paid':
             from odoo.exceptions import UserError
             raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
+        
+        _logger.info(f"Calling _send_confirmation_notifications() for appointment {self.id}")
         self._send_confirmation_notifications()
+        
+        _logger.info(f"Calling _send_staff_notification() for appointment {self.id}")
         self._send_staff_notification()
+        
+        _logger.info(f"=== action_confirm completed for appointment {self.id} ===")
         return True
     
     def action_start(self):
