@@ -63,6 +63,9 @@ class Appointment(models.Model):
     paid_amount = fields.Monetary(string='Paid Amount', currency_field='currency_id')
     payment_date = fields.Datetime(string='Payment Date')
     
+    customer_notification_sent = fields.Boolean(string='Customer Notification Sent', default=False)
+    staff_notification_sent = fields.Boolean(string='Staff Notification Sent', default=False)
+    
     @api.depends('start', 'stop')
     def _compute_duration(self):
         for appointment in self:
@@ -203,12 +206,23 @@ class Appointment(models.Model):
                 appointment.calendar_event_id.write(event_vals)
     
     def action_confirm(self):
+        _logger.info(f"=== action_confirm called for appointment {self.id} ===")
+        _logger.info(f"Payment status: {self.payment_status}, State: {self.state}")
+        _logger.info(f"Staff member: {self.staff_member_id.name} (ID: {self.staff_member_id.id})")
+        _logger.info(f"Staff email: {self.staff_member_id.email if self.staff_member_id.email else 'NOT SET'}")
+        
         if self.payment_status != 'paid':
             from odoo.exceptions import UserError
             raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
+        
+        _logger.info(f"Calling _send_confirmation_notifications() for appointment {self.id}")
         self._send_confirmation_notifications()
+        
+        _logger.info(f"Calling _send_staff_notification() for appointment {self.id}")
         self._send_staff_notification()
+        
+        _logger.info(f"=== action_confirm completed for appointment {self.id} ===")
         return True
     
     def action_start(self):
@@ -387,6 +401,10 @@ class Appointment(models.Model):
     def _send_confirmation_notifications(self):
         """Send confirmation email to customer and SMS if phone is provided"""
         for appointment in self:
+            if appointment.customer_notification_sent:
+                _logger.info(f"Customer notification already sent for appointment {appointment.id}, skipping")
+                continue
+                
             if appointment.customer_email:
                 _logger.info(f"Sending confirmation email to customer {appointment.customer_name} ({appointment.customer_email}) for appointment {appointment.id}")
                 try:
@@ -406,6 +424,7 @@ class Appointment(models.Model):
                     })
                     mail.send()
                     _logger.info(f"Successfully sent confirmation email with calendar invite to {appointment.customer_email}")
+                    appointment.customer_notification_sent = True
                 except Exception as e:
                     _logger.error(f"Failed to send confirmation email to {appointment.customer_email}: {str(e)}", exc_info=True)
             
@@ -486,6 +505,10 @@ class Appointment(models.Model):
     def _send_staff_notification(self):
         """Send notification to staff member about new appointment"""
         for appointment in self:
+            if appointment.staff_notification_sent:
+                _logger.info(f"Staff notification already sent for appointment {appointment.id}, skipping")
+                continue
+                
             if appointment.staff_member_id.email:
                 _logger.info(f"Sending notification email to staff {appointment.staff_member_id.name} ({appointment.staff_member_id.email}) for appointment {appointment.id}")
                 try:
@@ -506,8 +529,11 @@ class Appointment(models.Model):
                     _logger.info(f"Created mail record (ID: {mail.id}) with attachment IDs: {mail.attachment_ids.ids}")
                     mail.send()
                     _logger.info(f"Successfully sent staff notification email with calendar invite to {appointment.staff_member_id.email}")
+                    appointment.staff_notification_sent = True
                 except Exception as e:
                     _logger.error(f"Failed to send staff notification to {appointment.staff_member_id.email}: {str(e)}", exc_info=True)
+            else:
+                _logger.warning(f"Staff member {appointment.staff_member_id.name} (ID: {appointment.staff_member_id.id}) has no email address set for appointment {appointment.id}")
     
     def _generate_reminder_email_html(self):
         """Generate HTML for reminder email"""
