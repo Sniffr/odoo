@@ -329,6 +329,17 @@ class AppointmentController(http.Controller):
             if not payment_method:
                 raise ValueError("No payment method available. Please contact support.")
             
+            payment_method_line = request.env['account.payment.method.line'].sudo().search([
+                ('payment_provider_id', '=', acquirer.id),
+                ('payment_method_id', '=', payment_method.id),
+            ], limit=1)
+            
+            if not payment_method_line:
+                payment_method_line = request.env['account.payment.method.line'].sudo().search([
+                    ('payment_method_id', '=', payment_method.id),
+                    ('payment_type', '=', 'inbound'),
+                ], limit=1)
+            
             import time
             unique_ref = f"APPT-{appointment.id}-{int(time.time())}"
             
@@ -352,6 +363,9 @@ class AppointmentController(http.Controller):
                 'partner_name': appointment.customer_name,
                 'partner_email': appointment.customer_email,
             }
+            
+            if payment_method_line:
+                transaction_vals['payment_method_line_id'] = payment_method_line.id
             
             transaction = request.env['payment.transaction'].sudo().create(transaction_vals)
             appointment.payment_transaction_id = transaction.id
