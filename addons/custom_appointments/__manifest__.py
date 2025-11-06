@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.1.2',
+    'version': '1.1.3',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -16,6 +16,8 @@
         - Integration with company structure
         - Automatic conflict detection for manual and website bookings
         - Prevents double booking of staff members
+        - Customer management with appointment history
+        - Payment tracking and transaction management
     ''',
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
@@ -29,6 +31,7 @@
         'views/service_views.xml',
         'views/service_category_views.xml',
         'views/appointment_views.xml',
+        'views/customer_views.xml',
         'views/website_templates.xml',
         'data/mail_templates.xml',
         'data/cron_jobs.xml',
