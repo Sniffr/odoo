@@ -224,6 +224,10 @@ class Appointment(models.Model):
             raise UserError("Cannot confirm appointment without successful payment.")
         self.state = 'confirmed'
         
+        if not self.invoice_id:
+            _logger.info(f"Creating invoice for appointment {self.id}")
+            self._create_and_pay_invoice()
+        
         _logger.info(f"Calling _send_confirmation_notifications() for appointment {self.id}")
         self._send_confirmation_notifications()
         
@@ -249,6 +253,59 @@ class Appointment(models.Model):
     def action_reset_to_draft(self):
         self.state = 'draft'
         return True
+    
+    def _create_and_pay_invoice(self):
+        """Create invoice and mark as paid when payment is already completed"""
+        self.ensure_one()
+        
+        if not self.partner_id:
+            partner = self._find_or_create_partner(
+                self.customer_name,
+                self.customer_email,
+                self.customer_phone
+            )
+            self.partner_id = partner.id
+        
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': fields.Date.today(),
+            'invoice_line_ids': [(0, 0, {
+                'name': f"{self.service_id.name} - {self.name}",
+                'quantity': 1,
+                'price_unit': self.price,
+            })],
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        self.invoice_id = invoice.id
+        
+        invoice.action_post()
+        
+        if self.payment_status == 'paid' and self.paid_amount > 0:
+            payment_vals = {
+                'payment_type': 'inbound',
+                'partner_type': 'customer',
+                'partner_id': self.partner_id.id,
+                'amount': self.paid_amount,
+                'date': self.payment_date or fields.Date.today(),
+                'journal_id': self.env['account.journal'].search([('type', '=', 'bank')], limit=1).id,
+                'payment_method_line_id': self.env['account.payment.method.line'].search([
+                    ('payment_type', '=', 'inbound'),
+                    ('journal_id.type', '=', 'bank')
+                ], limit=1).id,
+                'ref': self.payment_reference or self.name,
+            }
+            
+            payment = self.env['account.payment'].create(payment_vals)
+            payment.action_post()
+            
+            (payment.line_ids + invoice.line_ids).filtered(
+                lambda line: line.account_id == payment.destination_account_id and not line.reconciled
+            ).reconcile()
+        
+        _logger.info(f"Invoice {invoice.name} created and paid for appointment {self.id}")
+        return invoice
     
     def action_create_invoice(self):
         self.ensure_one()
