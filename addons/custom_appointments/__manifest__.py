@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.1.3',
+    'version': '1.1.4',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -18,6 +18,8 @@
         - Prevents double booking of staff members
         - Customer management with appointment history
         - Payment tracking and transaction management
+        - Invoice generation and management
+        - Dashboard integration for appointment analytics
     ''',
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],

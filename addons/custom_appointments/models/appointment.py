@@ -63,8 +63,16 @@ class Appointment(models.Model):
     paid_amount = fields.Monetary(string='Paid Amount', currency_field='currency_id')
     payment_date = fields.Datetime(string='Payment Date')
     
+    invoice_id = fields.Many2one('account.move', string='Invoice', domain="[('move_type', '=', 'out_invoice')]", copy=False)
+    invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
+    
     customer_notification_sent = fields.Boolean(string='Customer Notification Sent', default=False)
     staff_notification_sent = fields.Boolean(string='Staff Notification Sent', default=False)
+    
+    @api.depends('invoice_id')
+    def _compute_invoice_count(self):
+        for appointment in self:
+            appointment.invoice_count = 1 if appointment.invoice_id else 0
     
     @api.depends('start', 'stop')
     def _compute_duration(self):
@@ -241,6 +249,46 @@ class Appointment(models.Model):
     def action_reset_to_draft(self):
         self.state = 'draft'
         return True
+    
+    def action_create_invoice(self):
+        self.ensure_one()
+        if self.invoice_id:
+            return self.action_view_invoice()
+        
+        if not self.partner_id:
+            partner = self._find_or_create_partner(
+                self.customer_name,
+                self.customer_email,
+                self.customer_phone
+            )
+            self.partner_id = partner.id
+        
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': fields.Date.today(),
+            'invoice_line_ids': [(0, 0, {
+                'name': f"{self.service_id.name} - {self.name}",
+                'quantity': 1,
+                'price_unit': self.price,
+            })],
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        self.invoice_id = invoice.id
+        
+        return self.action_view_invoice()
+    
+    def action_view_invoice(self):
+        self.ensure_one()
+        return {
+            'name': 'Invoice',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': self.invoice_id.id,
+            'context': {'default_move_type': 'out_invoice'},
+        }
     
     @api.model
     def get_my_appointments(self):
