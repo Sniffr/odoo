@@ -61,3 +61,10 @@ class PaymentProvider(models.Model):
             base_url = self.get_base_url()
             self.mpesa_callback_url = f'{base_url}/payment/mpesa/callback'
         return True
+    
+    def _get_supported_payment_method_codes(self):
+        """Return the payment method codes supported by this provider"""
+        res = super()._get_supported_payment_method_codes()
+        if self.code == 'mpesa':
+            res.append('mpesa')
+        return res

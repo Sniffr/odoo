@@ -67,3 +67,10 @@ class PaymentProvider(models.Model):
             return 'https://pay.pesapal.com/v3'
         else:
             return 'https://cybqa.pesapal.com/pesapalv3'
+    
+    def _get_supported_payment_method_codes(self):
+        """Return the payment method codes supported by this provider"""
+        res = super()._get_supported_payment_method_codes()
+        if self.code == 'pesapal':
+            res.append('pesapal')
+        return res
