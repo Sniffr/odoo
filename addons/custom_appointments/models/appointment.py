@@ -258,54 +258,97 @@ class Appointment(models.Model):
         """Create invoice and mark as paid when payment is already completed"""
         self.ensure_one()
         
-        if not self.partner_id:
-            partner = self._find_or_create_partner(
-                self.customer_name,
-                self.customer_email,
-                self.customer_phone
-            )
-            self.partner_id = partner.id
+        _logger.info(f"=== _create_and_pay_invoice called for appointment {self.id} ===")
+        _logger.info(f"Payment status: {self.payment_status}, Paid amount: {self.paid_amount}")
+        _logger.info(f"Payment method: {self.payment_method}, Payment reference: {self.payment_reference}")
         
-        invoice_vals = {
-            'move_type': 'out_invoice',
-            'partner_id': self.partner_id.id,
-            'invoice_date': fields.Date.today(),
-            'invoice_line_ids': [(0, 0, {
-                'name': f"{self.service_id.name} - {self.name}",
-                'quantity': 1,
-                'price_unit': self.price,
-            })],
-        }
-        
-        invoice = self.env['account.move'].create(invoice_vals)
-        self.invoice_id = invoice.id
-        
-        invoice.action_post()
-        
-        if self.payment_status == 'paid' and self.paid_amount > 0:
-            payment_vals = {
-                'payment_type': 'inbound',
-                'partner_type': 'customer',
+        try:
+            if not self.partner_id:
+                partner = self._find_or_create_partner(
+                    self.customer_name,
+                    self.customer_email,
+                    self.customer_phone
+                )
+                self.partner_id = partner.id
+                _logger.info(f"Created/found partner {partner.id} for appointment {self.id}")
+            
+            invoice_vals = {
+                'move_type': 'out_invoice',
                 'partner_id': self.partner_id.id,
-                'amount': self.paid_amount,
-                'date': self.payment_date or fields.Date.today(),
-                'journal_id': self.env['account.journal'].search([('type', '=', 'bank')], limit=1).id,
-                'payment_method_line_id': self.env['account.payment.method.line'].search([
-                    ('payment_type', '=', 'inbound'),
-                    ('journal_id.type', '=', 'bank')
-                ], limit=1).id,
-                'ref': self.payment_reference or self.name,
+                'invoice_date': fields.Date.today(),
+                'invoice_line_ids': [(0, 0, {
+                    'name': f"{self.service_id.name} - {self.name}",
+                    'quantity': 1,
+                    'price_unit': self.price,
+                })],
             }
             
-            payment = self.env['account.payment'].create(payment_vals)
-            payment.action_post()
+            invoice = self.env['account.move'].create(invoice_vals)
+            self.invoice_id = invoice.id
+            _logger.info(f"Created invoice {invoice.name} (ID: {invoice.id}) for appointment {self.id}")
             
-            (payment.line_ids + invoice.line_ids).filtered(
-                lambda line: line.account_id == payment.destination_account_id and not line.reconciled
-            ).reconcile()
-        
-        _logger.info(f"Invoice {invoice.name} created and paid for appointment {self.id}")
-        return invoice
+            invoice.action_post()
+            _logger.info(f"Posted invoice {invoice.name}")
+            
+            if self.payment_status == 'paid' and self.paid_amount > 0:
+                _logger.info(f"Creating payment record for appointment {self.id}")
+                
+                bank_journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+                if not bank_journal:
+                    _logger.error(f"No bank journal found! Cannot create payment for appointment {self.id}")
+                    return invoice
+                
+                payment_method_line = self.env['account.payment.method.line'].search([
+                    ('payment_type', '=', 'inbound'),
+                    ('journal_id', '=', bank_journal.id)
+                ], limit=1)
+                
+                if not payment_method_line:
+                    _logger.error(f"No payment method line found for journal {bank_journal.name}! Cannot create payment for appointment {self.id}")
+                    return invoice
+                
+                _logger.info(f"Using journal: {bank_journal.name} (ID: {bank_journal.id})")
+                _logger.info(f"Using payment method line: {payment_method_line.name} (ID: {payment_method_line.id})")
+                
+                payment_vals = {
+                    'payment_type': 'inbound',
+                    'partner_type': 'customer',
+                    'partner_id': self.partner_id.id,
+                    'amount': self.paid_amount,
+                    'date': self.payment_date or fields.Date.today(),
+                    'journal_id': bank_journal.id,
+                    'payment_method_line_id': payment_method_line.id,
+                    'ref': self.payment_reference or self.name,
+                }
+                
+                payment = self.env['account.payment'].create(payment_vals)
+                _logger.info(f"Created payment {payment.name} (ID: {payment.id}) for appointment {self.id}")
+                
+                payment.action_post()
+                _logger.info(f"Posted payment {payment.name}")
+                
+                payment_lines = payment.line_ids.filtered(
+                    lambda line: line.account_id == payment.destination_account_id and not line.reconciled
+                )
+                invoice_lines = invoice.line_ids.filtered(
+                    lambda line: line.account_id == payment.destination_account_id and not line.reconciled
+                )
+                
+                _logger.info(f"Payment lines to reconcile: {len(payment_lines)}, Invoice lines: {len(invoice_lines)}")
+                
+                if payment_lines and invoice_lines:
+                    (payment_lines + invoice_lines).reconcile()
+                    _logger.info(f"Reconciled payment {payment.name} with invoice {invoice.name}")
+                else:
+                    _logger.warning(f"Could not reconcile payment {payment.name} with invoice {invoice.name} - no matching lines found")
+            
+            _logger.info(f"=== Invoice creation completed for appointment {self.id} ===")
+            return invoice
+            
+        except Exception as e:
+            _logger.error(f"Error creating invoice/payment for appointment {self.id}: {str(e)}")
+            _logger.exception(e)
+            raise
     
     def action_create_invoice(self):
         self.ensure_one()
