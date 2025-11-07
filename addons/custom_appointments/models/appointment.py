@@ -318,7 +318,7 @@ class Appointment(models.Model):
                     'date': self.payment_date or fields.Date.today(),
                     'journal_id': bank_journal.id,
                     'payment_method_line_id': payment_method_line.id,
-                    'communication': self.payment_reference or self.name,
+                    'memo': self.payment_reference or self.name,
                 }
                 
                 payment = self.env['account.payment'].create(payment_vals)
