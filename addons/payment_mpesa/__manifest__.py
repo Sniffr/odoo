@@ -20,6 +20,7 @@ Features:
     'data': [
         'views/payment_mpesa_templates.xml',
         'views/payment_provider_views.xml',
+        'data/payment_method_data.xml',
         'data/payment_provider_data.xml',
     ],
     'assets': {
