@@ -327,20 +327,25 @@ class Appointment(models.Model):
                 payment.action_post()
                 _logger.info(f"Posted payment {payment.name}")
                 
-                payment_lines = payment.line_ids.filtered(
-                    lambda line: line.account_id == payment.destination_account_id and not line.reconciled
-                )
-                invoice_lines = invoice.line_ids.filtered(
-                    lambda line: line.account_id == payment.destination_account_id and not line.reconciled
-                )
-                
-                _logger.info(f"Payment lines to reconcile: {len(payment_lines)}, Invoice lines: {len(invoice_lines)}")
-                
-                if payment_lines and invoice_lines:
-                    (payment_lines + invoice_lines).reconcile()
-                    _logger.info(f"Reconciled payment {payment.name} with invoice {invoice.name}")
+                # In Odoo 18, account.payment doesn't have line_ids directly
+                # We need to access the journal entry via move_id
+                if payment.move_id:
+                    payment_lines = payment.move_id.line_ids.filtered(
+                        lambda line: line.account_id == payment.destination_account_id and not line.reconciled
+                    )
+                    invoice_lines = invoice.line_ids.filtered(
+                        lambda line: line.account_id == payment.destination_account_id and not line.reconciled
+                    )
+                    
+                    _logger.info(f"Payment lines to reconcile: {len(payment_lines)}, Invoice lines: {len(invoice_lines)}")
+                    
+                    if payment_lines and invoice_lines:
+                        (payment_lines + invoice_lines).reconcile()
+                        _logger.info(f"Reconciled payment {payment.name} with invoice {invoice.name}")
+                    else:
+                        _logger.warning(f"Could not reconcile payment {payment.name} with invoice {invoice.name} - no matching lines found")
                 else:
-                    _logger.warning(f"Could not reconcile payment {payment.name} with invoice {invoice.name} - no matching lines found")
+                    _logger.warning(f"Payment {payment.name} has no move_id - cannot reconcile with invoice")
             
             _logger.info(f"=== Invoice creation completed for appointment {self.id} ===")
             return invoice
