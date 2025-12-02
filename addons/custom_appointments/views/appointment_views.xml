@@ -58,6 +58,15 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="invoice_count > 0">
+                            <span>Create Invoice</span>
+                        </button>
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="invoice_count == 0">
+                            <field name="invoice_count" widget="statinfo" string="Invoice"/>
+                        </button>
+                    </div>
+                    
                     <group>
                         <group string="Appointment Details">
                             <field name="name"/>
@@ -90,6 +99,9 @@
                             <field name="paid_amount" readonly="1"/>
                             <field name="payment_date" readonly="1"/>
                             <field name="payment_reference" readonly="1"/>
+                        </group>
+                        <group string="Invoice Information">
+                            <field name="invoice_id" readonly="1"/>
                         </group>
                     </group>
                     
