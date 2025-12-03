@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_emalify" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.sms.emalify</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="0"/>
+            <field name="inherit_id" ref="sms.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//widget[@service_name='sms']" position="before">
+                    <field name="sms_provider" class="o_light_label" widget="radio" options="{'horizontal': true}" required="True"/>
+                    <div class="content-group" invisible="sms_provider != 'emalify'">
+                        <div class="row mt16">
+                            <label for="sms_emalify_api_key" string="API Key" class="col-lg-3 o_light_label"/>
+                            <field name="sms_emalify_api_key" class="oe_inline" placeholder="e.g., e7f6653c80b0b5da94a8750254c72640"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="sms_emalify_partner_id" string="Partner ID" class="col-lg-3 o_light_label"/>
+                            <field name="sms_emalify_partner_id" class="oe_inline" placeholder="e.g., 221"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="sms_emalify_shortcode" string="Shortcode" class="col-lg-3 o_light_label"/>
+                            <field name="sms_emalify_shortcode" class="oe_inline" placeholder="e.g., STDIOXTIX"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="sms_emalify_domain" string="API Domain" class="col-lg-3 o_light_label"/>
+                            <field name="sms_emalify_domain" class="oe_inline" placeholder="https://api.v2.emalify.com"/>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//widget[@service_name='sms']" position="attributes">
+                    <attribute name="invisible">sms_provider == 'emalify'</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
