@@ -140,6 +140,7 @@ class AppointmentController(http.Controller):
             service_id = data.get('service_id')
             branch_id = data.get('branch_id')
             amount = float(data.get('amount', 0))
+            booking_fee = float(data.get('booking_fee', 0))
             
             if not promo_code:
                 return {'valid': False, 'message': 'Please enter a promo code'}
@@ -154,7 +155,8 @@ class AppointmentController(http.Controller):
             validation = promo.validate_promo(
                 service_id=service_id,
                 branch_id=branch_id,
-                amount=amount
+                amount=amount,
+                booking_fee=booking_fee
             )
             
             if not validation['valid']:
@@ -172,6 +174,7 @@ class AppointmentController(http.Controller):
                 'discount_type': promo.discount_type,
                 'discount_value': promo.discount_value,
                 'discount_amount': validation['discount_amount'],
+                'applies_to': promo.applies_to,
                 'currency_symbol': currency.symbol or 'KES ',
             }
             

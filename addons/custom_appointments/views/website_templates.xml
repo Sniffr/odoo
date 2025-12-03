@@ -1631,6 +1631,7 @@
                         const serviceId = <t t-raw="service.id"/>;
                         const branchId = <t t-raw="staff.branch_id.id if staff.branch_id else 'null'"/>;
                         const servicePrice = <t t-raw="service.price"/>;
+                        const bookingFee = <t t-raw="service.booking_fee if service.fee_type == 'partial' else 0"/>;
                         
                         if (!promoCode) {
                             feedback.style.display = 'none';
@@ -1650,7 +1651,8 @@
                                 promo_code: promoCode,
                                 service_id: serviceId,
                                 branch_id: branchId,
-                                amount: servicePrice
+                                amount: servicePrice,
+                                booking_fee: bookingFee
                             })
                         })
                         .then(response => response.json())
