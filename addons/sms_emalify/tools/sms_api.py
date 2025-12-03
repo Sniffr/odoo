@@ -3,19 +3,51 @@ import logging
 import requests
 
 from odoo import _
-from odoo.addons.sms.tools.sms_api import SmsApiBase
 
 _logger = logging.getLogger(__name__)
 
 
-class SmsApiEmalify(SmsApiBase):
-    """SMS API implementation for Emalify provider."""
+class SmsApiEmalify:
+    """SMS API implementation for Emalify provider.
     
-    PROVIDER_TO_SMS_FAILURE_TYPE = SmsApiBase.PROVIDER_TO_SMS_FAILURE_TYPE | {
+    This class implements the SMS API interface without inheriting from SmsApiBase
+    to ensure compatibility across different Odoo versions.
+    """
+    
+    # Mapping of provider error states to SMS failure types
+    # Core mappings from Odoo's SmsApiBase + Emalify-specific states
+    PROVIDER_TO_SMS_FAILURE_TYPE = {
+        'server_error': 'sms_server',
+        'sms_number_missing': 'sms_number_missing',
+        'wrong_number_format': 'sms_number_format',
         'emalify_auth': 'sms_acc',
         'emalify_invalid_number': 'sms_number_format',
         'emalify_server_error': 'sms_server',
     }
+
+    def __init__(self, env, account=None):
+        """Initialize the SMS API.
+        
+        :param env: Odoo environment
+        :param account: Optional IAP account (not used for Emalify)
+        """
+        self.env = env
+        self.company = env.company
+
+    def _set_company(self, company):
+        """Set the company for this API instance.
+        
+        :param company: res.company record
+        """
+        self.company = company
+
+    def _get_sms_api_error_messages(self):
+        """Return a mapping of error states to user-friendly messages."""
+        return {
+            'emalify_auth': _("Emalify Authentication Error - Check your API Key, Partner ID, and Shortcode"),
+            'emalify_invalid_number': _("Invalid phone number format"),
+            'emalify_server_error': _("Emalify server error - Please try again later"),
+        }
 
     def _send_sms_request(self, session, to_number, body):
         """Send a single SMS via Emalify API.
@@ -127,13 +159,3 @@ class SmsApiEmalify(SmsApiBase):
                 res.append(fields_values)
         
         return res
-
-    def _get_sms_api_error_messages(self):
-        """Return a mapping of error states to user-friendly messages."""
-        error_dict = super()._get_sms_api_error_messages()
-        error_dict.update({
-            'emalify_auth': _("Emalify Authentication Error - Check your API Key, Partner ID, and Shortcode"),
-            'emalify_invalid_number': _("Invalid phone number format"),
-            'emalify_server_error': _("Emalify server error - Please try again later"),
-        })
-        return error_dict
