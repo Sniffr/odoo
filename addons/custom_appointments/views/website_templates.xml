@@ -523,7 +523,10 @@
 
                     function selectBranch(element, branchId) {
                         selectedBranch = branchId;
-                        window.location.href = '/appointments?branch_id=' + branchId;
+                        // Preserve existing query params (like promo) when selecting branch
+                        const params = new URLSearchParams(window.location.search);
+                        params.set('branch_id', branchId);
+                        window.location.href = '/appointments?' + params.toString();
                     }
 
                     function proceedToServices() {
