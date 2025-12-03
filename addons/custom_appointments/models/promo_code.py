@@ -73,10 +73,13 @@ class PromoCode(models.Model):
         for promo in self:
             promo.appointment_count = len(promo.appointment_ids)
     
-    @api.depends('appointment_ids', 'appointment_ids.price', 'appointment_ids.discount_amount')
+    @api.depends('appointment_ids.state', 'appointment_ids.discount_amount', 'appointment_ids.final_price')
     def _compute_stats(self):
         for promo in self:
-            appointments = promo.appointment_ids.filtered(lambda a: a.state not in ['cancelled'])
+            # Only count confirmed/booked appointments (not draft)
+            appointments = promo.appointment_ids.filtered(
+                lambda a: a.state in ['confirmed', 'in_progress', 'completed']
+            )
             promo.total_discount_given = sum(appointments.mapped('discount_amount'))
             promo.total_revenue = sum(appointments.mapped('final_price'))
     
