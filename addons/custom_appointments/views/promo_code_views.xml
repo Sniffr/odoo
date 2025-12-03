@@ -177,7 +177,7 @@
     <!-- Menu Item for Promo Codes -->
     <menuitem id="menu_promo_codes"
               name="Promo Codes"
-              parent="menu_appointments_root"
+              parent="appointments_main_menu"
               action="action_promo_codes"
               sequence="25"/>
 
@@ -193,8 +193,8 @@
     <!-- Menu Item for Promo Code Reports -->
     <menuitem id="menu_promo_code_report"
               name="Promo Performance"
-              parent="menu_appointments_reports"
+              parent="appointments_main_menu"
               action="action_promo_code_report"
-              sequence="30"/>
+              sequence="80"/>
 
 </odoo>
