@@ -100,51 +100,59 @@ class PromoCode(models.Model):
             if not self.search([('code', '=', code)], limit=1):
                 return code
     
-    def validate_promo(self, appointment_price, partner=None, service=None, branch=None):
+    def validate_promo(self, amount=0, service_id=None, branch_id=None, partner_id=None):
         """Validate if promo code can be applied
         
-        Returns: (is_valid, error_message, discount_amount)
+        Args:
+            amount: The appointment price/amount
+            service_id: ID of the service (optional)
+            branch_id: ID of the branch (optional)
+            partner_id: ID of the partner/customer (optional)
+        
+        Returns: dict with 'valid', 'message', and 'discount_amount' keys
         """
         self.ensure_one()
         
         if not self.active:
-            return False, _('This promo code is no longer active'), 0
+            return {'valid': False, 'message': _('This promo code is no longer active'), 'discount_amount': 0}
         
         today = fields.Date.today()
         if self.valid_from and today < self.valid_from:
-            return False, _('This promo code is not yet valid'), 0
+            return {'valid': False, 'message': _('This promo code is not yet valid'), 'discount_amount': 0}
         if self.valid_to and today > self.valid_to:
-            return False, _('This promo code has expired'), 0
+            return {'valid': False, 'message': _('This promo code has expired'), 'discount_amount': 0}
         
         if self.max_uses > 0 and self.current_uses >= self.max_uses:
-            return False, _('This promo code has reached its maximum usage limit'), 0
+            return {'valid': False, 'message': _('This promo code has reached its maximum usage limit'), 'discount_amount': 0}
         
-        if partner and self.max_uses_per_customer > 0:
+        if partner_id and self.max_uses_per_customer > 0:
             customer_uses = self.env['custom.appointment'].search_count([
                 ('promo_id', '=', self.id),
-                ('partner_id', '=', partner.id),
+                ('partner_id', '=', partner_id),
                 ('state', '!=', 'cancelled'),
             ])
             if customer_uses >= self.max_uses_per_customer:
-                return False, _('You have already used this promo code the maximum number of times'), 0
+                return {'valid': False, 'message': _('You have already used this promo code the maximum number of times'), 'discount_amount': 0}
         
-        if self.minimum_amount > 0 and appointment_price < self.minimum_amount:
-            return False, _('Minimum order amount of %s is required for this promo code') % self.minimum_amount, 0
+        if self.minimum_amount > 0 and amount < self.minimum_amount:
+            return {'valid': False, 'message': _('Minimum order amount of %s is required for this promo code') % self.minimum_amount, 'discount_amount': 0}
         
-        if self.branch_ids and branch and branch.id not in self.branch_ids.ids:
-            return False, _('This promo code is not valid for the selected branch'), 0
+        if self.branch_ids and branch_id:
+            if branch_id not in self.branch_ids.ids:
+                return {'valid': False, 'message': _('This promo code is not valid for the selected branch'), 'discount_amount': 0}
         
-        if self.service_ids and service and service.id not in self.service_ids.ids:
-            return False, _('This promo code is not valid for the selected service'), 0
+        if self.service_ids and service_id:
+            if service_id not in self.service_ids.ids:
+                return {'valid': False, 'message': _('This promo code is not valid for the selected service'), 'discount_amount': 0}
         
         if self.discount_type == 'percentage':
-            discount = appointment_price * (self.discount_value / 100)
+            discount = amount * (self.discount_value / 100)
             if self.maximum_discount > 0:
                 discount = min(discount, self.maximum_discount)
         else:
-            discount = min(self.discount_value, appointment_price)
+            discount = min(self.discount_value, amount)
         
-        return True, '', discount
+        return {'valid': True, 'message': '', 'discount_amount': discount}
     
     def apply_promo(self):
         """Increment usage counter when promo is applied"""
