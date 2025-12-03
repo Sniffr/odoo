@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Test Wizard Form View -->
+        <record id="sms_emalify_test_wizard_view_form" model="ir.ui.view">
+            <field name="name">sms.emalify.test.wizard.form</field>
+            <field name="model">sms.emalify.test.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Test Emalify SMS">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="state" invisible="1"/>
+                                <span invisible="state != 'draft'">Test Emalify SMS Connection</span>
+                                <span invisible="state != 'sent'" class="text-success">✓ Test Successful!</span>
+                                <span invisible="state != 'error'" class="text-danger">✗ Test Failed</span>
+                            </h1>
+                        </div>
+                        
+                        <group invisible="state != 'draft'">
+                            <group>
+                                <field name="phone_number" placeholder="e.g., 254724512285 or +254724512285"/>
+                            </group>
+                            <group>
+                                <label for="message" string="Test Message"/>
+                                <field name="message" nolabel="1" placeholder="Enter test message..."/>
+                            </group>
+                        </group>
+                        
+                        <group invisible="state == 'draft'">
+                            <field name="result" nolabel="1" class="oe_read_only"/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button string="Send Test SMS" 
+                                name="action_send_test_sms" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="state != 'draft'"/>
+                        <button string="Send Another Test" 
+                                name="action_reset" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="state == 'draft'"/>
+                        <button string="Close" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Test Wizard Action -->
+        <record id="sms_emalify_test_wizard_action" model="ir.actions.act_window">
+            <field name="name">Test Emalify SMS</field>
+            <field name="res_model">sms.emalify.test.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
+

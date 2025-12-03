@@ -1,0 +1,252 @@
+# -*- coding: utf-8 -*-
+
+import logging
+import requests
+import re
+from odoo import api, models, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class SmsSms(models.Model):
+    _inherit = 'sms.sms'
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to automatically send SMS via Emalify when enabled"""
+        records = super().create(vals_list)
+        
+        # Check if Emalify is enabled
+        IrConfigParam = self.env['ir.config_parameter'].sudo()
+        emalify_enabled = IrConfigParam.get_param('sms_emalify.enabled', 'False') == 'True'
+        
+        if emalify_enabled:
+            _logger.info(f'Emalify is enabled, processing {len(records)} SMS records')
+            # Send SMS immediately for outgoing records
+            outgoing_sms = records.filtered(lambda s: s.state == 'outgoing')
+            if outgoing_sms:
+                outgoing_sms._send_emalify()
+        
+        return records
+
+    def _send(self, unlink_failed=False, unlink_sent=True, raise_exception=False):
+        """
+        Override the core SMS sending method to use Emalify API instead of IAP.
+        """
+        # Check if Emalify is enabled
+        IrConfigParam = self.env['ir.config_parameter'].sudo()
+        emalify_enabled = IrConfigParam.get_param('sms_emalify.enabled', 'False') == 'True'
+        
+        if not emalify_enabled:
+            _logger.info('Emalify SMS is disabled in _send(), falling back to default IAP provider')
+            return super()._send(unlink_failed=unlink_failed, unlink_sent=unlink_sent, raise_exception=raise_exception)
+        
+        _logger.info(f'Emalify _send() called for {len(self)} SMS records')
+        return self._send_emalify(unlink_failed=unlink_failed, unlink_sent=unlink_sent, raise_exception=raise_exception)
+
+    def _send_emalify(self, unlink_failed=False, unlink_sent=True, raise_exception=False):
+        """
+        Send SMS via Emalify API
+        """
+        _logger.info(f'=== _send_emalify called for {len(self)} SMS records ===')
+        
+        # Get Emalify configuration
+        IrConfigParam = self.env['ir.config_parameter'].sudo()
+        api_key = IrConfigParam.get_param('sms_emalify.api_key', '')
+        partner_id = IrConfigParam.get_param('sms_emalify.partner_id', '')
+        shortcode = IrConfigParam.get_param('sms_emalify.shortcode', '')
+        pass_type = IrConfigParam.get_param('sms_emalify.pass_type', 'plain')
+        
+        # Get Emalify configuration
+        api_key = IrConfigParam.get_param('sms_emalify.api_key', '')
+        partner_id = IrConfigParam.get_param('sms_emalify.partner_id', '')
+        shortcode = IrConfigParam.get_param('sms_emalify.shortcode', '')
+        pass_type = IrConfigParam.get_param('sms_emalify.pass_type', 'plain')
+        
+        if not all([api_key, partner_id, shortcode]):
+            _logger.error('Emalify SMS credentials are not configured properly. '
+                         f'api_key: {"set" if api_key else "missing"}, '
+                         f'partner_id: {"set" if partner_id else "missing"}, '
+                         f'shortcode: {"set" if shortcode else "missing"}')
+            for sms in self:
+                sms.write({'state': 'error', 'failure_type': 'sms_credit'})
+            if raise_exception:
+                raise UserError(_(
+                    'Emalify SMS is not configured. '
+                    'Please go to Settings → General Settings → Emalify SMS and configure your API credentials.'
+                ))
+            return False
+        
+        _logger.info(f'Emalify credentials configured, processing {len(self)} SMS')
+        
+        # Process each SMS record
+        outgoing_sms = self.filtered(lambda s: s.state == 'outgoing')
+        _logger.info(f'Found {len(outgoing_sms)} outgoing SMS to process')
+        
+        for sms in outgoing_sms:
+            number = sms.number
+            content = sms.body
+            
+            _logger.info(f'Processing SMS {sms.id}: to {number}, body length: {len(content) if content else 0}')
+            
+            # Format phone number
+            formatted_number = self._emalify_format_phone_number(number)
+            
+            if not formatted_number:
+                _logger.warning(f'Invalid phone number format: {number}')
+                sms.write({'state': 'error', 'failure_type': 'sms_number_format'})
+                continue
+            
+            _logger.info(f'Formatted number: {number} -> {formatted_number}')
+            
+            # Send SMS via Emalify API
+            try:
+                _logger.info(f'Calling Emalify API for {formatted_number}')
+                response = self._emalify_send_sms(
+                    api_key=api_key,
+                    partner_id=partner_id,
+                    shortcode=shortcode,
+                    mobile=formatted_number,
+                    message=content,
+                    pass_type=pass_type,
+                )
+                
+                _logger.info(f'Emalify API response: {response}')
+                
+                # Extract message ID from response
+                message_id = ''
+                if isinstance(response, dict):
+                    if 'responses' in response and len(response['responses']) > 0:
+                        message_id = str(response['responses'][0].get('messageid', ''))
+                    else:
+                        message_id = response.get('message_id', '')
+                
+                # Create delivery tracking record
+                self.env['sms.emalify.delivery'].sudo().create({
+                    'phone_number': formatted_number,
+                    'message_content': content,
+                    'status': 'sent',
+                    'emalify_message_id': message_id,
+                    'api_response': str(response),
+                    'res_model': '',
+                    'res_id': 0,
+                })
+                
+                # Mark SMS as sent
+                sms.write({'state': 'sent', 'failure_type': False})
+                
+                _logger.info(f'✓ SMS {sms.id} sent successfully to {formatted_number} via Emalify')
+                
+            except Exception as e:
+                _logger.error(f'✗ Failed to send SMS {sms.id} to {formatted_number} via Emalify: {str(e)}', exc_info=True)
+                
+                # Create delivery tracking record for failed message
+                self.env['sms.emalify.delivery'].sudo().create({
+                    'phone_number': formatted_number,
+                    'message_content': content,
+                    'status': 'failed',
+                    'error_message': str(e),
+                    'res_model': '',
+                    'res_id': 0,
+                })
+                
+                # Mark SMS as failed
+                sms.write({'state': 'error', 'failure_type': 'sms_server'})
+                
+                if raise_exception:
+                    raise
+        
+        _logger.info(f'=== Completed processing {len(self)} SMS records ===')
+        
+        # Handle unlink based on parameters
+        if unlink_failed:
+            self.filtered(lambda s: s.state == 'error').unlink()
+        if unlink_sent:
+            self.filtered(lambda s: s.state == 'sent').unlink()
+        
+        return True
+    
+    def _emalify_format_phone_number(self, number):
+        """
+        Format phone number for Emalify API.
+        Removes spaces, dashes, and ensures international format.
+        
+        :param number: Phone number string
+        :return: Formatted phone number or None if invalid
+        """
+        if not number:
+            return None
+        
+        # Remove all non-digit characters except +
+        cleaned = re.sub(r'[^\d+]', '', str(number))
+        
+        # Remove leading + if present
+        if cleaned.startswith('+'):
+            cleaned = cleaned[1:]
+        
+        # Remove leading 0 if present (common in local formats)
+        if cleaned.startswith('0'):
+            cleaned = cleaned[1:]
+        
+        # Ensure we have at least some digits
+        if len(cleaned) < 9:
+            return None
+        
+        # If number doesn't start with country code, try to add default (Kenya 254)
+        # You can make this configurable via settings if needed
+        if not cleaned.startswith('254') and len(cleaned) == 9:
+            cleaned = '254' + cleaned
+        
+        return cleaned
+    
+    def _emalify_send_sms(self, api_key, partner_id, shortcode, mobile, message, pass_type='plain'):
+        """
+        Send SMS via Emalify API.
+        
+        :param api_key: Emalify API key
+        :param partner_id: Emalify partner ID
+        :param shortcode: Emalify shortcode
+        :param mobile: Recipient phone number (formatted)
+        :param message: SMS message content
+        :param pass_type: Password type (plain or encrypted)
+        :return: API response dict
+        :raises: Exception if API call fails
+        """
+        url = 'https://api.v2.emalify.com/api/services/sendsms/'
+        
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        
+        payload = {
+            'apikey': api_key,
+            'partnerID': partner_id,
+            'mobile': mobile,
+            'message': message,
+            'shortcode': shortcode,
+            'pass_type': pass_type,
+        }
+        
+        try:
+            response = requests.post(url, json=payload, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Parse response
+            response_data = response.json() if response.content else {}
+            
+            # Check if Emalify returned an error in the response body
+            # Adjust this based on Emalify's actual error response format
+            if isinstance(response_data, dict) and response_data.get('success') is False:
+                error_msg = response_data.get('message', 'Unknown error from Emalify API')
+                raise Exception(error_msg)
+            
+            return response_data
+            
+        except requests.exceptions.RequestException as e:
+            _logger.error(f'Emalify API request failed: {str(e)}')
+            raise Exception(f'Failed to connect to Emalify API: {str(e)}')
+        except ValueError as e:
+            _logger.error(f'Invalid JSON response from Emalify: {str(e)}')
+            raise Exception(f'Invalid response from Emalify API: {str(e)}')
+
