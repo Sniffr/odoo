@@ -67,6 +67,19 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="Follow-up Settings">
+                            <group>
+                                <group>
+                                    <field name="enable_followup"/>
+                                    <field name="rebook_days"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                <strong>Follow-up Configuration:</strong><br/>
+                                When enabled, customers will receive a thank you message after their appointment with a link to rebook.
+                                The "Days Until Rebook" setting determines the suggested rebooking date shown in the follow-up message.
+                            </div>
+                        </page>
                         <page string="Payment Settings">
                             <group>
                                 <group>
