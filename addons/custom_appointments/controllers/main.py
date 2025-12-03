@@ -131,6 +131,53 @@ class AppointmentController(http.Controller):
         slots = self._get_slots_for_date(service, staff, target_date)
         return {'slots': slots}
 
+    @http.route('/appointments/validate-promo', type='json', auth='public', website=True, methods=['POST'], csrf=False)
+    def validate_promo_code(self, **kwargs):
+        """AJAX endpoint to validate a promo code and return discount info"""
+        try:
+            data = request.get_json_data() if hasattr(request, 'get_json_data') else kwargs
+            promo_code = data.get('promo_code', '').strip().upper()
+            service_id = data.get('service_id')
+            branch_id = data.get('branch_id')
+            amount = float(data.get('amount', 0))
+            
+            if not promo_code:
+                return {'valid': False, 'message': 'Please enter a promo code'}
+            
+            PromoCode = request.env['custom.appointment.promo'].sudo()
+            promo = PromoCode.get_promo_by_code(promo_code)
+            
+            if not promo:
+                return {'valid': False, 'message': 'Invalid promo code'}
+            
+            # Validate the promo code
+            validation = promo.validate_promo(
+                service_id=service_id,
+                branch_id=branch_id,
+                amount=amount
+            )
+            
+            if not validation['valid']:
+                return {'valid': False, 'message': validation['message']}
+            
+            # Get currency symbol
+            currency = request.env['res.currency'].sudo().search([('name', '=', 'KES')], limit=1)
+            if not currency:
+                currency = request.env.company.currency_id
+            
+            return {
+                'valid': True,
+                'promo_id': promo.id,
+                'promo_name': promo.name,
+                'discount_type': promo.discount_type,
+                'discount_value': promo.discount_value,
+                'discount_amount': validation['discount_amount'],
+                'currency_symbol': currency.symbol or 'KES ',
+            }
+            
+        except Exception as e:
+            return {'valid': False, 'message': f'Error validating promo code: {str(e)}'}
+
     def _get_available_slots(self, service, staff, days_ahead=30):
         """Get available time slots for the next N days"""
         slots_by_date = {}
@@ -228,6 +275,7 @@ class AppointmentController(http.Controller):
             customer_email = data.get('customer_email')
             customer_phone = data.get('customer_phone', '')
             notes = data.get('notes', '')
+            promo_code = data.get('promo_code', '').strip().upper()
             
             service = request.env['company.service'].sudo().browse(service_id)
             staff = request.env['custom.staff.member'].sudo().browse(staff_id)
@@ -249,6 +297,21 @@ class AppointmentController(http.Controller):
             if self._has_conflict(staff, start_dt, service.duration, service):
                 raise ValueError("Time slot is no longer available")
             
+            # Handle promo code
+            promo = None
+            discount_amount = 0
+            if promo_code:
+                PromoCode = request.env['custom.appointment.promo'].sudo()
+                promo = PromoCode.get_promo_by_code(promo_code)
+                if promo:
+                    validation = promo.validate_promo(
+                        service_id=service_id,
+                        branch_id=staff.branch_id.id if staff.branch_id else None,
+                        amount=service.price
+                    )
+                    if validation['valid']:
+                        discount_amount = validation['discount_amount']
+            
             appointment_vals = {
                 'name': f"{service.name} - {customer_name}",
                 'customer_name': customer_name,
@@ -262,11 +325,18 @@ class AppointmentController(http.Controller):
                 'description': notes,
                 'price': service.price,
                 'state': 'confirmed' if not service.requires_approval else 'draft',
+                'promo_code_entered': promo_code if promo_code else False,
+                'promo_id': promo.id if promo else False,
+                'discount_amount': discount_amount,
             }
             
             appointment_vals['state'] = 'draft'
             appointment_vals['payment_status'] = 'pending'
             appointment = request.env['custom.appointment'].sudo().create(appointment_vals)
+            
+            # Increment promo code usage if applied
+            if promo and discount_amount > 0:
+                promo.sudo().write({'current_uses': promo.current_uses + 1})
             
             return request.redirect(f'/appointments/payment?appointment_id={appointment.id}')
             
