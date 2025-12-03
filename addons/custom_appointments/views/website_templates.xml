@@ -523,7 +523,10 @@
 
                     function selectBranch(element, branchId) {
                         selectedBranch = branchId;
-                        window.location.href = '/appointments?branch_id=' + branchId;
+                        // Preserve existing query params (like promo) when selecting branch
+                        const params = new URLSearchParams(window.location.search);
+                        params.set('branch_id', branchId);
+                        window.location.href = '/appointments?' + params.toString();
                     }
 
                     function proceedToServices() {
@@ -536,6 +539,12 @@
                         params.append('staff_id', selectedStaff);
                         if (selectedBranch) {
                             params.append('branch_id', selectedBranch);
+                        }
+                        // Preserve promo code from URL if present
+                        const currentParams = new URLSearchParams(window.location.search);
+                        const promo = currentParams.get('promo');
+                        if (promo) {
+                            params.append('promo', promo);
                         }
 
                         window.location.href = `/appointments/services?${params.toString()}`;
@@ -1202,7 +1211,14 @@
                         }
                         
                         const staffParam = selectedTeamMember === 'any' ? defaultStaffId : selectedTeamMember;
-                        window.location.href = '/appointments/book?service_id=' + selectedService + '&amp;staff_id=' + staffParam;
+                        let url = '/appointments/book?service_id=' + selectedService + '&amp;staff_id=' + staffParam;
+                        // Preserve promo code from URL if present
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const promo = urlParams.get('promo');
+                        if (promo) {
+                            url += '&amp;promo=' + encodeURIComponent(promo);
+                        }
+                        window.location.href = url;
                     }
 
                     document.addEventListener('DOMContentLoaded', function() {
@@ -1431,6 +1447,23 @@
                                                 <input type="tel" class="form-control" name="customer_phone" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
                                             </div>
 
+                                            <div class="form-group mb-3">
+                                                <label class="font-weight-bold small" style="color: #555;">
+                                                    <i class="fa fa-ticket mr-1" style="color: #ff69b4;"></i>
+                                                    Promo Code
+                                                </label>
+                                                <div class="input-group" style="display: flex; align-items: stretch;">
+                                                    <input type="text" class="form-control" name="promo_code" id="promo_code" 
+                                                           placeholder="Enter promo code (optional)" 
+                                                           style="border-radius: 10px 0 0 10px; padding: 12px; border-color: #e0e0e0; flex: 1;"/>
+                                                    <button type="button" class="btn" onclick="validatePromoCode()" 
+                                                            style="background: #ff69b4; color: white; border-radius: 0 10px 10px 0; padding: 12px 20px; border: none; height: auto;">
+                                                        Apply
+                                                    </button>
+                                                </div>
+                                                <div id="promo-feedback" class="mt-2" style="display: none;"></div>
+                                            </div>
+
                                             <div class="form-group mb-4">
                                                 <label class="font-weight-bold small" style="color: #555;">Special Requests</label>
                                                 <textarea class="form-control" name="notes" rows="3" placeholder="Any special requests or notes..." style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"></textarea>
@@ -1600,6 +1633,130 @@
                         
                         calendar.render();
                     });
+
+                    // Promo code validation
+                    let appliedPromoCode = null;
+                    let promoDiscount = 0;
+                    
+                    function validatePromoCode() {
+                        const promoInput = document.getElementById('promo_code');
+                        const promoCode = promoInput.value.trim();
+                        const feedback = document.getElementById('promo-feedback');
+                        const serviceId = <t t-raw="service.id"/>;
+                        const branchId = <t t-raw="staff.branch_id.id if staff.branch_id else 'null'"/>;
+                        const servicePrice = <t t-raw="service.price"/>;
+                        const bookingFee = <t t-raw="service.booking_fee if service.fee_type == 'partial' else 0"/>;
+                        
+                        if (!promoCode) {
+                            feedback.style.display = 'none';
+                            appliedPromoCode = null;
+                            promoDiscount = 0;
+                            updatePriceSummary();
+                            return;
+                        }
+                        
+                        // Call server to validate promo code
+                        fetch('/appointments/validate-promo', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                promo_code: promoCode,
+                                service_id: serviceId,
+                                branch_id: branchId,
+                                amount: servicePrice,
+                                booking_fee: bookingFee
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Unwrap JSON-RPC response if present (Odoo type='json' routes return {jsonrpc, result})
+                            const res = data.result || data;
+                            feedback.style.display = 'block';
+                            if (res.valid) {
+                                appliedPromoCode = promoCode;
+                                promoDiscount = res.discount_amount || 0;
+                                feedback.innerHTML = '<div class="alert alert-success py-2 mb-0" style="border-radius: 10px;">' +
+                                    '<i class="fa fa-check-circle mr-2"></i>' +
+                                    '<strong>' + (res.promo_name || 'Promo') + '</strong> applied! ' +
+                                    'You save <strong>' + (res.currency_symbol || '') + promoDiscount.toFixed(2) + '</strong>' +
+                                    '</div>';
+                                updatePriceSummary();
+                            } else {
+                                appliedPromoCode = null;
+                                promoDiscount = 0;
+                                feedback.innerHTML = '<div class="alert alert-danger py-2 mb-0" style="border-radius: 10px;">' +
+                                    '<i class="fa fa-times-circle mr-2"></i>' + (res.message || 'Invalid promo code') +
+                                    '</div>';
+                                updatePriceSummary();
+                            }
+                        })
+                        .catch(error => {
+                            feedback.style.display = 'block';
+                            feedback.innerHTML = '<div class="alert alert-warning py-2 mb-0" style="border-radius: 10px;">' +
+                                '<i class="fa fa-exclamation-triangle mr-2"></i>Could not validate promo code. Please try again.' +
+                                '</div>';
+                        });
+                    }
+                    
+                    function updatePriceSummary() {
+                        const summaryTotal = document.querySelector('.summary-total');
+                        if (!summaryTotal) return;
+                        
+                        const servicePrice = <t t-raw="service.price"/>;
+                        const bookingFee = <t t-raw="service.booking_fee if service.fee_type == 'partial' else 0"/>;
+                        const currencySymbol = '<t t-esc="service.currency_id.symbol"/>';
+                        const feeType = '<t t-esc="service.fee_type"/>';
+                        
+                        const finalPrice = Math.max(0, servicePrice - promoDiscount);
+                        const finalBookingFee = feeType === 'partial' ? Math.max(0, bookingFee - promoDiscount) : 0;
+                        
+                        let html = '';
+                        if (feeType === 'partial' &amp;&amp; bookingFee > 0) {
+                            html = '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                                '<span class="font-weight-bold" style="color: #333; font-size: 14px;">Booking Fee (Pay Now)</span>' +
+                                '<span class="price font-weight-bold" style="color: #ff69b4; font-size: 18px;">' +
+                                currencySymbol + finalBookingFee.toFixed(2) + '</span></div>';
+                            if (promoDiscount > 0) {
+                                html += '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                                    '<span class="text-success" style="font-size: 14px;"><i class="fa fa-tag mr-1"></i>Promo Discount</span>' +
+                                    '<span class="text-success" style="font-size: 14px;">-' + currencySymbol + promoDiscount.toFixed(2) + '</span></div>';
+                            }
+                            html += '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                                '<span class="text-muted" style="font-size: 14px;">Balance Due at Appointment</span>' +
+                                '<span class="text-muted" style="font-size: 14px;">' + currencySymbol + (finalPrice - finalBookingFee).toFixed(2) + '</span></div>' +
+                                '<hr class="my-2"/>' +
+                                '<div class="d-flex justify-content-between align-items-center">' +
+                                '<span class="font-weight-bold" style="color: #333; font-size: 16px;">Total Price</span>' +
+                                '<span class="font-weight-bold" style="color: #333; font-size: 18px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
+                        } else {
+                            if (promoDiscount > 0) {
+                                html = '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                                    '<span class="text-muted" style="font-size: 14px;">Original Price</span>' +
+                                    '<span class="text-muted text-decoration-line-through" style="font-size: 14px;">' + currencySymbol + servicePrice.toFixed(2) + '</span></div>' +
+                                    '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                                    '<span class="text-success" style="font-size: 14px;"><i class="fa fa-tag mr-1"></i>Promo Discount</span>' +
+                                    '<span class="text-success" style="font-size: 14px;">-' + currencySymbol + promoDiscount.toFixed(2) + '</span></div>' +
+                                    '<hr class="my-2"/>';
+                            }
+                            html += '<div class="d-flex justify-content-between align-items-center">' +
+                                '<span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>' +
+                                '<span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
+                        }
+                        
+                        summaryTotal.innerHTML = html;
+                    }
+                    
+                    // Auto-apply promo code from URL parameter
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const promoFromUrl = urlParams.get('promo');
+                        if (promoFromUrl) {
+                            document.getElementById('promo_code').value = promoFromUrl;
+                            validatePromoCode();
+                        }
+                    });
                 </script>
                 
                 <!-- Custom Calendar Styles -->
@@ -1767,6 +1924,18 @@
                                         <p><strong>Date &amp; Time:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y - %I:%M %p')"/></p>
                                         <p><strong>Duration:</strong> <t t-esc="appointment.service_id.duration"/> hours</p>
                                         
+                                        <!-- Promo Code Applied -->
+                                        <t t-if="appointment.promo_id and appointment.discount_amount > 0">
+                                            <div class="promo-applied mb-3 p-2" style="background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fa fa-tag mr-2 text-success"></i>
+                                                    <span class="text-success font-weight-bold">
+                                                        Promo Code Applied: <t t-esc="appointment.promo_id.code"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        
                                         <t t-if="appointment.service_id.fee_type == 'partial' and appointment.service_id.booking_fee > 0">
                                             <hr class="my-3"/>
                                             <div class="price-breakdown">
@@ -1776,27 +1945,54 @@
                                                         <t t-esc="currency.symbol"/><t t-esc="amount"/>
                                                     </span>
                                                 </div>
+                                                <t t-if="appointment.discount_amount > 0">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-success"><i class="fa fa-tag mr-1"></i>Promo Discount:</span>
+                                                        <span class="text-success">
+                                                            -<t t-esc="currency.symbol"/><t t-esc="appointment.discount_amount"/>
+                                                        </span>
+                                                    </div>
+                                                </t>
                                                 <div class="d-flex justify-content-between mb-2">
                                                     <span class="text-muted">Balance Due at Appointment:</span>
                                                     <span class="text-muted">
-                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price - amount"/>
+                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price - amount - appointment.discount_amount"/>
                                                     </span>
                                                 </div>
                                                 <hr class="my-2"/>
                                                 <div class="d-flex justify-content-between">
                                                     <span><strong>Total Service Price:</strong></span>
                                                     <span class="font-weight-bold">
-                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price"/>
+                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.final_price"/>
                                                     </span>
                                                 </div>
                                             </div>
                                         </t>
                                         <t t-else="">
-                                            <p class="mb-0"><strong>Total Amount:</strong> 
-                                                <span class="h4 text-primary">
-                                                    <t t-esc="currency.symbol"/><t t-esc="amount"/>
-                                                </span>
-                                            </p>
+                                            <hr class="my-3"/>
+                                            <div class="price-breakdown">
+                                                <t t-if="appointment.discount_amount > 0">
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Original Price:</span>
+                                                        <span class="text-muted text-decoration-line-through">
+                                                            <t t-esc="currency.symbol"/><t t-esc="appointment.price"/>
+                                                        </span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-success"><i class="fa fa-tag mr-1"></i>Promo Discount:</span>
+                                                        <span class="text-success">
+                                                            -<t t-esc="currency.symbol"/><t t-esc="appointment.discount_amount"/>
+                                                        </span>
+                                                    </div>
+                                                    <hr class="my-2"/>
+                                                </t>
+                                                <div class="d-flex justify-content-between">
+                                                    <span><strong>Total Amount:</strong></span>
+                                                    <span class="h4 text-primary mb-0">
+                                                        <t t-esc="currency.symbol"/><t t-esc="appointment.final_price"/>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </t>
                                     </div>
                                     

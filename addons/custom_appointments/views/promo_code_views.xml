@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Promo Code List View -->
+    <record id="view_promo_code_list" model="ir.ui.view">
+        <field name="name">custom.appointment.promo.list</field>
+        <field name="model">custom.appointment.promo</field>
+        <field name="arch" type="xml">
+            <list string="Promo Codes">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="discount_type"/>
+                <field name="discount_value"/>
+                <field name="applies_to"/>
+                <field name="assigned_staff_id"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="current_uses"/>
+                <field name="max_uses"/>
+                <field name="total_discount_given" sum="Total Discount"/>
+                <field name="total_revenue" sum="Total Revenue"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Promo Code Form View -->
+    <record id="view_promo_code_form" model="ir.ui.view">
+        <field name="name">custom.appointment.promo.form</field>
+        <field name="model">custom.appointment.promo</field>
+        <field name="arch" type="xml">
+            <form string="Promo Code">
+                <header>
+                    <button name="action_copy_link" type="object" string="Copy Shareable Link" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="appointment_count" widget="statinfo" string="Appointments"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g., Summer Sale 2025"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Promo Code Details">
+                            <field name="code"/>
+                            <field name="discount_type"/>
+                            <field name="discount_value" invisible="discount_type == 'free_booking'"/>
+                            <field name="applies_to"/>
+                            <field name="maximum_discount" invisible="discount_type != 'percentage'"/>
+                            <field name="minimum_amount"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                            <field name="max_uses"/>
+                            <field name="current_uses"/>
+                            <field name="max_uses_per_customer"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Assignment">
+                            <field name="assigned_staff_id"/>
+                            <field name="assigned_partner_id"/>
+                        </group>
+                        <group string="Restrictions">
+                            <field name="branch_ids" widget="many2many_tags"/>
+                            <field name="service_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Shareable Link">
+                        <field name="shareable_link" widget="CopyClipboardChar"/>
+                    </group>
+                    <group string="Performance Statistics">
+                        <group>
+                            <field name="total_discount_given"/>
+                        </group>
+                        <group>
+                            <field name="total_revenue"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Promo Code Search View -->
+    <record id="view_promo_code_search" model="ir.ui.view">
+        <field name="name">custom.appointment.promo.search</field>
+        <field name="model">custom.appointment.promo</field>
+        <field name="arch" type="xml">
+            <search string="Search Promo Codes">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="assigned_staff_id"/>
+                <field name="assigned_partner_id"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Currently Valid" name="valid_now" domain="[
+                    '|', ('valid_from', '=', False), ('valid_from', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                    '|', ('valid_to', '=', False), ('valid_to', '&gt;=', context_today().strftime('%Y-%m-%d'))
+                ]"/>
+                <filter string="Expired" name="expired" domain="[('valid_to', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Percentage Discount" name="percentage" domain="[('discount_type', '=', 'percentage')]"/>
+                <filter string="Fixed Discount" name="fixed" domain="[('discount_type', '=', 'fixed')]"/>
+                <filter string="Free Booking" name="free_booking" domain="[('discount_type', '=', 'free_booking')]"/>
+                <separator/>
+                <filter string="Applies to Booking Fee" name="applies_booking_fee" domain="[('applies_to', '=', 'booking_fee')]"/>
+                <filter string="Applies to Full Price" name="applies_full_price" domain="[('applies_to', '=', 'full_price')]"/>
+                <filter string="Applies to Both" name="applies_both" domain="[('applies_to', '=', 'both')]"/>
+                <separator/>
+                <filter string="Has Staff Assignment" name="has_staff" domain="[('assigned_staff_id', '!=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Discount Type" name="group_discount_type" context="{'group_by': 'discount_type'}"/>
+                    <filter string="Assigned Staff" name="group_staff" context="{'group_by': 'assigned_staff_id'}"/>
+                    <filter string="Valid From" name="group_valid_from" context="{'group_by': 'valid_from'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Promo Code Pivot View for Performance Analysis -->
+    <record id="view_promo_code_pivot" model="ir.ui.view">
+        <field name="name">custom.appointment.promo.pivot</field>
+        <field name="model">custom.appointment.promo</field>
+        <field name="arch" type="xml">
+            <pivot string="Promo Code Performance">
+                <field name="assigned_staff_id" type="row"/>
+                <field name="code" type="row"/>
+                <field name="appointment_count" type="measure"/>
+                <field name="total_discount_given" type="measure"/>
+                <field name="total_revenue" type="measure"/>
+                <field name="current_uses" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Promo Code Graph View -->
+    <record id="view_promo_code_graph" model="ir.ui.view">
+        <field name="name">custom.appointment.promo.graph</field>
+        <field name="model">custom.appointment.promo</field>
+        <field name="arch" type="xml">
+            <graph string="Promo Code Performance" type="bar">
+                <field name="code"/>
+                <field name="appointment_count" type="measure"/>
+                <field name="total_revenue" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Promo Code Action -->
+    <record id="action_promo_codes" model="ir.actions.act_window">
+        <field name="name">Promo Codes</field>
+        <field name="res_model">custom.appointment.promo</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_promo_code_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first promo code
+            </p>
+            <p>
+                Promo codes allow you to offer discounts to customers. You can assign them to staff members for affiliate tracking,
+                set validity periods, usage limits, and track performance.
+            </p>
+        </field>
+    </record>
+
+    <!-- Parent Menu for Promo Codes -->
+    <menuitem id="menu_promo_parent"
+              name="Promo Codes"
+              parent="appointments_main_menu"
+              sequence="25"/>
+
+    <!-- Menu Item for Promo Codes List -->
+    <menuitem id="menu_promo_codes"
+              name="All Promo Codes"
+              parent="menu_promo_parent"
+              action="action_promo_codes"
+              sequence="10"/>
+
+    <!-- Promo Code Performance Report Action -->
+    <record id="action_promo_code_report" model="ir.actions.act_window">
+        <field name="name">Promo Code Performance</field>
+        <field name="res_model">custom.appointment.promo</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_promo_code_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+    <!-- Menu Item for Promo Code Reports -->
+    <menuitem id="menu_promo_code_report"
+              name="Performance Report"
+              parent="menu_promo_parent"
+              action="action_promo_code_report"
+              sequence="20"/>
+
+</odoo>

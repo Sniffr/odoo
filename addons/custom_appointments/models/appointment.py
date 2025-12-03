@@ -72,6 +72,14 @@ class Appointment(models.Model):
     customer_notification_sent = fields.Boolean(string='Customer Notification Sent', default=False)
     staff_notification_sent = fields.Boolean(string='Staff Notification Sent', default=False)
     
+    # Promo code fields
+    promo_id = fields.Many2one('custom.appointment.promo', string='Promo Code', ondelete='set null',
+                                help='Promo code applied to this appointment')
+    promo_code_entered = fields.Char(string='Promo Code Entered', help='The promo code string entered by customer')
+    discount_amount = fields.Monetary(string='Discount Amount', currency_field='currency_id', default=0)
+    final_price = fields.Monetary(string='Final Price', currency_field='currency_id', 
+                                   compute='_compute_final_price', store=True)
+    
     # Follow-up tracking fields
     followup_status = fields.Selection([
         ('pending', 'Pending'),
@@ -115,6 +123,11 @@ class Appointment(models.Model):
                 appointment.duration = delta.total_seconds() / 3600.0
             else:
                 appointment.duration = 0.0
+    
+    @api.depends('price', 'discount_amount')
+    def _compute_final_price(self):
+        for appointment in self:
+            appointment.final_price = max(0, (appointment.price or 0) - (appointment.discount_amount or 0))
     
     @api.onchange('service_id')
     def _onchange_service_id(self):
@@ -337,15 +350,24 @@ class Appointment(models.Model):
                 self.partner_id = partner.id
                 _logger.info(f"Created/found partner {partner.id} for appointment {self.id}")
             
+            invoice_lines = [(0, 0, {
+                'name': f"{self.service_id.name} - {self.name}",
+                'quantity': 1,
+                'price_unit': self.price,
+            })]
+            
+            if self.promo_id and self.discount_amount > 0:
+                invoice_lines.append((0, 0, {
+                    'name': f"Discount ({self.promo_id.code})",
+                    'quantity': 1,
+                    'price_unit': -self.discount_amount,
+                }))
+            
             invoice_vals = {
                 'move_type': 'out_invoice',
                 'partner_id': self.partner_id.id,
                 'invoice_date': fields.Date.today(),
-                'invoice_line_ids': [(0, 0, {
-                    'name': f"{self.service_id.name} - {self.name}",
-                    'quantity': 1,
-                    'price_unit': self.price,
-                })],
+                'invoice_line_ids': invoice_lines,
             }
             
             invoice = self.env['account.move'].create(invoice_vals)

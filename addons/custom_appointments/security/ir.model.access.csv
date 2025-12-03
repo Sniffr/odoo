@@ -13,3 +13,5 @@ access_employee_import_wizard_user,employee.import.wizard.user,model_employee_im
 access_company_import_wizard_user,company.import.wizard.user,model_company_import_wizard,base.group_user,1,1,1,1
 access_payment_transaction_user,payment.transaction.user,payment.model_payment_transaction,base.group_user,1,1,1,1
 access_payment_provider_user,payment.provider.user,payment.model_payment_provider,base.group_user,1,0,0,0
+access_custom_appointment_promo_user,custom.appointment.promo.user,model_custom_appointment_promo,base.group_user,1,1,1,1
+access_custom_appointment_promo_public,custom.appointment.promo.public,model_custom_appointment_promo,base.group_public,1,0,0,0
