@@ -978,13 +978,35 @@ class Appointment(models.Model):
     
     @api.model
     def send_appointment_followups(self):
-        """Scheduled method to send follow-up messages after appointments are completed"""
+        """Scheduled method to auto-complete appointments and send follow-up messages"""
         _logger.info("=== Running appointment follow-up cron job ===")
         
-        # Get all companies to check their follow-up settings
+        # Get all companies to check their settings
         companies = self.env['res.company'].sudo().search([])
         
         for company in companies:
+            # Step 1: Auto-complete appointments that have passed their end time
+            if company.appointment_autocomplete_enabled:
+                grace_minutes = company.appointment_autocomplete_grace_minutes or 30
+                auto_cutoff = datetime.now() - timedelta(minutes=grace_minutes)
+                
+                # Find appointments that should be auto-completed
+                to_auto_complete = self.sudo().search([
+                    ('state', 'in', ['confirmed', 'in_progress']),
+                    ('stop', '!=', False),
+                    ('stop', '<=', auto_cutoff),
+                ])
+                
+                _logger.info(f"Found {len(to_auto_complete)} appointments to auto-complete in company {company.name}")
+                
+                for appt in to_auto_complete:
+                    try:
+                        _logger.info(f"Auto-completing appointment {appt.id} (ended at {appt.stop})")
+                        appt.with_company(company).action_complete()
+                    except Exception as e:
+                        _logger.error(f"Error auto-completing appointment {appt.id}: {str(e)}", exc_info=True)
+            
+            # Step 2: Send follow-ups for completed appointments
             if not company.appointment_followup_enabled:
                 _logger.info(f"Follow-up disabled for company {company.name}")
                 continue

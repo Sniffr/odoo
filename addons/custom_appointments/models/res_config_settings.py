@@ -4,6 +4,18 @@ from odoo import models, fields
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
+    # Appointment Auto-Completion Configuration
+    appointment_autocomplete_enabled = fields.Boolean(
+        related='company_id.appointment_autocomplete_enabled',
+        readonly=False,
+        string='Auto-Complete Appointments'
+    )
+    appointment_autocomplete_grace_minutes = fields.Integer(
+        related='company_id.appointment_autocomplete_grace_minutes',
+        readonly=False,
+        string='Auto-Complete Grace Period (Minutes)'
+    )
+
     # Appointment Follow-up Configuration
     appointment_followup_enabled = fields.Boolean(
         related='company_id.appointment_followup_enabled',

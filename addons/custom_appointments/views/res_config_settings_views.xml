@@ -7,6 +7,20 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app data-string="Appointments" string="Appointments" name="custom_appointments">
+                    <block title="Appointment Auto-Completion" name="appointment_autocomplete_settings">
+                        <setting id="appointment_autocomplete_enabled" string="Auto-Complete Appointments" help="Automatically mark appointments as completed after their scheduled end time passes. This ensures follow-up messages are sent even if staff forget to click Complete.">
+                            <field name="appointment_autocomplete_enabled"/>
+                        </setting>
+                        <setting id="appointment_autocomplete_grace" string="Grace Period" help="Minutes to wait after appointment end time before auto-completing. This gives staff time to manually complete appointments.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="appointment_autocomplete_grace_minutes" class="col-lg-3"/>
+                                    <field name="appointment_autocomplete_grace_minutes" class="col-lg-3"/>
+                                    <span class="col-lg-6 text-muted">minutes after appointment ends</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Post-Appointment Follow-ups" name="appointment_followup_settings">
                         <setting id="appointment_followup_enabled" string="Enable Follow-up Messages" help="Send thank you messages with rebooking links and feedback requests after appointments are completed.">
                             <field name="appointment_followup_enabled"/>
