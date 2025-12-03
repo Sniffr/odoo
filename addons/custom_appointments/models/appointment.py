@@ -67,6 +67,7 @@ class Appointment(models.Model):
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     payment_id = fields.Many2one('account.payment', string='Payment', copy=False, 
                                   help='The accounting payment record created for this appointment')
+    payment_count = fields.Integer(string='Payment Count', compute='_compute_payment_count')
     
     customer_notification_sent = fields.Boolean(string='Customer Notification Sent', default=False)
     staff_notification_sent = fields.Boolean(string='Staff Notification Sent', default=False)
@@ -75,6 +76,11 @@ class Appointment(models.Model):
     def _compute_invoice_count(self):
         for appointment in self:
             appointment.invoice_count = 1 if appointment.invoice_id else 0
+    
+    @api.depends('payment_id')
+    def _compute_payment_count(self):
+        for appointment in self:
+            appointment.payment_count = 1 if appointment.payment_id else 0
     
     @api.depends('start', 'stop')
     def _compute_duration(self):
@@ -398,6 +404,16 @@ class Appointment(models.Model):
             'view_mode': 'form',
             'res_id': self.invoice_id.id,
             'context': {'default_move_type': 'out_invoice'},
+        }
+    
+    def action_view_payment(self):
+        self.ensure_one()
+        return {
+            'name': 'Payment',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment',
+            'view_mode': 'form',
+            'res_id': self.payment_id.id,
         }
     
     @api.model

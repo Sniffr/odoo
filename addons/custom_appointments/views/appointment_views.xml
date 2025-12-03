@@ -65,6 +65,9 @@
                         <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="invoice_count == 0">
                             <field name="invoice_count" widget="statinfo" string="Invoice"/>
                         </button>
+                        <button name="action_view_payment" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0">
+                            <field name="payment_count" widget="statinfo" string="Payment"/>
+                        </button>
                     </div>
                     
                     <group>
@@ -99,6 +102,7 @@
                             <field name="paid_amount" readonly="1"/>
                             <field name="payment_date" readonly="1"/>
                             <field name="payment_reference" readonly="1"/>
+                            <field name="payment_id" readonly="1"/>
                         </group>
                         <group string="Invoice Information">
                             <field name="invoice_id" readonly="1"/>
