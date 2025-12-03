@@ -11,13 +11,16 @@
                 <field name="service_id"/>
                 <field name="staff_member_id"/>
                 <field name="branch_id"/>
+                <field name="promo_id"/>
                 <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
                 <filter string="Today" name="today" domain="[('start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
                 <filter string="All" name="all" domain="[]"/>
+                <filter string="With Promo Code" name="with_promo" domain="[('promo_id', '!=', False)]"/>
                 <group expand="0" string="Group By">
                     <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Staff Member" name="group_by_staff" context="{'group_by': 'staff_member_id'}"/>
                     <filter string="Branch" name="group_by_branch" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Promo Code" name="group_by_promo" context="{'group_by': 'promo_id'}"/>
                 </group>
             </search>
         </field>
@@ -93,7 +96,13 @@
                         </group>
                         <group string="Pricing">
                             <field name="price"/>
+                            <field name="discount_amount"/>
+                            <field name="final_price"/>
                             <field name="currency_id"/>
+                        </group>
+                        <group string="Promo Code">
+                            <field name="promo_id"/>
+                            <field name="promo_code_entered"/>
                         </group>
                         <group string="Payment Information">
                             <field name="payment_status"/>
