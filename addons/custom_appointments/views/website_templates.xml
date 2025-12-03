@@ -1436,16 +1436,14 @@
                                                     <i class="fa fa-ticket mr-1" style="color: #ff69b4;"></i>
                                                     Promo Code
                                                 </label>
-                                                <div class="input-group">
+                                                <div class="input-group" style="display: flex; align-items: stretch;">
                                                     <input type="text" class="form-control" name="promo_code" id="promo_code" 
                                                            placeholder="Enter promo code (optional)" 
-                                                           style="border-radius: 10px 0 0 10px; padding: 12px; border-color: #e0e0e0;"/>
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn" onclick="validatePromoCode()" 
-                                                                style="background: #ff69b4; color: white; border-radius: 0 10px 10px 0; padding: 0 20px;">
-                                                            Apply
-                                                        </button>
-                                                    </div>
+                                                           style="border-radius: 10px 0 0 10px; padding: 12px; border-color: #e0e0e0; flex: 1;"/>
+                                                    <button type="button" class="btn" onclick="validatePromoCode()" 
+                                                            style="background: #ff69b4; color: white; border-radius: 0 10px 10px 0; padding: 12px 20px; border: none; height: auto;">
+                                                        Apply
+                                                    </button>
                                                 </div>
                                                 <div id="promo-feedback" class="mt-2" style="display: none;"></div>
                                             </div>
@@ -1657,21 +1655,23 @@
                         })
                         .then(response => response.json())
                         .then(data => {
+                            // Unwrap JSON-RPC response if present (Odoo type='json' routes return {jsonrpc, result})
+                            const res = data.result || data;
                             feedback.style.display = 'block';
-                            if (data.valid) {
+                            if (res.valid) {
                                 appliedPromoCode = promoCode;
-                                promoDiscount = data.discount_amount;
+                                promoDiscount = res.discount_amount || 0;
                                 feedback.innerHTML = '<div class="alert alert-success py-2 mb-0" style="border-radius: 10px;">' +
                                     '<i class="fa fa-check-circle mr-2"></i>' +
-                                    '<strong>' + data.promo_name + '</strong> applied! ' +
-                                    'You save <strong>' + data.currency_symbol + promoDiscount.toFixed(2) + '</strong>' +
+                                    '<strong>' + (res.promo_name || 'Promo') + '</strong> applied! ' +
+                                    'You save <strong>' + (res.currency_symbol || '') + promoDiscount.toFixed(2) + '</strong>' +
                                     '</div>';
                                 updatePriceSummary();
                             } else {
                                 appliedPromoCode = null;
                                 promoDiscount = 0;
                                 feedback.innerHTML = '<div class="alert alert-danger py-2 mb-0" style="border-radius: 10px;">' +
-                                    '<i class="fa fa-times-circle mr-2"></i>' + data.message +
+                                    '<i class="fa fa-times-circle mr-2"></i>' + (res.message || 'Invalid promo code') +
                                     '</div>';
                                 updatePriceSummary();
                             }
