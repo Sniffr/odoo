@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
 from collections import defaultdict
 
 from odoo import fields, models, api
+
+_logger = logging.getLogger(__name__)
 
 
 class SmsSms(models.Model):
@@ -30,6 +33,8 @@ class SmsSms(models.Model):
 
     def _split_by_api(self):
         """Override to handle Emalify provider selection based on company."""
+        _logger.info("Emalify _split_by_api called for SMS ids: %s", self.ids)
+        
         sms_by_company = defaultdict(lambda: self.env['sms.sms'])
         todo_via_super = self.browse()
         
@@ -38,11 +43,17 @@ class SmsSms(models.Model):
             sms_by_company[company] += sms
         
         for company, company_sms in sms_by_company.items():
+            _logger.info(
+                "Emalify routing: company=%s (id=%s), sms_provider=%s, sms_ids=%s",
+                company.name, company.id, company.sms_provider, company_sms.ids
+            )
             if company.sms_provider == 'emalify':
+                _logger.info("Routing SMS via Emalify for company %s", company.name)
                 sms_api = company._get_sms_api_class()(self.env)
                 sms_api._set_company(company)
                 yield sms_api, company_sms
             else:
+                _logger.info("Routing SMS via default (IAP) for company %s", company.name)
                 todo_via_super += company_sms
         
         if todo_via_super:

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from odoo import fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
+    # Use selection_add to extend existing sms_provider field instead of redefining it
+    # This ensures compatibility with other SMS provider modules (e.g., sms_twilio)
     sms_provider = fields.Selection(
-        string='SMS Provider',
-        selection=[
-            ('iap', 'Send via Odoo'),
-            ('emalify', 'Send via Emalify'),
-        ],
-        default='iap',
+        selection_add=[('emalify', 'Send via Emalify')],
+        ondelete={'emalify': 'set default'},
     )
     sms_emalify_api_key = fields.Char(
         string="Emalify API Key",
