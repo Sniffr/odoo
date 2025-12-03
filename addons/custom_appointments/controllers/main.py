@@ -369,6 +369,9 @@ class AppointmentController(http.Controller):
             
             transaction = request.env['payment.transaction'].sudo().create(transaction_vals)
             appointment.payment_transaction_id = transaction.id
+            # Explicitly set appointment_id on transaction so it shows in Appointments Payments view
+            # (the computed field runs before payment_transaction_id is set, so it would be False)
+            transaction.appointment_id = appointment.id
             
             if acquirer.code == 'demo':
                 transaction.write({'state': 'done'})
