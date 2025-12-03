@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend General Settings to add Emalify SMS Configuration -->
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.emalify</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <div class="app_settings_block" data-string="Emalify SMS" string="Emalify SMS" data-key="sms_emalify">
+                        <h2>Emalify SMS Provider</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="sms_emalify_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_enabled"/>
+                                    <div class="text-muted">
+                                        Use Emalify as your SMS provider for all Odoo SMS communications
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_api_key" string="API Key"/>
+                                    <field name="sms_emalify_api_key" password="True" placeholder="e.g., e7f6653c80b0b5da94a8750254c72640"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_partner_id" string="Partner ID"/>
+                                    <field name="sms_emalify_partner_id" placeholder="e.g., 221"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_shortcode" string="Shortcode (Sender Name)"/>
+                                    <field name="sms_emalify_shortcode" placeholder="e.g., STDIOXTIX"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_pass_type" string="Password Type"/>
+                                    <field name="sms_emalify_pass_type"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_default_country_code" string="Default Country Code"/>
+                                    <field name="sms_emalify_default_country_code" placeholder="254"/>
+                                    <div class="text-muted">
+                                        Country code to prepend to local phone numbers (e.g., 254 for Kenya)
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="not sms_emalify_enabled">
+                                <div class="o_setting_right_pane">
+                                    <label for="sms_emalify_callback_url" string="Callback URL"/>
+                                    <field name="sms_emalify_callback_url" readonly="1"/>
+                                    <div class="text-muted">
+                                        Configure this URL in your Emalify dashboard to receive delivery status updates
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12" invisible="not sms_emalify_enabled">
+                                <button name="action_test_emalify_connection" 
+                                        string="Test Connection" 
+                                        type="object" 
+                                        class="btn-primary"
+                                        icon="fa-paper-plane"/>
+                                <button name="action_open_delivery_logs" 
+                                        string="View Delivery Logs" 
+                                        type="object" 
+                                        class="btn-secondary ms-2"
+                                        icon="fa-list"/>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

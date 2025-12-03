@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sms_emalify_delivery_system,sms.emalify.delivery.system,model_sms_emalify_delivery,base.group_system,1,1,1,1
+access_sms_emalify_delivery_user,sms.emalify.delivery.user,model_sms_emalify_delivery,base.group_user,1,0,0,0
+access_sms_emalify_test_wizard_system,sms.emalify.test.wizard.system,model_sms_emalify_test_wizard,base.group_system,1,1,1,1
+

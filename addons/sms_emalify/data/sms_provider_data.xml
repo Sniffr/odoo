@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default Configuration Parameters -->
+        <record id="default_emalify_enabled" model="ir.config_parameter">
+            <field name="key">sms_emalify.enabled</field>
+            <field name="value">False</field>
+        </record>
+
+        <record id="default_emalify_api_key" model="ir.config_parameter">
+            <field name="key">sms_emalify.api_key</field>
+            <field name="value"></field>
+        </record>
+
+        <record id="default_emalify_partner_id" model="ir.config_parameter">
+            <field name="key">sms_emalify.partner_id</field>
+            <field name="value"></field>
+        </record>
+
+        <record id="default_emalify_shortcode" model="ir.config_parameter">
+            <field name="key">sms_emalify.shortcode</field>
+            <field name="value"></field>
+        </record>
+
+        <record id="default_emalify_pass_type" model="ir.config_parameter">
+            <field name="key">sms_emalify.pass_type</field>
+            <field name="value">plain</field>
+        </record>
+
+        <record id="default_emalify_country_code" model="ir.config_parameter">
+            <field name="key">sms_emalify.default_country_code</field>
+            <field name="value">254</field>
+        </record>
+    </data>
+</odoo>
+

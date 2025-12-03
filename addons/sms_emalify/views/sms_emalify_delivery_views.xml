@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record id="sms_emalify_delivery_view_list" model="ir.ui.view">
+            <field name="name">sms.emalify.delivery.list</field>
+            <field name="model">sms.emalify.delivery</field>
+            <field name="arch" type="xml">
+                <list string="Emalify SMS Delivery Logs" 
+                      decoration-success="status == 'delivered'"
+                      decoration-info="status == 'sent'"
+                      decoration-warning="status == 'pending'"
+                      decoration-danger="status == 'failed'">
+                    <field name="create_date" string="Date"/>
+                    <field name="phone_number"/>
+                    <field name="message_content"/>
+                    <field name="status"/>
+                    <field name="emalify_message_id"/>
+                    <field name="user_id"/>
+                    <field name="res_model"/>
+                    <field name="delivered_date"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="sms_emalify_delivery_view_form" model="ir.ui.view">
+            <field name="name">sms.emalify.delivery.form</field>
+            <field name="model">sms.emalify.delivery</field>
+            <field name="arch" type="xml">
+                <form string="SMS Delivery Details">
+                    <header>
+                        <field name="status" widget="statusbar" statusbar_visible="pending,sent,delivered"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_related_record" 
+                                    type="object" 
+                                    class="oe_stat_button" 
+                                    icon="fa-external-link"
+                                    invisible="not res_model or not res_id">
+                                <span>View Record</span>
+                            </button>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="phone_number"/>
+                                <field name="emalify_message_id"/>
+                                <field name="status"/>
+                                <field name="user_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                            <group>
+                                <field name="sent_date"/>
+                                <field name="delivered_date"/>
+                                <field name="res_model"/>
+                                <field name="res_id"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Message">
+                                <field name="message_content" nolabel="1"/>
+                            </page>
+                            <page string="API Response" invisible="not api_response">
+                                <field name="api_response" nolabel="1"/>
+                            </page>
+                            <page string="Callback Data" invisible="not callback_data">
+                                <field name="callback_data" nolabel="1"/>
+                            </page>
+                            <page string="Error" invisible="not error_message">
+                                <field name="error_message" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="sms_emalify_delivery_view_search" model="ir.ui.view">
+            <field name="name">sms.emalify.delivery.search</field>
+            <field name="model">sms.emalify.delivery</field>
+            <field name="arch" type="xml">
+                <search string="Search SMS Deliveries">
+                    <field name="phone_number"/>
+                    <field name="emalify_message_id"/>
+                    <field name="message_content"/>
+                    <field name="status"/>
+                    <field name="user_id"/>
+                    
+                    <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
+                    <filter string="Sent" name="sent" domain="[('status', '=', 'sent')]"/>
+                    <filter string="Delivered" name="delivered" domain="[('status', '=', 'delivered')]"/>
+                    <filter string="Failed" name="failed" domain="[('status', '=', 'failed')]"/>
+                    
+                    <separator/>
+                    <filter string="Today" name="today" 
+                            domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                    <filter string="This Week" name="this_week" 
+                            domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                        <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="sms_emalify_delivery_action" model="ir.actions.act_window">
+            <field name="name">Emalify SMS Delivery Logs</field>
+            <field name="res_model">sms.emalify.delivery</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'create': False}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No SMS delivery logs yet
+                </p>
+                <p>
+                    SMS delivery logs will appear here once you start sending SMS via Emalify.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_sms_emalify_delivery"
+                  name="Emalify SMS Logs"
+                  parent="base.menu_administration"
+                  action="sms_emalify_delivery_action"
+                  sequence="100"
+                  groups="base.group_system"/>
+    </data>
+</odoo>
+
