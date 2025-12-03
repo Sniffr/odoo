@@ -357,6 +357,11 @@ class Appointment(models.Model):
                     self.payment_id = payment.id
                     _logger.info(f"Linked payment {payment.name} (ID: {payment.id}) to appointment {self.id}")
                     _logger.info(f"Payment state: {payment.state}, is_reconciled: {payment.is_reconciled}")
+                    
+                    # Link payment back to the transaction so the cron doesn't try to create another payment
+                    if self.payment_transaction_id:
+                        self.payment_transaction_id.payment_id = payment.id
+                        _logger.info(f"Linked payment to transaction {self.payment_transaction_id.id} to prevent duplicate payment creation by cron")
             
             _logger.info(f"=== Invoice creation completed for appointment {self.id} ===")
             return invoice
