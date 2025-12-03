@@ -57,7 +57,7 @@ class PromoCode(models.Model):
                                      help='Cap on discount amount (for percentage discounts). 0 = no cap')
     
     appointment_ids = fields.One2many('custom.appointment', 'promo_id', string='Appointments')
-    appointment_count = fields.Integer(string='Appointments', compute='_compute_appointment_count')
+    appointment_count = fields.Integer(string='Appointments', compute='_compute_appointment_count', store=True)
     
     total_discount_given = fields.Float(string='Total Discount Given', compute='_compute_stats', store=True)
     total_revenue = fields.Float(string='Total Revenue Generated', compute='_compute_stats', store=True)
