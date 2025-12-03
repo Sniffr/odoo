@@ -1,0 +1,75 @@
+<div style="margin: 0px; padding: 0px;">
+    <div style="margin: 0px; padding: 0px; background-color: #f8f9fa;">
+        <div style="margin: 0px auto; max-width: 600px; padding: 20px;">
+            <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #ff69b4; margin: 0; font-size: 28px;">Thank You for Your Visit!</h1>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <p style="font-size: 16px; color: #2d3436; margin-bottom: 20px;">
+                        Dear {customer_name},
+                    </p>
+                    <p style="font-size: 16px; color: #2d3436; line-height: 1.6;">
+                        Thank you for choosing {company_name}! We hope you had a wonderful experience with us.
+                    </p>
+                </div>
+
+                <div style="background-color: #fff5f8; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                    <h3 style="color: #ff69b4; margin-top: 0; margin-bottom: 15px;">Your Recent Appointment</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72; width: 30%;">Service:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{service_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Staff Member:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{staff_name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; font-weight: bold; color: #636e72;">Date:</td>
+                            <td style="padding: 8px 0; color: #2d3436;">{appointment_date}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Feedback Section -->
+                <div style="background-color: #e8f4fd; border-radius: 8px; padding: 20px; margin-bottom: 25px; text-align: center;">
+                    <h3 style="color: #0984e3; margin-top: 0; margin-bottom: 15px;">How Was Your Experience?</h3>
+                    <p style="color: #636e72; margin-bottom: 15px;">We'd love to hear your feedback!</p>
+                    <a href="{feedback_url}" style="display: inline-block; background: linear-gradient(135deg, #ff69b4, #ff8da1); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">
+                        Leave Feedback
+                    </a>
+                </div>
+
+                <!-- Rebooking Section -->
+                <div style="background-color: #d4edda; border-radius: 8px; padding: 20px; margin-bottom: 25px; text-align: center;">
+                    <h3 style="color: #28a745; margin-top: 0; margin-bottom: 15px;">Ready for Your Next Appointment?</h3>
+                    <p style="color: #636e72; margin-bottom: 15px;">
+                        We recommend booking your next {service_name} in about {rebook_days} days.
+                    </p>
+                    <a href="{rebook_url}" style="display: inline-block; background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">
+                        Book Your Next Appointment
+                    </a>
+                    <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                        Suggested date: {suggested_rebook_date}
+                    </p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p style="color: #636e72; font-size: 14px; margin: 0;">
+                        Questions? Contact us at {branch_phone} 
+                        or {branch_email}
+                    </p>
+                </div>
+
+                <div style="text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <p style="color: #b2bec3; font-size: 12px; margin: 0;">
+                        {company_name}<br/>
+                        {branch_address}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

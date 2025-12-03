@@ -46,6 +46,19 @@ class CompanyService(models.Model):
     notes = fields.Text(string='Internal Notes')
     customer_notes = fields.Text(string='Customer Instructions')
     
+    # Follow-up and rebooking settings
+    rebook_days = fields.Integer(
+        string='Days Until Rebook', 
+        default=21,
+        help='Default number of days to suggest for rebooking after appointment completion. '
+             'This will be used to pre-fill the date when sending follow-up messages.'
+    )
+    enable_followup = fields.Boolean(
+        string='Enable Follow-up', 
+        default=True,
+        help='If enabled, customers will receive a follow-up message after their appointment is completed.'
+    )
+    
     @api.depends('duration')
     def _compute_duration_minutes(self):
         for record in self:

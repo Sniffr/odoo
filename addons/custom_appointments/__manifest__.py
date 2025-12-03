@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.1.6',
+    'version': '1.2.0',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -20,6 +20,9 @@
         - Payment tracking and transaction management
         - Invoice generation and management
         - Dashboard integration for appointment analytics
+        - Post-appointment follow-up with thank you messages
+        - Rebooking links with configurable timing per service
+        - Customer feedback collection (star rating and comments)
     ''',
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
@@ -35,6 +38,7 @@
         'views/appointment_views.xml',
         'views/customer_views.xml',
         'views/website_templates.xml',
+        'views/res_config_settings_views.xml',
         'data/mail_templates.xml',
         'data/cron_jobs.xml',
     ],

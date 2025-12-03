@@ -4,5 +4,7 @@ from . import service
 from . import service_category
 from . import appointment
 from . import res_partner
+from . import res_company
+from . import res_config_settings
 from . import payment_transaction
 from . import account_move

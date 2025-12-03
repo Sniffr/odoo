@@ -72,6 +72,31 @@ class Appointment(models.Model):
     customer_notification_sent = fields.Boolean(string='Customer Notification Sent', default=False)
     staff_notification_sent = fields.Boolean(string='Staff Notification Sent', default=False)
     
+    # Follow-up tracking fields
+    followup_status = fields.Selection([
+        ('pending', 'Pending'),
+        ('sent', 'Sent'),
+        ('skipped', 'Skipped'),
+        ('failed', 'Failed')
+    ], string='Follow-up Status', default=False,
+       help='Status of the post-appointment follow-up message.')
+    followup_sent_at = fields.Datetime(string='Follow-up Sent At')
+    followup_email_sent = fields.Boolean(string='Follow-up Email Sent', default=False)
+    followup_sms_sent = fields.Boolean(string='Follow-up SMS Sent', default=False)
+    
+    # Feedback fields
+    feedback_rating = fields.Selection([
+        ('1', '1 Star'),
+        ('2', '2 Stars'),
+        ('3', '3 Stars'),
+        ('4', '4 Stars'),
+        ('5', '5 Stars')
+    ], string='Feedback Rating')
+    feedback_comment = fields.Text(string='Feedback Comment')
+    feedback_submitted_at = fields.Datetime(string='Feedback Submitted At')
+    feedback_token = fields.Char(string='Feedback Token', copy=False,
+                                  help='Unique token for secure feedback submission.')
+    
     @api.depends('invoice_id')
     def _compute_invoice_count(self):
         for appointment in self:
@@ -251,7 +276,33 @@ class Appointment(models.Model):
     
     def action_complete(self):
         self.state = 'completed'
+        self._mark_for_followup()
         return True
+    
+    def _mark_for_followup(self):
+        """Mark appointment for follow-up if enabled for the service and company"""
+        import secrets
+        for appointment in self:
+            company = appointment.env.company
+            service = appointment.service_id
+            
+            # Check if follow-up is enabled at company and service level
+            if not company.appointment_followup_enabled:
+                _logger.info(f"Follow-up disabled at company level for appointment {appointment.id}")
+                continue
+            
+            if not service.enable_followup:
+                _logger.info(f"Follow-up disabled for service {service.name} on appointment {appointment.id}")
+                continue
+            
+            # Generate a unique token for secure feedback submission
+            feedback_token = secrets.token_urlsafe(32)
+            
+            appointment.write({
+                'followup_status': 'pending',
+                'feedback_token': feedback_token,
+            })
+            _logger.info(f"Marked appointment {appointment.id} for follow-up with token {feedback_token[:8]}...")
     
     def action_cancel(self):
         self.state = 'cancelled'
@@ -815,3 +866,147 @@ class Appointment(models.Model):
         
         for appointment in appointments:
             appointment._send_reminder_notifications()
+    
+    # ==================== FOLLOW-UP METHODS ====================
+    
+    def _generate_followup_email_html(self):
+        """Generate HTML for follow-up email with rebooking link and feedback request"""
+        self.ensure_one()
+        template = self._load_email_template('followup')
+        
+        local_start = self._get_local_datetime(self.start)
+        
+        # Calculate suggested rebook date based on service's rebook_days setting
+        rebook_days = self.service_id.rebook_days or 21
+        suggested_rebook_date = (datetime.now() + timedelta(days=rebook_days)).strftime('%A, %B %d, %Y')
+        
+        # Build the base URL for the website
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', 'http://localhost:8069')
+        
+        # Build pre-filled rebooking URL
+        rebook_url = f"{base_url}/appointments/services?staff_id={self.staff_member_id.id}&branch_id={self.branch_id.id}"
+        
+        # Build feedback URL with secure token
+        feedback_url = f"{base_url}/appointment/feedback/{self.feedback_token}"
+        
+        return template.format(
+            customer_name=self.customer_name,
+            company_name=self.env.company.name,
+            service_name=self.service_id.name,
+            staff_name=self.staff_member_id.name,
+            appointment_date=local_start.strftime('%A, %B %d, %Y'),
+            rebook_days=rebook_days,
+            suggested_rebook_date=suggested_rebook_date,
+            rebook_url=rebook_url,
+            feedback_url=feedback_url,
+            branch_phone=self.branch_id.phone or self.env.company.phone or '',
+            branch_email=self.branch_id.email or self.env.company.email or '',
+            branch_address=f"{self.branch_id.street or ''}, {self.branch_id.city or ''}"
+        )
+    
+    def _send_followup_notifications(self):
+        """Send follow-up email and/or SMS to customer after appointment completion"""
+        for appointment in self:
+            if appointment.followup_status != 'pending':
+                _logger.info(f"Skipping follow-up for appointment {appointment.id} - status is {appointment.followup_status}")
+                continue
+            
+            company = appointment.env.company
+            channel = company.appointment_followup_channel or 'both'
+            
+            email_sent = False
+            sms_sent = False
+            
+            # Send email if configured
+            if channel in ('email', 'both') and appointment.customer_email:
+                try:
+                    _logger.info(f"Sending follow-up email to {appointment.customer_email} for appointment {appointment.id}")
+                    
+                    subject = f"Thank You for Your Visit - {appointment.service_id.name}"
+                    body_html = appointment._generate_followup_email_html()
+                    email_from = appointment.branch_id.email or self.env.company.email or 'noreply@localhost'
+                    
+                    mail = self.env['mail.mail'].sudo().create({
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': appointment.customer_email,
+                        'email_from': email_from,
+                    })
+                    mail.send()
+                    email_sent = True
+                    _logger.info(f"Successfully sent follow-up email to {appointment.customer_email}")
+                except Exception as e:
+                    _logger.error(f"Failed to send follow-up email to {appointment.customer_email}: {str(e)}", exc_info=True)
+            
+            # Send SMS if configured
+            if channel in ('sms', 'both') and appointment.customer_phone:
+                try:
+                    _logger.info(f"Sending follow-up SMS to {appointment.customer_phone} for appointment {appointment.id}")
+                    
+                    # Build short rebooking URL for SMS
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', 'http://localhost:8069')
+                    rebook_url = f"{base_url}/appointments"
+                    feedback_url = f"{base_url}/appointment/feedback/{appointment.feedback_token}"
+                    
+                    sms_message = (
+                        f"Thank you for visiting {self.env.company.name}! "
+                        f"We hope you enjoyed your {appointment.service_id.name}. "
+                        f"Leave feedback: {feedback_url} "
+                        f"Book again: {rebook_url}"
+                    )
+                    
+                    self._send_sms_notification(appointment.customer_phone, sms_message)
+                    sms_sent = True
+                    _logger.info(f"Successfully sent follow-up SMS to {appointment.customer_phone}")
+                except Exception as e:
+                    _logger.error(f"Failed to send follow-up SMS to {appointment.customer_phone}: {str(e)}", exc_info=True)
+            
+            # Update follow-up status
+            if email_sent or sms_sent:
+                appointment.write({
+                    'followup_status': 'sent',
+                    'followup_sent_at': fields.Datetime.now(),
+                    'followup_email_sent': email_sent,
+                    'followup_sms_sent': sms_sent,
+                })
+                _logger.info(f"Follow-up sent for appointment {appointment.id} - email: {email_sent}, sms: {sms_sent}")
+            else:
+                appointment.write({
+                    'followup_status': 'failed',
+                })
+                _logger.warning(f"Follow-up failed for appointment {appointment.id} - no email or SMS sent")
+    
+    @api.model
+    def send_appointment_followups(self):
+        """Scheduled method to send follow-up messages after appointments are completed"""
+        _logger.info("=== Running appointment follow-up cron job ===")
+        
+        # Get all companies to check their follow-up settings
+        companies = self.env['res.company'].sudo().search([])
+        
+        for company in companies:
+            if not company.appointment_followup_enabled:
+                _logger.info(f"Follow-up disabled for company {company.name}")
+                continue
+            
+            delay_hours = company.appointment_followup_delay_hours or 2.0
+            
+            # Calculate the cutoff time: appointments that ended more than delay_hours ago
+            cutoff_time = datetime.now() - timedelta(hours=delay_hours)
+            
+            # Find appointments that are completed, have pending follow-up, and ended before cutoff
+            appointments = self.sudo().search([
+                ('state', '=', 'completed'),
+                ('followup_status', '=', 'pending'),
+                ('stop', '<=', cutoff_time),
+            ])
+            
+            _logger.info(f"Found {len(appointments)} appointments ready for follow-up in company {company.name}")
+            
+            for appointment in appointments:
+                try:
+                    appointment.with_company(company)._send_followup_notifications()
+                except Exception as e:
+                    _logger.error(f"Error sending follow-up for appointment {appointment.id}: {str(e)}", exc_info=True)
+        
+        _logger.info("=== Appointment follow-up cron job completed ===")

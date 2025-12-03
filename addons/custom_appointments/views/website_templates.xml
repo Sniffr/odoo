@@ -2049,4 +2049,174 @@
         </t>
     </template>
 
+    <!-- Feedback Form Page -->
+    <template id="feedback_form_page" name="Appointment Feedback">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none; border-radius: 15px 15px 0 0;">
+                                    <h3 class="font-weight-bold mb-0">How was your experience?</h3>
+                                    <p class="mb-0 opacity-75">We'd love to hear your feedback</p>
+                                </div>
+                                <div class="card-body p-4">
+                                    <t t-if="error">
+                                        <div class="alert alert-danger" role="alert">
+                                            <t t-esc="error"/>
+                                        </div>
+                                    </t>
+                                    
+                                    <div class="appointment-summary mb-4 p-3" style="background: #f8f9fa; border-radius: 10px;">
+                                        <p class="mb-1"><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
+                                        <p class="mb-1"><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
+                                        <p class="mb-0"><strong>Date:</strong> <t t-esc="appointment._get_local_datetime(appointment.start).strftime('%A, %B %d, %Y')"/></p>
+                                    </div>
+                                    
+                                    <form method="post" action="">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="form-group mb-4">
+                                            <label class="font-weight-bold mb-3">Rate your experience</label>
+                                            <div class="star-rating d-flex justify-content-center" style="font-size: 2.5rem;">
+                                                <input type="radio" id="star5" name="rating" value="5" class="d-none"/>
+                                                <label for="star5" class="star-label mx-1" style="cursor: pointer; color: #ddd;" onmouseover="highlightStars(5)" onmouseout="resetStars()" onclick="selectRating(5)">&#9733;</label>
+                                                
+                                                <input type="radio" id="star4" name="rating" value="4" class="d-none"/>
+                                                <label for="star4" class="star-label mx-1" style="cursor: pointer; color: #ddd;" onmouseover="highlightStars(4)" onmouseout="resetStars()" onclick="selectRating(4)">&#9733;</label>
+                                                
+                                                <input type="radio" id="star3" name="rating" value="3" class="d-none"/>
+                                                <label for="star3" class="star-label mx-1" style="cursor: pointer; color: #ddd;" onmouseover="highlightStars(3)" onmouseout="resetStars()" onclick="selectRating(3)">&#9733;</label>
+                                                
+                                                <input type="radio" id="star2" name="rating" value="2" class="d-none"/>
+                                                <label for="star2" class="star-label mx-1" style="cursor: pointer; color: #ddd;" onmouseover="highlightStars(2)" onmouseout="resetStars()" onclick="selectRating(2)">&#9733;</label>
+                                                
+                                                <input type="radio" id="star1" name="rating" value="1" class="d-none"/>
+                                                <label for="star1" class="star-label mx-1" style="cursor: pointer; color: #ddd;" onmouseover="highlightStars(1)" onmouseout="resetStars()" onclick="selectRating(1)">&#9733;</label>
+                                            </div>
+                                            <p class="text-center text-muted mt-2" id="ratingText">Click to rate</p>
+                                        </div>
+                                        
+                                        <div class="form-group mb-4">
+                                            <label for="comment" class="font-weight-bold">Additional comments (optional)</label>
+                                            <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Tell us more about your experience..."></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-lg btn-block" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); color: white; border: none; border-radius: 10px;">
+                                            Submit Feedback
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script type="text/javascript">
+                    let selectedRating = 0;
+                    const ratingTexts = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+                    
+                    function highlightStars(rating) {
+                        const stars = document.querySelectorAll('.star-label');
+                        stars.forEach((star, index) => {
+                            const starValue = 5 - index;
+                            star.style.color = starValue &lt;= rating ? '#ffc107' : '#ddd';
+                        });
+                    }
+                    
+                    function resetStars() {
+                        highlightStars(selectedRating);
+                        document.getElementById('ratingText').textContent = selectedRating ? ratingTexts[selectedRating] : 'Click to rate';
+                    }
+                    
+                    function selectRating(rating) {
+                        selectedRating = rating;
+                        document.getElementById('star' + rating).checked = true;
+                        highlightStars(rating);
+                        document.getElementById('ratingText').textContent = ratingTexts[rating];
+                    }
+                </script>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Feedback Thank You Page -->
+    <template id="feedback_thank_you_page" name="Feedback Thank You">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <i class="fa fa-heart fa-5x mb-4" style="color: #ff69b4;"></i>
+                                    <h2 class="font-weight-bold mb-3">Thank You for Your Feedback!</h2>
+                                    <p class="text-muted mb-4">Your feedback helps us improve our services.</p>
+                                    
+                                    <div class="mt-4">
+                                        <a href="/appointments" class="btn btn-primary mr-3" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">Book Another Appointment</a>
+                                        <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Feedback Already Submitted Page -->
+    <template id="feedback_already_submitted_page" name="Feedback Already Submitted">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <i class="fa fa-check-circle fa-5x text-success mb-4"></i>
+                                    <h2 class="font-weight-bold mb-3">Feedback Already Received</h2>
+                                    <p class="text-muted mb-4">You have already submitted feedback for this appointment. Thank you!</p>
+                                    
+                                    <div class="mt-4">
+                                        <a href="/appointments" class="btn btn-primary mr-3" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">Book Another Appointment</a>
+                                        <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Feedback Invalid Token Page -->
+    <template id="feedback_invalid_page" name="Feedback Invalid">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                <div class="card-body p-5">
+                                    <i class="fa fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                                    <h2 class="font-weight-bold mb-3">Invalid Feedback Link</h2>
+                                    <p class="text-muted mb-4">This feedback link is invalid or has expired.</p>
+                                    
+                                    <div class="mt-4">
+                                        <a href="/appointments" class="btn btn-primary mr-3" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">Book an Appointment</a>
+                                        <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
 </odoo>

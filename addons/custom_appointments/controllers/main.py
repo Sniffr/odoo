@@ -506,3 +506,43 @@ class AppointmentController(http.Controller):
         return request.render('custom_appointments.payment_success_page', {
             'appointment': appointment,
         })
+
+    @http.route('/appointment/feedback/<string:token>', type='http', auth='public', website=True, methods=['GET', 'POST'])
+    def appointment_feedback(self, token, **kwargs):
+        """Feedback form for completed appointments"""
+        appointment = request.env['custom.appointment'].sudo().search([
+            ('feedback_token', '=', token),
+            ('state', '=', 'completed')
+        ], limit=1)
+        
+        if not appointment:
+            return request.render('custom_appointments.feedback_invalid_page', {})
+        
+        # Check if feedback already submitted
+        if appointment.feedback_submitted_at:
+            return request.render('custom_appointments.feedback_already_submitted_page', {
+                'appointment': appointment,
+            })
+        
+        if request.httprequest.method == 'POST':
+            rating = kwargs.get('rating')
+            comment = kwargs.get('comment', '')
+            
+            if rating and rating in ['1', '2', '3', '4', '5']:
+                appointment.write({
+                    'feedback_rating': rating,
+                    'feedback_comment': comment,
+                    'feedback_submitted_at': fields.Datetime.now(),
+                })
+                return request.render('custom_appointments.feedback_thank_you_page', {
+                    'appointment': appointment,
+                })
+            else:
+                return request.render('custom_appointments.feedback_form_page', {
+                    'appointment': appointment,
+                    'error': 'Please select a rating.',
+                })
+        
+        return request.render('custom_appointments.feedback_form_page', {
+            'appointment': appointment,
+        })

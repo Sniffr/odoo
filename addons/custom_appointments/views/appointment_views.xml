@@ -122,6 +122,23 @@
                                 <field name="calendar_event_id" readonly="1"/>
                             </group>
                         </page>
+                        <page string="Follow-up &amp; Feedback" invisible="state not in ('completed', 'cancelled')">
+                            <group>
+                                <group string="Follow-up Status">
+                                    <field name="followup_status" readonly="1"/>
+                                    <field name="followup_sent_at" readonly="1"/>
+                                    <field name="followup_email_sent" readonly="1"/>
+                                    <field name="followup_sms_sent" readonly="1"/>
+                                </group>
+                                <group string="Customer Feedback">
+                                    <field name="feedback_rating" readonly="1"/>
+                                    <field name="feedback_submitted_at" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Feedback Comment" invisible="not feedback_comment">
+                                <field name="feedback_comment" readonly="1" nolabel="1"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

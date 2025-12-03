@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_appointment_followup" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.appointment.followup</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Appointments" string="Appointments" name="custom_appointments">
+                    <block title="Post-Appointment Follow-ups" name="appointment_followup_settings">
+                        <setting id="appointment_followup_enabled" string="Enable Follow-up Messages" help="Send thank you messages with rebooking links and feedback requests after appointments are completed.">
+                            <field name="appointment_followup_enabled"/>
+                        </setting>
+                        <setting id="appointment_followup_delay" string="Follow-up Delay" help="Number of hours to wait after appointment ends before sending the follow-up message.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="appointment_followup_delay_hours" class="col-lg-3"/>
+                                    <field name="appointment_followup_delay_hours" class="col-lg-3"/>
+                                    <span class="col-lg-6 text-muted">hours after appointment ends</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="appointment_followup_channel" string="Follow-up Channel" help="Choose how to send follow-up messages to customers.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="appointment_followup_channel" class="col-lg-3"/>
+                                    <field name="appointment_followup_channel" class="col-lg-6"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
