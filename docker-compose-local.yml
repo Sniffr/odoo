@@ -25,13 +25,14 @@ services:
       - HOST=db
       - USER=odoo
       - PASSWORD=odoo_password
+      - PYTHONUNBUFFERED=1
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
       - ./logs:/var/log/odoo
     restart: unless-stopped
-    command: ["odoo", "--config=/etc/odoo/odoo.conf"]
+    command: bash -c "odoo --config=/etc/odoo/odoo.conf 2>&1 | tee -a /var/log/odoo/odoo.log"
     develop:
       watch:
         - action: rebuild

@@ -609,10 +609,20 @@ class Appointment(models.Model):
             
             if appointment.customer_phone:
                 local_start = appointment._get_local_datetime(appointment.start)
-                self._send_sms_notification(
-                    appointment.customer_phone,
-                    f"Appointment confirmed! {appointment.service_id.name} with {appointment.staff_member_id.name} on {local_start.strftime('%B %d at %I:%M %p')}. See you soon!"
+                # Enhanced SMS with branch and appointment details
+                sms_message = (
+                    f"✓ Appointment Confirmed!\n"
+                    f"Service: {appointment.service_id.name}\n"
+                    f"Date: {local_start.strftime('%B %d, %Y')}\n"
+                    f"Time: {local_start.strftime('%I:%M %p')}\n"
+                    f"Duration: {appointment.duration} min\n"
+                    f"Staff: {appointment.staff_member_id.name}\n"
+                    f"Location: {appointment.branch_id.name}\n"
+                    f"Address: {appointment.branch_id.street}, {appointment.branch_id.city}\n"
+                    f"Phone: {appointment.branch_id.phone or self.env.user.company_id.phone}\n"
+                    f"Ref: {appointment.name}"
                 )
+                self._send_sms_notification(appointment.customer_phone, sms_message)
     
     def _generate_cancellation_email_html(self):
         """Generate HTML for cancellation email"""
@@ -656,10 +666,18 @@ class Appointment(models.Model):
             
             if appointment.customer_phone:
                 local_start = appointment._get_local_datetime(appointment.start)
-                self._send_sms_notification(
-                    appointment.customer_phone,
-                    f"Your appointment for {appointment.service_id.name} on {local_start.strftime('%B %d at %I:%M %p')} has been cancelled. Please contact us to reschedule."
+                # Enhanced cancellation SMS with branch contact info
+                sms_message = (
+                    f"✗ Appointment Cancelled\n"
+                    f"Service: {appointment.service_id.name}\n"
+                    f"Was scheduled: {local_start.strftime('%B %d at %I:%M %p')}\n"
+                    f"Ref: {appointment.name}\n\n"
+                    f"To reschedule, contact:\n"
+                    f"{appointment.branch_id.name}\n"
+                    f"Phone: {appointment.branch_id.phone or self.env.user.company_id.phone}\n"
+                    f"Email: {appointment.branch_id.email or self.env.user.company_id.email}"
                 )
+                self._send_sms_notification(appointment.customer_phone, sms_message)
     
     def _generate_staff_notification_email_html(self):
         """Generate HTML for staff notification email"""
@@ -752,10 +770,20 @@ class Appointment(models.Model):
             
             if appointment.customer_phone:
                 local_start = appointment._get_local_datetime(appointment.start)
-                self._send_sms_notification(
-                    appointment.customer_phone,
-                    f"Reminder: Your appointment for {appointment.service_id.name} is tomorrow at {local_start.strftime('%I:%M %p')} with {appointment.staff_member_id.name}."
+                # Enhanced reminder SMS with full appointment details
+                sms_message = (
+                    f"⏰ Reminder: Appointment Tomorrow!\n"
+                    f"Service: {appointment.service_id.name}\n"
+                    f"Date: {local_start.strftime('%A, %B %d')}\n"
+                    f"Time: {local_start.strftime('%I:%M %p')}\n"
+                    f"Duration: {appointment.duration} min\n"
+                    f"Staff: {appointment.staff_member_id.name}\n"
+                    f"Location: {appointment.branch_id.name}\n"
+                    f"Address: {appointment.branch_id.street}, {appointment.branch_id.city}\n"
+                    f"Contact: {appointment.branch_id.phone or self.env.user.company_id.phone}\n"
+                    f"See you tomorrow!"
                 )
+                self._send_sms_notification(appointment.customer_phone, sms_message)
     
     def _send_sms_notification(self, phone_number, message):
         """Send SMS notification using Odoo's SMS gateway"""
