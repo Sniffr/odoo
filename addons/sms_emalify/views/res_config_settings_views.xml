@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.sms.emalify</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="5"/>
+            <field name="inherit_id" ref="sms.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//widget[@service_name='sms']" position="before">
+                    <div class="o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <label for="sms_provider" string="SMS Provider"/>
+                            <div class="text-muted">
+                                Choose how to send SMS messages
+                            </div>
+                            <div class="content-group mt-2">
+                                <field name="sms_provider" class="o_light_label" widget="radio" options="{'horizontal': true}"/>
+                            </div>
+                            <div class="content-group mt-3" invisible="sms_provider != 'emalify'">
+                                <div class="row">
+                                    <label for="sms_emalify_api_key" string="API Key" class="col-lg-3 o_light_label"/>
+                                    <field name="sms_emalify_api_key" class="col-lg-4" password="True"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="sms_emalify_partner_id" string="Partner ID" class="col-lg-3 o_light_label"/>
+                                    <field name="sms_emalify_partner_id" class="col-lg-4"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="sms_emalify_shortcode" string="Shortcode" class="col-lg-3 o_light_label"/>
+                                    <field name="sms_emalify_shortcode" class="col-lg-4"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="sms_emalify_api_domain" string="API Domain" class="col-lg-3 o_light_label"/>
+                                    <field name="sms_emalify_api_domain" class="col-lg-4"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+                <xpath expr="//widget[@service_name='sms']" position="attributes">
+                    <attribute name="invisible">sms_provider == 'emalify'</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
