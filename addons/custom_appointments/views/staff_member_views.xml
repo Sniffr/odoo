@@ -106,9 +106,15 @@
               name="Appointments" 
               sequence="10"/>
     
+    <!-- Parent Menu for Staff Management -->
+    <menuitem id="menu_staff_management"
+              name="Staff Management"
+              parent="appointments_main_menu"
+              sequence="10"/>
+    
     <menuitem id="staff_members_menu" 
               name="Staff Members" 
-              parent="appointments_main_menu"
+              parent="menu_staff_management"
               action="staff_member_action"
               sequence="10"/>
 

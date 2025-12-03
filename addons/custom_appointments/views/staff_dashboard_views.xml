@@ -122,7 +122,7 @@
     <!-- Menu Item for Staff Dashboard -->
     <menuitem id="staff_dashboard_menu" 
               name="Staff Dashboard" 
-              parent="appointments_main_menu"
+              parent="menu_staff_management"
               action="staff_dashboard_action"
-              sequence="10"/>
+              sequence="20"/>
 </odoo>
