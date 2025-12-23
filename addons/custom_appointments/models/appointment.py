@@ -688,7 +688,7 @@ class Appointment(models.Model):
                     f"Service: {appointment.service_id.name}\n"
                     f"Date: {local_start.strftime('%B %d, %Y')}\n"
                     f"Time: {local_start.strftime('%I:%M %p')}\n"
-                    f"Duration: {appointment.duration} min\n"
+                    f"Duration: {appointment.duration} hrs\n"
                     f"Staff: {appointment.staff_member_id.name}\n"
                     f"Location: {appointment.branch_id.name}\n"
                     f"Address: {appointment.branch_id.street}, {appointment.branch_id.city}\n"
@@ -804,6 +804,23 @@ class Appointment(models.Model):
                     _logger.error(f"Failed to send staff notification to {appointment.staff_member_id.email}: {str(e)}", exc_info=True)
             else:
                 _logger.warning(f"Staff member {appointment.staff_member_id.name} (ID: {appointment.staff_member_id.id}) has no email address set for appointment {appointment.id}")
+            
+            # Send SMS notification to staff member
+            if appointment.staff_member_id.phone:
+                local_start = appointment._get_local_datetime(appointment.start)
+                sms_message = (
+                    f"📅 New Appointment!\n"
+                    f"Customer: {appointment.customer_name}\n"
+                    f"Service: {appointment.service_id.name}\n"
+                    f"Date: {local_start.strftime('%B %d, %Y')}\n"
+                    f"Time: {local_start.strftime('%I:%M %p')}\n"
+                    f"Duration: {appointment.duration} hrs\n"
+                    f"Customer Phone: {appointment.customer_phone or 'Not provided'}\n"
+                    f"Location: {appointment.branch_id.name}\n"
+                    f"Ref: {appointment.name}"
+                )
+                _logger.info(f"Sending SMS notification to staff {appointment.staff_member_id.name} at {appointment.staff_member_id.phone}")
+                self._send_sms_notification(appointment.staff_member_id.phone, sms_message)
     
     def _generate_reminder_email_html(self):
         """Generate HTML for reminder email"""
@@ -849,7 +866,7 @@ class Appointment(models.Model):
                     f"Service: {appointment.service_id.name}\n"
                     f"Date: {local_start.strftime('%A, %B %d')}\n"
                     f"Time: {local_start.strftime('%I:%M %p')}\n"
-                    f"Duration: {appointment.duration} min\n"
+                    f"Duration: {appointment.duration} hrs\n"
                     f"Staff: {appointment.staff_member_id.name}\n"
                     f"Location: {appointment.branch_id.name}\n"
                     f"Address: {appointment.branch_id.street}, {appointment.branch_id.city}\n"
