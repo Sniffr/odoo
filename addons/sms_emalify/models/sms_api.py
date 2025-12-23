@@ -25,7 +25,14 @@ class SmsSms(models.Model):
             _logger.info(f'Emalify is enabled, processing {len(records)} SMS records')
             # Only auto-send for non-marketing SMS (SMS without mailing_id)
             # Marketing SMS will be sent via _send() method by the marketing cron
-            outgoing_sms = records.filtered(lambda s: s.state == 'outgoing' and not s.mailing_id)
+            # Check if mailing_id field exists (from mass_mailing_sms module)
+            has_mailing = 'mailing_id' in records._fields
+            if has_mailing:
+                outgoing_sms = records.filtered(lambda s: s.state == 'outgoing' and not s.mailing_id)
+            else:
+                # If no mailing_id field, all SMS are non-marketing
+                outgoing_sms = records.filtered(lambda s: s.state == 'outgoing')
+            
             if outgoing_sms:
                 _logger.info(f'Auto-sending {len(outgoing_sms)} non-marketing SMS')
                 outgoing_sms._send_emalify()
@@ -165,13 +172,25 @@ class SmsSms(models.Model):
         
         # Handle unlink based on parameters (only for non-marketing SMS)
         # Marketing SMS should be kept for tracking
+        # Check if mailing_id field exists (from mass_mailing_sms module)
+        has_mailing = 'mailing_id' in self._fields
+        
         if unlink_failed:
-            to_unlink = self.filtered(lambda s: s.state == 'error' and not s.mailing_id)
+            if has_mailing:
+                to_unlink = self.filtered(lambda s: s.state == 'error' and not s.mailing_id)
+            else:
+                to_unlink = self.filtered(lambda s: s.state == 'error')
+            
             if to_unlink:
                 _logger.info(f'Unlinking {len(to_unlink)} failed SMS')
                 to_unlink.unlink()
+        
         if unlink_sent:
-            to_unlink = self.filtered(lambda s: s.state == 'sent' and not s.mailing_id)
+            if has_mailing:
+                to_unlink = self.filtered(lambda s: s.state == 'sent' and not s.mailing_id)
+            else:
+                to_unlink = self.filtered(lambda s: s.state == 'sent')
+            
             if to_unlink:
                 _logger.info(f'Unlinking {len(to_unlink)} sent SMS')
                 to_unlink.unlink()
