@@ -1464,10 +1464,84 @@
                                                 <div id="promo-feedback" class="mt-2" style="display: none;"></div>
                                             </div>
 
+                                            <!-- Health Disclosure Section -->
                                             <div class="form-group mb-4">
-                                                <label class="font-weight-bold small" style="color: #555;">Special Requests</label>
-                                                <textarea class="form-control" name="notes" rows="3" placeholder="Any special requests or notes..." style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"></textarea>
+                                                <label class="font-weight-bold small mb-3" style="color: #555;">
+                                                    <i class="fa fa-heartbeat mr-1" style="color: #ff69b4;"></i>
+                                                    Health Disclosure (Tick where applicable)
+                                                </label>
+                                                <div class="health-disclosure-options" style="background: #fff5f8; padding: 15px; border-radius: 12px;">
+                                                    <div class="custom-control custom-checkbox mb-2">
+                                                        <input type="checkbox" class="custom-control-input" id="has_allergies" name="has_allergies" value="1" onchange="toggleAllergiesField()"/>
+                                                        <label class="custom-control-label" for="has_allergies" style="color: #555; cursor: pointer;">
+                                                            Allergies
+                                                        </label>
+                                                    </div>
+                                                    <div id="allergies_details_container" style="display: none; margin-left: 25px; margin-bottom: 10px;">
+                                                        <input type="text" class="form-control form-control-sm" name="allergies_details" 
+                                                               placeholder="Please specify your allergies..." 
+                                                               style="border-radius: 8px; border-color: #e0e0e0;"/>
+                                                    </div>
+                                                    
+                                                    <div class="custom-control custom-checkbox mb-2">
+                                                        <input type="checkbox" class="custom-control-input" id="has_eye_conditions" name="has_eye_conditions" value="1"/>
+                                                        <label class="custom-control-label" for="has_eye_conditions" style="color: #555; cursor: pointer;">
+                                                            Eye conditions
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <div class="custom-control custom-checkbox mb-2">
+                                                        <input type="checkbox" class="custom-control-input" id="is_pregnant" name="is_pregnant" value="1"/>
+                                                        <label class="custom-control-label" for="is_pregnant" style="color: #555; cursor: pointer;">
+                                                            Pregnancy
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="no_health_conditions" name="no_health_conditions" value="1"/>
+                                                        <label class="custom-control-label" for="no_health_conditions" style="color: #555; cursor: pointer;">
+                                                            None
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            
+                                            <!-- Desired Outcome Section -->
+                                            <div class="form-group mb-4">
+                                                <label class="font-weight-bold small mb-2" style="color: #555;">
+                                                    <i class="fa fa-star mr-1" style="color: #ff69b4;"></i>
+                                                    Desired Outcome
+                                                </label>
+                                                <div style="background: #fff5f8; padding: 15px; border-radius: 12px;">
+                                                    <div class="mb-3">
+                                                        <label class="small text-muted mb-1">What lash look are you hoping to achieve?</label>
+                                                        <textarea class="form-control" name="desired_lash_look" rows="2" 
+                                                                  placeholder="e.g., Natural, Dramatic, Cat eye, Wispy..."
+                                                                  style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"></textarea>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <label class="small text-muted mb-2">Have you had lash extensions before?</label>
+                                                        <div class="d-flex">
+                                                            <div class="custom-control custom-radio mr-4">
+                                                                <input type="radio" class="custom-control-input" id="prev_extensions_yes" name="has_previous_extensions" value="yes"/>
+                                                                <label class="custom-control-label" for="prev_extensions_yes" style="color: #555; cursor: pointer;">
+                                                                    Yes
+                                                                </label>
+                                                            </div>
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" class="custom-control-input" id="prev_extensions_no" name="has_previous_extensions" value="no"/>
+                                                                <label class="custom-control-label" for="prev_extensions_no" style="color: #555; cursor: pointer;">
+                                                                    No
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Hidden notes field for any additional system notes -->
+                                            <input type="hidden" name="notes" value=""/>
 
                                             <button type="submit" class="btn btn-lg w-100" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,105,180,0.3);" disabled="" id="book-btn">
                                                 <i class="fa fa-calendar-check-o mr-2"></i>
@@ -1633,6 +1707,20 @@
                         
                         calendar.render();
                     });
+
+                    // Health disclosure - toggle allergies details field
+                    function toggleAllergiesField() {
+                        const checkbox = document.getElementById('has_allergies');
+                        const detailsContainer = document.getElementById('allergies_details_container');
+                        if (checkbox.checked) {
+                            detailsContainer.style.display = 'block';
+                        } else {
+                            detailsContainer.style.display = 'none';
+                            // Clear the input when unchecked
+                            const allergiesInput = detailsContainer.querySelector('input');
+                            if (allergiesInput) allergiesInput.value = '';
+                        }
+                    }
 
                     // Promo code validation
                     let appliedPromoCode = null;

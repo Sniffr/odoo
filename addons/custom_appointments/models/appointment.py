@@ -79,6 +79,27 @@ class Appointment(models.Model):
     final_price = fields.Monetary(string='Final Price', currency_field='currency_id', 
                                    compute='_compute_final_price', store=True)
     
+    # Health Disclosure Fields
+    has_allergies = fields.Boolean(string='Has Allergies', default=False,
+                                   help='Customer has allergies that staff should be aware of')
+    allergies_details = fields.Char(string='Allergies Details',
+                                    help='Specific allergies the customer has')
+    has_eye_conditions = fields.Boolean(string='Has Eye Conditions', default=False,
+                                        help='Customer has eye conditions')
+    is_pregnant = fields.Boolean(string='Is Pregnant', default=False,
+                                 help='Customer is pregnant')
+    no_health_conditions = fields.Boolean(string='No Health Conditions', default=False,
+                                          help='Customer confirmed no health conditions')
+    
+    # Desired Outcome Fields
+    desired_lash_look = fields.Text(string='Desired Lash Look',
+                                    help='What lash look the customer is hoping to achieve')
+    has_previous_extensions = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ], string='Had Lash Extensions Before',
+       help='Whether the customer has had lash extensions before')
+    
     @api.depends('invoice_id')
     def _compute_invoice_count(self):
         for appointment in self:

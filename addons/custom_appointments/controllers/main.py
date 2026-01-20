@@ -280,6 +280,19 @@ class AppointmentController(http.Controller):
             notes = data.get('notes', '')
             promo_code = data.get('promo_code', '').strip().upper()
             
+            # Health Disclosure fields
+            has_allergies = data.get('has_allergies') == '1'
+            allergies_details = data.get('allergies_details', '') if has_allergies else ''
+            has_eye_conditions = data.get('has_eye_conditions') == '1'
+            is_pregnant = data.get('is_pregnant') == '1'
+            no_health_conditions = data.get('no_health_conditions') == '1'
+            
+            # Desired Outcome fields
+            desired_lash_look = data.get('desired_lash_look', '')
+            has_previous_extensions = data.get('has_previous_extensions', False)
+            if has_previous_extensions not in ['yes', 'no']:
+                has_previous_extensions = False
+            
             service = request.env['company.service'].sudo().browse(service_id)
             staff = request.env['custom.staff.member'].sudo().browse(staff_id)
             
@@ -331,6 +344,15 @@ class AppointmentController(http.Controller):
                 'promo_code_entered': promo_code if promo_code else False,
                 'promo_id': promo.id if promo else False,
                 'discount_amount': discount_amount,
+                # Health Disclosure fields
+                'has_allergies': has_allergies,
+                'allergies_details': allergies_details,
+                'has_eye_conditions': has_eye_conditions,
+                'is_pregnant': is_pregnant,
+                'no_health_conditions': no_health_conditions,
+                # Desired Outcome fields
+                'desired_lash_look': desired_lash_look,
+                'has_previous_extensions': has_previous_extensions if has_previous_extensions else False,
             }
             
             appointment_vals['state'] = 'draft'
