@@ -2245,4 +2245,311 @@
         </t>
     </template>
 
+    <!-- Terms and Conditions Page -->
+    <template id="terms_page" name="Terms and Conditions" page="True" url="/terms">
+        <t t-call="website.layout">
+            <t t-set="title">Terms and Conditions - Lashes by Shazz</t>
+            <div id="wrap" class="oe_structure oe_empty">
+                <style>
+                    .terms-page-header {
+                        background: linear-gradient(135deg, #ff69b4, #ff8da1);
+                        color: white;
+                        padding: 60px 0 40px;
+                        margin-bottom: 40px;
+                        text-align: center;
+                    }
+                    .terms-page-header h1 {
+                        font-size: 2.5rem;
+                        font-weight: 700;
+                        margin-bottom: 10px;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .terms-page-header .subtitle {
+                        font-size: 1.1rem;
+                        opacity: 0.95;
+                        font-weight: 300;
+                    }
+                    .terms-content-wrapper {
+                        max-width: 900px;
+                        margin: 0 auto;
+                        padding: 0 20px 60px;
+                    }
+                    .terms-intro {
+                        background: #fff5f8;
+                        border-left: 4px solid #ff69b4;
+                        padding: 20px 25px;
+                        margin-bottom: 40px;
+                        border-radius: 8px;
+                    }
+                    .terms-intro p {
+                        margin: 0;
+                        font-size: 1.05rem;
+                        color: #333;
+                        line-height: 1.6;
+                    }
+                    .terms-section {
+                        margin-bottom: 35px;
+                        background: white;
+                        padding: 30px;
+                        border-radius: 12px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                        border-top: 3px solid #ff69b4;
+                    }
+                    .terms-section h2 {
+                        color: #ff69b4;
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid #ffe0e8;
+                    }
+                    .terms-section ul {
+                        margin: 15px 0;
+                        padding-left: 25px;
+                    }
+                    .terms-section li {
+                        margin-bottom: 12px;
+                        line-height: 1.7;
+                        color: #444;
+                    }
+                    .terms-section p {
+                        line-height: 1.7;
+                        color: #444;
+                        margin-bottom: 15px;
+                    }
+                    .terms-section .highlight-box {
+                        background: #fff5f8;
+                        border-left: 3px solid #ff69b4;
+                        padding: 15px 20px;
+                        margin: 15px 0;
+                        border-radius: 6px;
+                    }
+                    .terms-section .no-show-policy {
+                        background: #fff5f8;
+                        padding: 20px;
+                        border-radius: 8px;
+                        margin: 15px 0;
+                    }
+                    .terms-section .no-show-policy strong {
+                        color: #ff69b4;
+                        display: block;
+                        margin-bottom: 10px;
+                    }
+                    .terms-section .fee-highlight {
+                        color: #ff69b4;
+                        font-weight: 600;
+                    }
+                    .terms-acceptance {
+                        background: linear-gradient(135deg, #ff69b4, #ff8da1);
+                        color: white;
+                        padding: 30px;
+                        border-radius: 12px;
+                        text-align: center;
+                        margin-top: 40px;
+                        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+                    }
+                    .terms-acceptance h2 {
+                        color: white;
+                        border: none;
+                        padding: 0;
+                        margin-bottom: 15px;
+                        font-size: 1.8rem;
+                    }
+                    .terms-acceptance p {
+                        font-size: 1.1rem;
+                        margin: 0;
+                        opacity: 0.95;
+                    }
+                    .terms-actions {
+                        margin-top: 40px;
+                        text-align: center;
+                        padding-top: 30px;
+                        border-top: 2px solid #ffe0e8;
+                    }
+                    .terms-actions .btn {
+                        padding: 12px 30px;
+                        font-size: 1rem;
+                        border-radius: 25px;
+                        margin: 0 10px;
+                        font-weight: 600;
+                    }
+                    .terms-actions .btn-primary {
+                        background: linear-gradient(135deg, #ff69b4, #ff8da1);
+                        border: none;
+                    }
+                    .terms-actions .btn-primary:hover {
+                        background: linear-gradient(135deg, #ff8da1, #ff69b4);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+                    }
+                    @media (max-width: 768px) {
+                        .terms-page-header h1 {
+                            font-size: 2rem;
+                        }
+                        .terms-content-wrapper {
+                            padding: 0 15px 40px;
+                        }
+                        .terms-section {
+                            padding: 20px;
+                        }
+                        .terms-actions .btn {
+                            display: block;
+                            width: 100%;
+                            margin: 10px 0;
+                        }
+                    }
+                </style>
+
+                <!-- Header Section -->
+                <div class="terms-page-header">
+                    <div class="container">
+                        <h1>LASHES BY SHAZZ</h1>
+                        <p class="subtitle">TERMS &amp; CONDITIONS</p>
+                    </div>
+                </div>
+
+                <div class="terms-content-wrapper">
+                    <!-- Introduction -->
+                    <div class="terms-intro">
+                        <p><strong>By booking or receiving any service with Lashes by Shazz, you agree to the following Terms &amp; Conditions.</strong></p>
+                    </div>
+
+                    <!-- BOOKINGS & PAYMENTS -->
+                    <div class="terms-section">
+                        <h2>BOOKINGS &amp; PAYMENTS</h2>
+                        <ul>
+                            <li>A fixed booking fee of <span class="fee-highlight">KES 500</span> is required to secure all appointments.</li>
+                            <li>The booking fee will be deducted from the total service cost.</li>
+                            <li>The booking fee is refundable only if cancellation is made within <strong>6–12 hours</strong> before the appointment.</li>
+                            <li>Same-day bookings and walk-ins are accepted, subject to availability.</li>
+                            <li>Late walk-ins may be accommodated at management's discretion.</li>
+                        </ul>
+                    </div>
+
+                    <!-- CANCELLATIONS, RESCHEDULING & NO-SHOWS -->
+                    <div class="terms-section">
+                        <h2>CANCELLATIONS, RESCHEDULING &amp; NO-SHOWS</h2>
+                        <ul>
+                            <li>Clients may reschedule once, provided communication is made within <strong>12 hours</strong> of booking.</li>
+                            <li>Cancellations due to illness or emergencies must be communicated early to allow rescheduling.</li>
+                        </ul>
+                        <div class="no-show-policy">
+                            <strong>No-Show Policy:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Failure to show up within <strong>1 hour</strong> without communication will be considered a no-show.</li>
+                                <li>No-shows automatically forfeit their booking fee.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- ARRIVAL & TIME POLICY -->
+                    <div class="terms-section">
+                        <h2>ARRIVAL &amp; TIME POLICY</h2>
+                        <ul>
+                            <li>Clients are encouraged to arrive at least <strong>10 minutes early</strong>.</li>
+                            <li>If a client arrives late but can still be served, the appointment may be:
+                                <ul style="margin-top: 8px;">
+                                    <li>Shortened, or</li>
+                                    <li>Adjusted to fit remaining availability.</li>
+                                </ul>
+                            </li>
+                            <li>Evening appointments (<strong>6:30 PM onwards</strong>) attract an additional <span class="fee-highlight">KES 500</span> convenience fee.</li>
+                            <li>Appointments may be cancelled if delays disrupt the studio schedule.</li>
+                        </ul>
+                    </div>
+
+                    <!-- LASH SERVICES & CLIENT RESPONSIBILITY -->
+                    <div class="terms-section">
+                        <h2>LASH SERVICES &amp; CLIENT RESPONSIBILITY</h2>
+                        <p>To ensure best results, clients agree to the following:</p>
+                        <ul>
+                            <li>Avoid caffeine before appointments.</li>
+                            <li>Remove contact lenses before service.</li>
+                            <li>No make up, ensure that you come with no make up or mascara on your lashes. Should you come with we shall charge <span class="fee-highlight">KES 500/-</span> for extra cleaning.</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <p style="margin: 0;"><strong>Results may vary based on:</strong></p>
+                            <ul style="margin-top: 10px;">
+                                <li>The condition of natural lashes, especially if lashes are damaged.</li>
+                                <li>Client aftercare compliance.</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box" style="margin-top: 15px;">
+                            <p style="margin: 0;"><strong>Lashes by Shazz is not responsible for poor retention caused by:</strong></p>
+                            <ul style="margin-top: 10px;">
+                                <li>Failure to follow aftercare instructions.</li>
+                                <li>Lifestyle factors or external products.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- CORRECTIONS, REFUNDS & REDOS -->
+                    <div class="terms-section">
+                        <h2>CORRECTIONS, REFUNDS &amp; REDOS</h2>
+                        <ul>
+                            <li><strong>No refunds are issued under any circumstances.</strong></li>
+                            <li>Corrections are allowed within <strong>3 days</strong> of service.</li>
+                            <li>Corrections are free of charge if reported within the stated timeframe.</li>
+                            <li>Issues reported after 3 days will be treated as a new booking.</li>
+                        </ul>
+                    </div>
+
+                    <!-- HOUSE CALLS / MOBILE SERVICES -->
+                    <div class="terms-section">
+                        <h2>HOUSE CALLS / MOBILE SERVICES</h2>
+                        <ul>
+                            <li>House calls require a <span class="fee-highlight">KES 500</span> booking fee.</li>
+                            <li>A <span class="fee-highlight">KES 1,000</span> convenience fee plus transport to and from location applies.</li>
+                            <li>Clients must communicate any location changes in advance.</li>
+                            <li>Failure to communicate location changes may result in automatic cancellation.</li>
+                        </ul>
+                    </div>
+
+                    <!-- HEALTH, SAFETY & CLIENT DISCLOSURE -->
+                    <div class="terms-section">
+                        <h2>HEALTH, SAFETY &amp; CLIENT DISCLOSURE</h2>
+                        <ul>
+                            <li>Clients must disclose:
+                                <ul style="margin-top: 8px;">
+                                    <li>Allergies</li>
+                                    <li>Eye conditions</li>
+                                    <li>Pregnancy</li>
+                                </ul>
+                            </li>
+                            <li>Clients are required to complete a consultation &amp; disclosure form before service.</li>
+                            <li>Lashes by Shazz reserves the right to decline service if health concerns pose a risk.</li>
+                        </ul>
+                    </div>
+
+                    <!-- CONDUCT & STUDIO ETIQUETTE -->
+                    <div class="terms-section">
+                        <h2>CONDUCT &amp; STUDIO ETIQUETTE</h2>
+                        <ul>
+                            <li>Extra guests and children are allowed but must wait in the reception area.</li>
+                            <li>Disruptive behavior, harassment, or disrespect toward staff will result in:
+                                <ul style="margin-top: 8px;">
+                                    <li>Immediate termination of service</li>
+                                    <li>Loss of booking fee</li>
+                                </ul>
+                            </li>
+                            <li>Lashes by Shazz reserves the right to refuse service at any time.</li>
+                        </ul>
+                    </div>
+
+                    <!-- ACCEPTANCE OF TERMS -->
+                    <div class="terms-acceptance">
+                        <h2>ACCEPTANCE OF TERMS</h2>
+                        <p>Booking an appointment confirms that you have read, understood, and agreed to these Terms &amp; Conditions.</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="terms-actions">
+                        <a href="/appointments" class="btn btn-primary">Book Appointment</a>
+                        <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
 </odoo>

@@ -579,3 +579,8 @@ class AppointmentController(http.Controller):
         return request.render('custom_appointments.payment_success_page', {
             'appointment': appointment,
         })
+    
+    @http.route('/terms', type='http', auth='public', website=True, sitemap=True)
+    def terms_page(self, **kwargs):
+        """Terms and Conditions page - editable in website editor"""
+        return request.render('custom_appointments.terms_page', {})
