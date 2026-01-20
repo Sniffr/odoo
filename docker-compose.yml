@@ -16,7 +16,11 @@ services:
       - ./addons:/mnt/extra-addons
       - ./logs:/var/log/odoo
     restart: unless-stopped
-    command: ["odoo", "--config=/etc/odoo/odoo.conf"]
+    command: ["odoo",
+              "--config=/etc/odoo/odoo.conf",
+              "--gevent-port=8072"
+
+    ]
 
 volumes:
   odoo-web-data:
