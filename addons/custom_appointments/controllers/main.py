@@ -580,7 +580,7 @@ class AppointmentController(http.Controller):
             'appointment': appointment,
         })
     
-    @http.route('/terms', type='http', auth='public', website=True, sitemap=True)
+    @http.route('/tcs', type='http', auth='public', website=True, sitemap=True)
     def terms_page(self, **kwargs):
         """Terms and Conditions page - editable in website editor"""
         return request.render('custom_appointments.terms_page', {})
