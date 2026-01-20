@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Professional Appointment Booking Page -->
     <template id="appointment_booking_page" name="Book Appointment">
         <t t-call="website.layout">
@@ -2557,5 +2558,5 @@
             </div>
         </t>
     </template>
-
+    </data>
 </odoo>
