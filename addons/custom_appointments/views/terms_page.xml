@@ -4,7 +4,7 @@
     <template id="terms_page" name="Terms and Conditions">
         <t t-call="website.layout">
             <t t-set="title">Terms and Conditions - Lashes by Shazz</t>
-            <div id="wrap" class="oe_structure oe_empty">
+            <div id="wrap_terms" class="oe_structure">
                 <!-- Custom Styles for Terms Page -->
                 <style>
                     .terms-hero {
