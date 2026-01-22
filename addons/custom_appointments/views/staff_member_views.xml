@@ -12,6 +12,7 @@
                 </header>
                 <field name="name"/>
                 <field name="employee_id"/>
+                <field name="user_id"/>
                 <field name="specialization"/>
                 <field name="branch_id"/>
                 <field name="is_bookable"/>
@@ -55,6 +56,15 @@
                             <field name="phone"/>
                             <field name="is_bookable"/>
                             <field name="hourly_rate"/>
+                        </group>
+                    </group>
+                    
+                    <group string="User Account Link">
+                        <group>
+                            <field name="user_id"/>
+                            <button name="action_link_user_by_email" string="Link User by Email" 
+                                    type="object" class="btn-secondary"
+                                    invisible="user_id"/>
                         </group>
                     </group>
                     
@@ -104,18 +114,21 @@
     <!-- Menu Items -->
     <menuitem id="appointments_main_menu" 
               name="Appointments" 
-              sequence="10"/>
+              sequence="10"
+              groups="group_appointment_staff"/>
     
-    <!-- Parent Menu for Staff Management -->
+    <!-- Parent Menu for Staff Management (Supervisor and Manager only) -->
     <menuitem id="menu_staff_management"
               name="Staff Management"
               parent="appointments_main_menu"
-              sequence="10"/>
+              sequence="10"
+              groups="group_appointment_supervisor"/>
     
     <menuitem id="staff_members_menu" 
               name="Staff Members" 
               parent="menu_staff_management"
               action="staff_member_action"
-              sequence="10"/>
+              sequence="10"
+              groups="group_appointment_supervisor"/>
 
 </odoo>

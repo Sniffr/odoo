@@ -156,11 +156,12 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
+    <!-- Menu Items (Manager only) -->
     <menuitem id="branches_menu" 
               name="Branches" 
               parent="appointments_main_menu"
               action="branch_action"
-              sequence="20"/>
+              sequence="20"
+              groups="group_appointment_manager"/>
 
 </odoo>

@@ -232,8 +232,9 @@
         <field name="res_model">custom.appointment</field>
         <field name="view_mode">list,form,calendar,kanban</field>
         <field name="domain">[
-            '|',
+            '|', '|',
             ('user_id', '=', uid),
+            ('staff_member_id.user_id', '=', uid),
             ('staff_member_id.employee_id.user_id', '=', uid)
         ]</field>
         <field name="context">{'search_default_my_appointments': 1}</field>
@@ -269,13 +270,15 @@
               name="All Appointments" 
               parent="appointments_main_menu"
               action="appointment_action"
-              sequence="50"/>
+              sequence="50"
+              groups="group_appointment_supervisor"/>
               
     <menuitem id="my_appointments_menu" 
               name="My Appointments" 
               parent="appointments_main_menu"
               action="my_appointments_action"
-              sequence="60"/>
+              sequence="20"
+              groups="group_appointment_staff"/>
               
     <menuitem id="customer_appointments_menu" 
               name="My Bookings" 

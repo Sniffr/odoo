@@ -1,6 +1,6 @@
 {
     'name': 'Custom Appointments',
-    'version': '1.1.6',
+    'version': '1.2.0',
     'category': 'Services',
     'summary': 'Complete appointment booking system with staff, branches, and services',
     'description': '''
@@ -24,21 +24,25 @@
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
     'data': [
+        'security/appointment_security.xml',
         'security/ir.model.access.csv',
         'wizard/employee_import_wizard_views.xml',
         'wizard/company_import_wizard_views.xml',
         'views/staff_member_views.xml',
+        'views/staff_profile_views.xml',
         'views/staff_dashboard_views.xml',
         'views/branch_views.xml',
         'views/service_views.xml',
         'views/service_category_views.xml',
         'views/appointment_views.xml',
+        'views/appointment_settings_views.xml',
         'views/promo_code_views.xml',
         'views/customer_views.xml',
         'views/website_templates.xml',
         'views/terms_page.xml',
         'data/mail_templates.xml',
         'data/cron_jobs.xml',
+        'data/default_settings.xml',
     ],
     'demo': [
         'data/demo_data.xml',

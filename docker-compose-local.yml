@@ -32,7 +32,7 @@ services:
       - ./addons:/mnt/extra-addons
       - ./logs:/var/log/odoo
     restart: unless-stopped
-    command: bash -c "odoo --config=/etc/odoo/odoo.conf 2>&1 | tee -a /var/log/odoo/odoo.log"
+    command: bash -c "odoo --config=/etc/odoo/odoo-local.conf 2>&1 | tee -a /var/log/odoo/odoo.log"
     develop:
       watch:
         - action: rebuild

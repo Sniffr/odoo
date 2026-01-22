@@ -1,3 +1,4 @@
+from . import appointment_settings
 from . import staff_member
 from . import branch
 from . import service

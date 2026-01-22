@@ -119,10 +119,11 @@
         </field>
     </record>
 
-    <!-- Menu Item for Staff Dashboard -->
+    <!-- Menu Item for Staff Dashboard (Supervisor and above) -->
     <menuitem id="staff_dashboard_menu" 
               name="Staff Dashboard" 
               parent="menu_staff_management"
               action="staff_dashboard_action"
-              sequence="20"/>
+              sequence="20"
+              groups="group_appointment_supervisor"/>
 </odoo>

@@ -236,16 +236,18 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
+    <!-- Menu Items (Manager only) -->
     <menuitem id="customers_menu" 
               name="Customers" 
               parent="appointments_main_menu"
               action="appointment_customer_action"
-              sequence="80"/>
+              sequence="80"
+              groups="group_appointment_manager"/>
               
     <menuitem id="payments_menu" 
               name="Payments" 
               parent="appointments_main_menu"
               action="appointment_payment_transaction_action"
-              sequence="90"/>
+              sequence="90"
+              groups="group_appointment_manager"/>
 </odoo>

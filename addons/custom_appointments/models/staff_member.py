@@ -8,6 +8,8 @@ class StaffMember(models.Model):
 
     name = fields.Char(string='Full Name', required=True)
     employee_id = fields.Many2one('hr.employee', string='Employee', help='Link to HR Employee if available', ondelete='cascade')
+    user_id = fields.Many2one('res.users', string='Related User', 
+                              help='User account linked to this staff member. Set manually or click "Link User by Email"')
     image = fields.Image(string='Photo', help='Staff member photo')
     email = fields.Char(string='Email')
     phone = fields.Char(string='Phone')
@@ -45,6 +47,67 @@ class StaffMember(models.Model):
                 record.display_name = record.name
     
     display_name = fields.Char(compute='_compute_display_name', store=True)
+    
+    def action_link_user_by_email(self):
+        """Action to find and link the user account matching the staff member's email"""
+        for staff in self:
+            if staff.email:
+                # First try to match by login (email as username)
+                user = self.env['res.users'].sudo().search(
+                    [('login', '=', staff.email)], limit=1
+                )
+                # If not found, try to match by email field
+                if not user:
+                    user = self.env['res.users'].sudo().search(
+                        [('email', '=', staff.email)], limit=1
+                    )
+                if user:
+                    staff.user_id = user.id
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': 'User Linked',
+                            'message': f'Successfully linked to user: {user.name}',
+                            'type': 'success',
+                            'sticky': False,
+                        }
+                    }
+                else:
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': 'User Not Found',
+                            'message': f'No user found with email: {staff.email}',
+                            'type': 'warning',
+                            'sticky': False,
+                        }
+                    }
+            else:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'No Email',
+                        'message': 'Please set an email address first.',
+                        'type': 'warning',
+                        'sticky': False,
+                    }
+                }
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Auto-link user on create if email matches"""
+        records = super().create(vals_list)
+        for record in records:
+            if record.email and not record.user_id:
+                user = self.env['res.users'].sudo().search(
+                    ['|', ('login', '=', record.email), ('email', '=', record.email)], limit=1
+                )
+                if user:
+                    record.user_id = user.id
+        return records
     
     def _compute_appointment_stats(self):
         """Compute appointment statistics for each staff member"""

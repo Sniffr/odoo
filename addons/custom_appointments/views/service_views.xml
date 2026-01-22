@@ -121,10 +121,11 @@
         </field>
     </record>
 
-    <!-- Menu Items - Integrated into Appointments -->
+    <!-- Menu Items - Integrated into Appointments (Manager only) -->
     <menuitem id="services_menu" 
               name="Services" 
               parent="appointments_main_menu"
               action="service_action"
-              sequence="30"/>
+              sequence="30"
+              groups="group_appointment_manager"/>
 </odoo>

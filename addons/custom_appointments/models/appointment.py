@@ -100,6 +100,22 @@ class Appointment(models.Model):
     ], string='Had Lash Extensions Before',
        help='Whether the customer has had lash extensions before')
     
+    # Follow-up Tracking Fields
+    followup_count = fields.Integer(
+        string='Follow-up Count',
+        default=0,
+        help='Number of follow-up messages sent for this appointment'
+    )
+    last_followup_date = fields.Date(
+        string='Last Follow-up Date',
+        help='Date when the last follow-up message was sent'
+    )
+    followup_stopped = fields.Boolean(
+        string='Stop Follow-ups',
+        default=False,
+        help='Manually stop sending follow-up messages for this appointment'
+    )
+    
     @api.depends('invoice_id')
     def _compute_invoice_count(self):
         for appointment in self:
@@ -874,3 +890,164 @@ class Appointment(models.Model):
         
         for appointment in appointments:
             appointment._send_reminder_notifications()
+    
+    # ==================== FOLLOW-UP REMINDER METHODS ====================
+    
+    def _check_customer_rebooked(self):
+        """Check if customer has booked a new appointment after this one"""
+        self.ensure_one()
+        newer_appointment = self.search([
+            ('customer_email', '=', self.customer_email),
+            ('start', '>', self.stop),
+            ('state', 'in', ['draft', 'confirmed', 'in_progress', 'completed']),
+            ('id', '!=', self.id)
+        ], limit=1)
+        return bool(newer_appointment)
+    
+    def _get_booking_link(self):
+        """Generate the booking link for follow-up messages"""
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        return f"{base_url}/appointments"
+    
+    def _generate_followup_email_html(self, settings):
+        """Generate HTML for follow-up email"""
+        self.ensure_one()
+        template = self._load_email_template('followup')
+        
+        local_stop = self._get_local_datetime(self.stop)
+        booking_link = self._get_booking_link()
+        
+        return template.format(
+            customer_name=self.customer_name,
+            service_name=self.service_id.name,
+            appointment_date=local_stop.strftime('%B %d, %Y'),
+            branch_name=self.branch_id.name if self.branch_id else '',
+            booking_link=booking_link,
+            branch_phone=self.branch_id.phone if self.branch_id else self.env.user.company_id.phone,
+            branch_email=self.branch_id.email if self.branch_id else self.env.user.company_id.email,
+            company_name=self.env.user.company_id.name,
+        )
+    
+    def _generate_followup_sms(self, settings):
+        """Generate SMS message for follow-up"""
+        self.ensure_one()
+        booking_link = self._get_booking_link()
+        
+        # Use custom template if provided, otherwise use default
+        if settings.followup_sms_template:
+            message = settings.followup_sms_template.format(
+                customer_name=self.customer_name,
+                service_name=self.service_id.name,
+                branch_name=self.branch_id.name if self.branch_id else '',
+                booking_link=booking_link,
+            )
+        else:
+            message = (
+                f"Hi {self.customer_name}! We hope you enjoyed your {self.service_id.name}. "
+                f"Ready for your next session? Book now: {booking_link}"
+            )
+        
+        return message
+    
+    def _send_followup_notifications(self, settings):
+        """Send follow-up email and/or SMS to customer"""
+        self.ensure_one()
+        
+        _logger.info(f"Sending follow-up notification for appointment {self.id} (count: {self.followup_count + 1})")
+        
+        try:
+            # Send Email if enabled
+            if settings.followup_channel in ['email', 'both'] and self.customer_email:
+                _logger.info(f"Sending follow-up email to {self.customer_email}")
+                try:
+                    subject = settings.followup_email_subject or "We Miss You! Book Your Next Session"
+                    body_html = self._generate_followup_email_html(settings)
+                    email_from = self.branch_id.email if self.branch_id else self.env.user.company_id.email or 'noreply@localhost'
+                    
+                    mail = self.env['mail.mail'].sudo().create({
+                        'subject': subject,
+                        'body_html': body_html,
+                        'email_to': self.customer_email,
+                        'email_from': email_from,
+                    })
+                    mail.send()
+                    _logger.info(f"Successfully sent follow-up email to {self.customer_email}")
+                except Exception as e:
+                    _logger.error(f"Failed to send follow-up email to {self.customer_email}: {str(e)}")
+            
+            # Send SMS if enabled
+            if settings.followup_channel in ['sms', 'both'] and self.customer_phone:
+                _logger.info(f"Sending follow-up SMS to {self.customer_phone}")
+                sms_message = self._generate_followup_sms(settings)
+                self._send_sms_notification(self.customer_phone, sms_message)
+            
+            # Update tracking fields
+            self.write({
+                'followup_count': self.followup_count + 1,
+                'last_followup_date': fields.Date.today(),
+            })
+            
+        except Exception as e:
+            _logger.error(f"Error sending follow-up for appointment {self.id}: {str(e)}")
+    
+    @api.model
+    def send_followup_reminders(self):
+        """Scheduled method to send follow-up reminders to customers after their appointment"""
+        _logger.info("=== Running send_followup_reminders cron job ===")
+        
+        # Get settings
+        settings = self.env['custom.appointment.settings'].get_settings()
+        
+        if not settings.send_followup_messages:
+            _logger.info("Follow-up messages are disabled in settings")
+            return
+        
+        today = fields.Date.today()
+        
+        # Find eligible appointments (completed and not manually stopped)
+        appointments = self.search([
+            ('state', '=', 'completed'),
+            ('followup_stopped', '=', False),
+        ])
+        
+        _logger.info(f"Found {len(appointments)} completed appointments to check for follow-ups")
+        
+        for appt in appointments:
+            try:
+                # Skip if customer already rebooked
+                if appt._check_customer_rebooked():
+                    _logger.info(f"Skipping appointment {appt.id}: customer has rebooked")
+                    continue
+                
+                # Check max count (unless until_rebooked is enabled)
+                if not settings.followup_until_rebooked:
+                    if appt.followup_count >= settings.max_followup_count:
+                        _logger.info(f"Skipping appointment {appt.id}: max follow-ups reached ({appt.followup_count}/{settings.max_followup_count})")
+                        continue
+                
+                # Calculate if it's time to send
+                if not appt.stop:
+                    continue
+                    
+                completion_date = appt.stop.date()
+                
+                if appt.followup_count == 0:
+                    # First follow-up: start_days after completion
+                    send_date = completion_date + timedelta(days=settings.followup_start_days)
+                else:
+                    # Subsequent: repeat_interval after last followup
+                    if not appt.last_followup_date:
+                        continue
+                    send_date = appt.last_followup_date + timedelta(days=settings.followup_repeat_interval)
+                
+                if today >= send_date:
+                    _logger.info(f"Sending follow-up for appointment {appt.id} (due date: {send_date})")
+                    appt._send_followup_notifications(settings)
+                else:
+                    _logger.debug(f"Appointment {appt.id} not yet due for follow-up (due: {send_date})")
+                    
+            except Exception as e:
+                _logger.error(f"Error processing follow-up for appointment {appt.id}: {str(e)}")
+                continue
+        
+        _logger.info("=== Finished send_followup_reminders cron job ===")
