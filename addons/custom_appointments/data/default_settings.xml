@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Create default communication settings record -->
+        <record id="default_appointment_settings" model="custom.appointment.settings">
+            <field name="send_followup_messages">False</field>
+            <field name="followup_channel">both</field>
+            <field name="followup_start_days">14</field>
+            <field name="followup_repeat_interval">7</field>
+            <field name="max_followup_count">3</field>
+            <field name="followup_until_rebooked">False</field>
+            <field name="followup_email_subject">We Miss You! Book Your Next Session</field>
+            <field name="followup_sms_template">Hi {customer_name}! We hope you enjoyed your {service_name}. Ready for your next session? Book now: {booking_link}</field>
+        </record>
+    </data>
+</odoo>

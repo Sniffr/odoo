@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Communication Settings Form View -->
+    <record id="appointment_settings_form_view" model="ir.ui.view">
+        <field name="name">custom.appointment.settings.form</field>
+        <field name="model">custom.appointment.settings</field>
+        <field name="arch" type="xml">
+            <form string="Communication Settings" create="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Communication Settings</h1>
+                        <p class="text-muted">Configure follow-up messages sent to customers after their appointments</p>
+                    </div>
+                    
+                    <group>
+                        <group string="Enable Follow-up Messages">
+                            <field name="send_followup_messages" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    
+                    <div invisible="not send_followup_messages">
+                        <group>
+                            <group string="Communication Channel">
+                                <field name="followup_channel" widget="radio"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Timing">
+                                <field name="followup_start_days"/>
+                                <field name="followup_repeat_interval"/>
+                            </group>
+                            <group string="Follow-up Limits">
+                                <field name="max_followup_count" invisible="followup_until_rebooked"/>
+                                <field name="followup_until_rebooked"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Message Templates" name="templates">
+                                <group>
+                                    <group string="Email Settings">
+                                        <field name="followup_email_subject" placeholder="We Miss You! Book Your Next Session"/>
+                                        <field name="followup_email_template" placeholder="Custom email body (uses HTML template if left blank)"/>
+                                    </group>
+                                    <group string="SMS Settings">
+                                        <field name="followup_sms_template" placeholder="Hi {customer_name}! Ready for your next {service_name}? Book now: {booking_link}"/>
+                                    </group>
+                                </group>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Available Placeholders:</strong><br/>
+                                    <code>{customer_name}</code> - Customer's name<br/>
+                                    <code>{service_name}</code> - Name of the service they had<br/>
+                                    <code>{branch_name}</code> - Branch name<br/>
+                                    <code>{booking_link}</code> - Link to booking page
+                                </div>
+                            </page>
+                        </notebook>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View (for fallback) -->
+    <record id="appointment_settings_list_view" model="ir.ui.view">
+        <field name="name">custom.appointment.settings.list</field>
+        <field name="model">custom.appointment.settings</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false">
+                <field name="send_followup_messages"/>
+                <field name="followup_channel"/>
+                <field name="followup_start_days"/>
+                <field name="followup_repeat_interval"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action to open settings (list first, then form) -->
+    <record id="action_appointment_settings" model="ir.actions.act_window">
+        <field name="name">Communication Settings</field>
+        <field name="res_model">custom.appointment.settings</field>
+        <field name="view_mode">form,list</field>
+        <field name="view_id" ref="appointment_settings_form_view"/>
+        <field name="target">current</field>
+        <field name="context">{'form_view_initial_mode': 'edit'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure communication settings
+            </p>
+        </field>
+    </record>
+
+    <!-- Configuration Menu (Manager only) -->
+    <menuitem id="menu_appointments_configuration"
+              name="Configuration"
+              parent="appointments_main_menu"
+              sequence="100"
+              groups="group_appointment_manager"/>
+
+    <!-- Communication Settings Menu Item -->
+    <menuitem id="menu_communication_settings"
+              name="Communication Settings"
+              parent="menu_appointments_configuration"
+              action="action_appointment_settings"
+              sequence="10"
+              groups="group_appointment_manager"/>
+</odoo>
