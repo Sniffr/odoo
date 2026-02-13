@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Terms and Conditions Page - Lashes by Shazz -->
+    <!-- Terms and Conditions Page - Revive Aesthetics -->
     <template id="terms_page" name="Terms and Conditions">
         <t t-call="website.layout">
-            <t t-set="title">Terms and Conditions - Lashes by Shazz</t>
+            <t t-set="title">Terms and Conditions - Revive Aesthetics</t>
             <div id="wrap_terms" class="oe_structure">
                 <!-- Custom Styles for Terms Page -->
                 <style>
                     .terms-hero {
-                        background: linear-gradient(135deg, #ff69b4 0%, #ff8da1 50%, #ffb6c1 100%);
+                        background: linear-gradient(135deg, #ffffff 0%, #1a1a2e 50%, rgba(255,255,255,0.2) 100%);
                         padding: 60px 0;
                         text-align: center;
                         color: white;
@@ -29,32 +29,32 @@
                         opacity: 0.95;
                     }
                     .terms-intro {
-                        background: #fff5f8;
+                        background: rgba(255,255,255,0.05);
                         padding: 25px;
-                        border-left: 4px solid #ff69b4;
+                        border-left: 4px solid #ffffff;
                         margin-bottom: 40px;
                         border-radius: 0 10px 10px 0;
                     }
                     .terms-section {
-                        background: white;
+                        background: rgba(255,255,255,0.05);
                         border-radius: 15px;
                         padding: 30px;
                         margin-bottom: 25px;
-                        box-shadow: 0 3px 15px rgba(255, 105, 180, 0.1);
-                        border: 1px solid #ffe4ec;
+                        box-shadow: 0 3px 15px rgba(255, 255, 255, 0.1);
+                        border: 1px solid rgba(255,255,255,0.1);
                         transition: all 0.3s ease;
                     }
                     .terms-section:hover {
-                        box-shadow: 0 5px 25px rgba(255, 105, 180, 0.2);
+                        box-shadow: 0 5px 25px rgba(255, 255, 255, 0.2);
                         transform: translateY(-2px);
                     }
                     .terms-section h2 {
-                        color: #ff69b4;
+                        color: #ffffff;
                         font-weight: 700;
                         font-size: 1.3rem;
                         margin-bottom: 20px;
                         padding-bottom: 10px;
-                        border-bottom: 2px solid #ffb6c1;
+                        border-bottom: 2px solid rgba(255,255,255,0.2);
                         display: flex;
                         align-items: center;
                     }
@@ -69,7 +69,7 @@
                     .terms-section ul li {
                         padding: 10px 0 10px 28px;
                         position: relative;
-                        border-bottom: 1px solid #f8f8f8;
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
                     }
                     .terms-section ul li:last-child {
                         border-bottom: none;
@@ -77,22 +77,22 @@
                     .terms-section ul ul {
                         margin-top: 10px;
                         margin-left: 20px;
-                        background: #fafafa;
+                        background: rgba(255,255,255,0.03);
                         border-radius: 8px;
                         padding: 10px 15px;
                     }
                     .highlight-box {
-                        background: linear-gradient(135deg, #fff5f8, #ffe4ec);
+                        background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
                         border-radius: 10px;
                         padding: 20px;
                         margin: 15px 0;
-                        border-left: 4px solid #ff69b4;
+                        border-left: 4px solid #ffffff;
                     }
                     .highlight-box strong {
-                        color: #d63384;
+                        color: #ffffff;
                     }
                     .fee-badge {
-                        background: #ff69b4;
+                        background: #ffffff;
                         color: white;
                         padding: 3px 10px;
                         border-radius: 20px;
@@ -100,7 +100,7 @@
                         font-weight: 600;
                     }
                     .acceptance-box {
-                        background: linear-gradient(135deg, #ff69b4, #ff8da1);
+                        background: linear-gradient(135deg, #ffffff, #1a1a2e);
                         color: white;
                         border-radius: 15px;
                         padding: 35px;
@@ -116,22 +116,22 @@
                         margin-bottom: 0;
                     }
                     .btn-pink {
-                        background: #ff69b4;
-                        border-color: #ff69b4;
+                        background: #ffffff;
+                        border-color: #ffffff;
                         color: white;
                     }
                     .btn-pink:hover {
-                        background: #ff5ca8;
-                        border-color: #ff5ca8;
+                        background: #cccccc;
+                        border-color: #cccccc;
                         color: white;
                     }
                     .btn-outline-pink {
-                        border: 2px solid #ff69b4;
-                        color: #ff69b4;
+                        border: 2px solid #ffffff;
+                        color: #ffffff;
                         background: transparent;
                     }
                     .btn-outline-pink:hover {
-                        background: #ff69b4;
+                        background: #ffffff;
                         color: white;
                     }
                 </style>
@@ -139,7 +139,7 @@
                 <!-- Hero Section -->
                 <div class="terms-hero">
                     <div class="container">
-                        <h1>Lashes by Shazz</h1>
+                        <h1>Revive Aesthetics</h1>
                         <p class="subtitle">TERMS &amp; CONDITIONS</p>
                     </div>
                 </div>
@@ -147,8 +147,8 @@
                 <div class="container py-5">
                     <!-- Introduction -->
                     <div class="terms-intro">
-                        <p class="mb-0" style="font-size: 1.1rem; color: #555;">
-                            <strong>By booking or receiving any service with Lashes by Shazz, you agree to the following Terms &amp; Conditions.</strong>
+                        <p class="mb-0" style="font-size: 1.1rem; color: rgba(255,255,255,0.7);">
+                            <strong>By booking or receiving any service with Revive Aesthetics, you agree to the following Terms &amp; Conditions.</strong>
                         </p>
                     </div>
 
@@ -200,7 +200,7 @@
                     <!-- Section 4: Lash Services -->
                     <div class="terms-section">
                         <h2><i class="fa fa-eye"></i> LASH SERVICES &amp; CLIENT RESPONSIBILITY</h2>
-                        <p style="color: #666; margin-bottom: 15px;">To ensure best results, clients agree to the following:</p>
+                        <p style="color: rgba(255,255,255,0.6); margin-bottom: 15px;">To ensure best results, clients agree to the following:</p>
                         <ul>
                             <li>Avoid caffeine before appointments.</li>
                             <li>Remove contact lenses before service.</li>
@@ -217,7 +217,7 @@
                                 </ul>
                             </li>
                             <li>
-                                Lashes by Shazz is <strong>not responsible</strong> for poor retention caused by:
+                                Revive Aesthetics is <strong>not responsible</strong> for poor retention caused by:
                                 <ul>
                                     <li>Failure to follow aftercare instructions.</li>
                                     <li>Lifestyle factors or external products.</li>
@@ -261,7 +261,7 @@
                                 </ul>
                             </li>
                             <li>Clients are required to complete a <strong>consultation &amp; disclosure form</strong> before service.</li>
-                            <li>Lashes by Shazz reserves the right to decline service if health concerns pose a risk.</li>
+                            <li>Revive Aesthetics reserves the right to decline service if health concerns pose a risk.</li>
                         </ul>
                     </div>
 
@@ -277,7 +277,7 @@
                                     <li>Loss of booking fee</li>
                                 </ul>
                             </li>
-                            <li>Lashes by Shazz reserves the right to refuse service at any time.</li>
+                            <li>Revive Aesthetics reserves the right to refuse service at any time.</li>
                         </ul>
                     </div>
 

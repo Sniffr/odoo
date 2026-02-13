@@ -3,7 +3,7 @@
     <!-- Professional Appointment Booking Page -->
     <template id="appointment_booking_page" name="Book Appointment">
         <t t-call="website.layout">
-            <div id="wrap_booking" class="oe_structure">
+            <div id="wrap_booking" class="oe_structure" style="background: #0a0a0a; color: #ffffff;">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
                     <!-- Background image with fade effect -->
@@ -13,10 +13,10 @@
                     <div class="container position-relative" style="z-index: 2;">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h1 class="display-5 font-weight-bold text-dark mb-2">
+                                <h1 class="display-5 font-weight-bold text-white mb-2">
                                     <t t-esc="request.env.company.name or 'Professional Services'"/>
                                 </h1>
-                                <p class="text-muted mb-0">Book your appointment with our professional team</p>
+                                <p class="text-light-muted mb-0">Book your appointment with our professional team</p>
                             </div>
                         </div>
                     </div>
@@ -46,10 +46,10 @@
                         width: 100%;
                         height: 100%;
                         background: linear-gradient(90deg,
-                            rgba(255,255,255,1) 0%,
-                            rgba(255,255,255,0.9) 30%,
-                            rgba(255,255,255,0.6) 60%,
-                            rgba(255,255,255,0) 100%);
+                            rgba(10,10,10,1) 0%,
+                            rgba(10,10,10,0.9) 30%,
+                            rgba(10,10,10,0.6) 60%,
+                            rgba(10,10,10,0) 100%);
                         z-index: 1;
                     }
                 </style>
@@ -58,7 +58,7 @@
                     <!-- Branch Selection (Top) -->
                     <div class="branch-selection mb-5">
                         <div class="card shadow border-0" style="border-radius: 18px; overflow: hidden;">
-                            <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                            <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
                                 <h4 class="font-weight-bold mb-0">Select a Branch</h4>
                                 <p class="mb-0 opacity-75">Choose where you'd like to book your appointment</p>
                             </div>
@@ -70,7 +70,7 @@
                                             <t t-foreach="branches" t-as="branch">
                                                 <div class="col-md-6 mb-3">
                                                     <div class="branch-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
-                                                        <div class="card h-100" t-att-style="'border-radius: 12px; border: 2px solid ' + ('#ff69b4' if selected_branch and branch.id == selected_branch.id else 'transparent') + '; box-shadow: 0 3px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; background: ' + ('#fff5f8' if selected_branch and branch.id == selected_branch.id else '') + ';'">
+                                                        <div class="card h-100" t-att-style="'border-radius: 12px; border: 2px solid ' + ('#ffffff' if selected_branch and branch.id == selected_branch.id else 'transparent') + '; box-shadow: 0 3px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; background: ' + ('rgba(255,255,255,0.05)' if selected_branch and branch.id == selected_branch.id else '') + ';'">
                                                             <div class="card-body p-4">
                                                                 <div class="d-flex flex-column h-100">
                                                                     <div>
@@ -81,18 +81,18 @@
 
                                                                         <div class="branch-details mt-3 ml-2">
                                                                             <t t-if="branch.street">
-                                                                                <p class="text-muted mb-2">
+                                                                                <p class="text-light-muted mb-2">
                                                                                     <i class="fa fa-map-marker mr-2"></i>
                                                                                     <t t-esc="branch.street"/>
                                                                                 </p>
                                                                             </t>
                                                                             <t t-if="branch.phone">
-                                                                                <p class="text-muted mb-2">
+                                                                                <p class="text-light-muted mb-2">
                                                                                     <i class="fa fa-phone mr-2"></i>
                                                                                     <t t-esc="branch.phone"/>
                                                                                 </p>
                                                                             </t>
-                                                                            <p class="text-muted mb-0">
+                                                                            <p class="text-light-muted mb-0">
                                                                                 <i class="fa fa-clock-o mr-2"></i>
                                                                                 Open today: 9:00 AM - 6:00 PM
                                                                             </p>
@@ -113,7 +113,7 @@
                                         <t t-else="">
                                             <div class="col-12 text-center py-4">
                                                 <i class="fa fa-building fa-2x text-muted mb-2"></i>
-                                                <p class="text-muted small">No branches available</p>
+                                                <p class="text-light-muted small">No branches available</p>
                                             </div>
                                         </t>
                                     </div>
@@ -126,7 +126,7 @@
                         <!-- Staff Selection Grid in a Separate Card (Full Width) -->
                         <div class="col-lg-12 mb-4">
                             <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
                                     <h4 class="font-weight-bold mb-0">Select Your Specialist</h4>
                                     <p class="mb-0 opacity-75">Choose the professional you'd like to work with</p>
                                 </div>
@@ -137,7 +137,7 @@
                                                 <t t-foreach="staff_members" t-as="staff">
                                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                                         <div class="staff-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
-                                                            <div class="card h-100" style="border-radius: 15px; border: 2px solid transparent; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; min-height: 350px;">
+                                                            <div class="card h-100" style="border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; min-height: 350px;">
                                                                 <div class="card-body p-3 d-flex flex-column">
                                                                     <div class="text-center mb-3">
                                                                         <t t-if="staff.image">
@@ -157,17 +157,17 @@
                                                                         <div>
                                                                             <h5 class="font-weight-bold mb-1"><t t-esc="staff.name"/></h5>
                                                                             <t t-if="staff.specialization">
-                                                                                <p class="text-muted mb-2"><t t-esc="staff.specialization"/></p>
+                                                                                <p class="text-light-muted mb-2"><t t-esc="staff.specialization"/></p>
                                                                             </t>
                                                                             <t t-else="">
-                                                                                <p class="text-muted mb-2">Specialist</p>
+                                                                                <p class="text-light-muted mb-2">Specialist</p>
                                                                             </t>
 
                                                                             <div class="rating mb-2">
                                                                                 <t t-foreach="range(5)" t-as="star">
                                                                                     <i class="fa fa-star text-warning"></i>
                                                                                 </t>
-                                                                                <span class="text-muted small ml-1">5.0</span>
+                                                                                <span class="text-light-muted small ml-1">5.0</span>
                                                                             </div>
                                                                             <div class="expertise-badges mt-2">
                                                                                 <span class="badge badge-light mr-1">Expert</span>
@@ -189,8 +189,8 @@
                                             <t t-else="">
                                                 <div class="col-12 text-center py-4">
                                                     <i class="fa fa-users fa-3x text-muted mb-3"></i>
-                                                    <h6 class="text-muted">No Staff Available</h6>
-                                                    <p class="text-muted small">Please contact us directly for appointments.</p>
+                                                    <h6 class="text-light-muted">No Staff Available</h6>
+                                                    <p class="text-light-muted small">Please contact us directly for appointments.</p>
                                                 </div>
                                             </t>
                                         </div>
@@ -201,10 +201,10 @@
 
                         <!-- Location Details with Unique Styling -->
                         <div class="col-lg-12 mb-4">
-                            <div class="location-card shadow-sm border-0" style="border-radius: 20px; overflow: hidden; background-image: linear-gradient(to right, #fff, #fff5f8); position: relative;">
+                            <div class="location-card shadow-sm border-0" style="border-radius: 20px; overflow: hidden; background: linear-gradient(to right, #0d1117, #111827); position: relative;">
                                 <!-- Decorative Elements -->
-                                <div class="decorative-circle" style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,105,180,0.1); z-index: 1;"></div>
-                                <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,105,180,0.08); z-index: 1;"></div>
+                                <div class="decorative-circle" style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1); z-index: 1;"></div>
+                                <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.08); z-index: 1;"></div>
 
 
 
@@ -212,48 +212,48 @@
                                     <!-- Full-width Map Placeholder with Enhanced Styling -->
                                     <div class="map-container mb-4" style="position: relative; height: 280px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
                                         <!-- Map Background -->
-                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #f8f9fa, #fff);">
+                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #0d1117, #1a1a2e);">
                                             <!-- Decorative Map Elements -->
-                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.1);"></div>
-                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05);"></div>
-                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,105,180,0.07);"></div>
+                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05);"></div>
+                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);"></div>
 
                                             <!-- Roads -->
-                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(200,200,200,0.5);"></div>
-                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(200,200,200,0.5);"></div>
-                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(200,200,200,0.3);"></div>
-                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(200,200,200,0.3);"></div>
+                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
+                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(255,255,255,0.05);"></div>
                                         </div>
 
                                         <!-- Location Marker -->
                                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                             <!-- Pulse Animation -->
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.3); animation: pulse 2s infinite;"></div>
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.5); animation: pulse 2s infinite 0.3s;"></div>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); animation: pulse 2s infinite;"></div>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: pulse 2s infinite 0.3s;"></div>
 
                                             <!-- Marker Pin -->
                                             <div style="position: relative; width: 30px, height: 30px;">
-                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ff69b4; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
+                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ffffff; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
                                             </div>
                                         </div>
 
                                         <!-- Overlay with CTA -->
-                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
+                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
                                             <div class="text-center">
-                                                <div style="width: 70px; height: 70px; background: #ff69b4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,105,180,0.3);">
+                                                <div style="width: 70px; height: 70px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
                                                     <i class="fa fa-map-marker fa-2x text-white"></i>
                                                 </div>
-                                                <h5 class="font-weight-bold mb-1" style="color: #333;">Our Location</h5>
+                                                <h5 class="font-weight-bold mb-1" style="color: #ffffff;">Our Location</h5>
                                                 <t t-if="selected_branch">
-                                                    <p class="text-muted mb-2">
+                                                    <p class="text-light-muted mb-2">
                                                         <t t-if="selected_branch.street"><t t-esc="selected_branch.street"/></t>
                                                         <t t-if="selected_branch.city">, <t t-esc="selected_branch.city"/></t>
                                                     </p>
                                                 </t>
                                                 <t t-else="">
-                                                    <p class="text-muted mb-2">Select a branch to view location</p>
+                                                    <p class="text-light-muted mb-2">Select a branch to view location</p>
                                                 </t>
-                                                <button class="btn" style="background: #ff69b4; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,105,180,0.3); font-weight: 600;">
+                                                <button class="btn" style="background: #ffffff; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,255,255,0.3); font-weight: 600;">
                                                     <i class="fa fa-directions mr-2"></i>Get Directions
                                                 </button>
                                             </div>
@@ -263,7 +263,7 @@
                                     <div class="row">
                                         <!-- Hours Section -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ff69b4;">
+                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ffffff;">
                                                 <div class="d-flex align-items-center mb-3">
 
                                                     <h5 class="font-weight-bold ml-3 mb-0">Hours of Operation</h5>
@@ -271,66 +271,66 @@
 
                                                 <div class="hours-list mt-3">
                                                     <t t-if="selected_branch">
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Monday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.monday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.monday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.monday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.monday_open), int((selected_branch.monday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.monday_close), int((selected_branch.monday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Tuesday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.tuesday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.tuesday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.tuesday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.tuesday_open), int((selected_branch.tuesday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.tuesday_close), int((selected_branch.tuesday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Wednesday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.wednesday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.wednesday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.wednesday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.wednesday_open), int((selected_branch.wednesday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.wednesday_close), int((selected_branch.wednesday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Thursday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.thursday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.thursday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.thursday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.thursday_open), int((selected_branch.thursday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.thursday_close), int((selected_branch.thursday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Friday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.friday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.friday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.friday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.friday_open), int((selected_branch.friday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.friday_close), int((selected_branch.friday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Saturday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.saturday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.saturday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.saturday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.saturday_open), int((selected_branch.saturday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.saturday_close), int((selected_branch.saturday_close % 1) * 60))"/>
                                                                 </t>
@@ -341,7 +341,7 @@
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Sunday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.sunday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.sunday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.sunday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.sunday_open), int((selected_branch.sunday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.sunday_close), int((selected_branch.sunday_close % 1) * 60))"/>
                                                                 </t>
@@ -351,7 +351,7 @@
                                                     </t>
                                                     <t t-else="">
                                                         <div class="text-center p-3">
-                                                            <p class="text-muted">Select a branch to view hours</p>
+                                                            <p class="text-light-muted">Select a branch to view hours</p>
                                                         </div>
                                                     </t>
                                                 </div>
@@ -370,8 +370,8 @@
                                                     <t t-if="selected_branch">
                                                         <t t-if="selected_branch.phone">
                                                             <div class="contact-item d-flex align-items-center mb-3">
-                                                                <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                    <i class="fa fa-phone" style="color: #ff69b4;"></i>
+                                                                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                    <i class="fa fa-phone" style="color: #ffffff;"></i>
                                                                 </div>
                                                                 <div>
                                                                     <div class="small text-muted">Phone</div>
@@ -381,8 +381,8 @@
                                                         </t>
                                                         <t t-if="selected_branch.email">
                                                             <div class="contact-item d-flex align-items-center mb-3">
-                                                                <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                    <i class="fa fa-envelope" style="color: #ff69b4;"></i>
+                                                                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                    <i class="fa fa-envelope" style="color: #ffffff;"></i>
                                                                 </div>
                                                                 <div>
                                                                     <div class="small text-muted">Email</div>
@@ -391,8 +391,8 @@
                                                             </div>
                                                         </t>
                                                         <div class="contact-item d-flex align-items-center">
-                                                            <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                <i class="fa fa-map-marker" style="color: #ff69b4;"></i>
+                                                            <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                <i class="fa fa-map-marker" style="color: #ffffff;"></i>
                                                             </div>
                                                             <div>
                                                                 <div class="small text-muted">Address</div>
@@ -405,7 +405,7 @@
                                                     </t>
                                                     <t t-else="">
                                                         <div class="text-center p-3">
-                                                            <p class="text-muted">Select a branch to view contact information</p>
+                                                            <p class="text-light-muted">Select a branch to view contact information</p>
                                                         </div>
                                                     </t>
                                                 </div>
@@ -467,10 +467,10 @@
 
                         // Highlight selected staff with enhanced styling
                         const card = element.querySelector('.card');
-                        card.style.borderColor = '#ff69b4';
+                        card.style.borderColor = '#ffffff';
                         card.style.borderWidth = '3px';
-                        card.style.background = '#fff0f7';
-                        card.style.boxShadow = '0 8px 20px rgba(255,105,180,0.3)';
+                        card.style.background = 'rgba(255,255,255,0.08)';
+                        card.style.boxShadow = '0 8px 20px rgba(255,255,255,0.3)';
                         card.style.transform = 'translateY(-5px)';
 
                         // Show selection indicator for selected card
@@ -490,7 +490,7 @@
                                 <div class="row justify-content-center">
                                     <div class="col-12 col-md-8 col-lg-6">
                                         <button class="btn btn-lg w-100 continue-services-btn"
-                                            style="background: #ff69b4; color: white; border: none; padding: 15px 25px;
+                                            style="background: #ffffff; color: white; border: none; padding: 15px 25px;
                                             border-radius: 25px; font-weight: 600; transition: all 0.3s ease;
                                             box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3); max-width: 100%;"
                                             onclick="proceedToServices()">
@@ -509,7 +509,7 @@
                                     .continue-services-btn:hover {
                                         transform: translateY(-2px);
                                         box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-                                        background: #ff4da9 !important;
+                                        background: #cccccc !important;
                                     }
                                     .continue-services-btn:active {
                                         transform: translateY(1px);
@@ -557,7 +557,7 @@
     <!-- Professional Service Selection Page -->
     <template id="service_selection_page" name="Select Services">
         <t t-call="website.layout">
-            <div id="wrap_services" class="oe_structure">
+            <div id="wrap_services" class="oe_structure" style="background: #0a0a0a; color: #ffffff;">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
                     <!-- Background image with fade effect -->
@@ -571,10 +571,10 @@
                                     <t t-esc="request.env.company.name or 'Professional Services'"/>
                                     <t t-if="selected_branch"> - <t t-esc="selected_branch.name"/></t>
                                 </h1>
-                                <p class="text-muted mb-0">Select your preferred services</p>
+                                <p class="text-light-muted mb-0">Select your preferred services</p>
                             </div>
                             <div class="col-md-4 text-right">
-                                <a href="/appointments" class="btn" style="background: #ff69b4; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600; box-shadow: 0 4px 10px rgba(255,105,180,0.3);">
+                                <a href="/appointments" class="btn" style="background: #ffffff; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
                                     <i class="fa fa-arrow-left mr-2"></i> Change branch
                                 </a>
                             </div>
@@ -606,10 +606,10 @@
                         width: 100%;
                         height: 100%;
                         background: linear-gradient(90deg,
-                            rgba(255,255,255,1) 0%,
-                            rgba(255,255,255,0.9) 30%,
-                            rgba(255,255,255,0.6) 60%,
-                            rgba(255,255,255,0) 100%);
+                            rgba(10,10,10,1) 0%,
+                            rgba(10,10,10,0.9) 30%,
+                            rgba(10,10,10,0.6) 60%,
+                            rgba(10,10,10,0) 100%);
                         z-index: 1;
                     }
                 </style>
@@ -618,9 +618,9 @@
                     <!-- Selection Summary Panel (New) -->
                     <div class="selection-summary mb-4">
                         <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                            <div class="card-header bg-light p-3" style="background: #f8f9fa; border: none;">
+                            <div class="card-header bg-light p-3" style="background: rgba(255,255,255,0.05); border: none;">
                                 <h5 class="font-weight-bold mb-0">
-                                    <i class="fa fa-check-circle mr-2" style="color: #ff69b4;"></i>
+                                    <i class="fa fa-check-circle mr-2" style="color: #ffffff;"></i>
                                     Your Selection Summary
                                 </h5>
                             </div>
@@ -628,10 +628,10 @@
                                 <div class="row">
                                     <!-- Branch Information -->
                                     <div class="col-md-6 mb-3 mb-md-0">
-                                        <div class="selection-item p-3" style="background: #fff5f8; border-radius: 10px;">
+                                        <div class="selection-item p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                             <div class="d-flex align-items-center">
                                                 <div style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
-                                                    <i class="fa fa-building" style="color: #ff69b4; font-size: 18px;"></i>
+                                                    <i class="fa fa-building" style="color: #ffffff; font-size: 18px;"></i>
                                                 </div>
                                                 <div>
                                                     <div class="small text-muted">Selected Branch</div>
@@ -658,7 +658,7 @@
 
                                     <!-- Staff Member Information -->
                                     <div class="col-md-6">
-                                        <div class="selection-item p-3" style="background: #fff5f8; border-radius: 10px;">
+                                        <div class="selection-item p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                             <div class="d-flex align-items-center">
                                                 <div id="staff-avatar" style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); overflow: hidden;">
                                                     <t t-if="selected_staff and selected_staff.image">
@@ -667,7 +667,7 @@
                                                              alt="Staff Photo"/>
                                                     </t>
                                                     <t t-else="">
-                                                        <i class="fa fa-user" style="color: #ff69b4; font-size: 18px;"></i>
+                                                        <i class="fa fa-user" style="color: #ffffff; font-size: 18px;"></i>
                                                     </t>
                                                 </div>
                                                 <div>
@@ -703,10 +703,10 @@
                             <div class="col-12">
                                 <!-- Search Bar with Enhanced Styling -->
                                 <div class="service-search-section mb-4">
-                                    <h3 class="text-center font-weight-bold mb-2 mt-4" style="color: #333;">
+                                    <h3 class="text-center font-weight-bold mb-2 mt-4" style="color: #ffffff;">
                                        Select Your Service
                                     </h3>
-                                    <div class="card shadow-sm border-0" style="border-radius: 15px; background: linear-gradient(to right, #fff5f8, #fff);">
+                                    <div class="card shadow-sm border-0" style="border-radius: 15px; background: linear-gradient(to right, rgba(255,255,255,0.03), rgba(255,255,255,0.01));">
                                         <div class="card-body p-4">
                                             <div class="row justify-content-center">
                                                 <div class="col-md-8">
@@ -714,7 +714,7 @@
                                                         <div class="input-group">
 
                                                             <input type="text" class="form-control border-left-0" placeholder="Search for services by name or description..."
-                                                                   style="border-radius: 25px 25px 25px 25px; padding: 15px; border-color: #ff69b4; box-shadow: 0 3px 10px rgba(255,105,180,0.1);"
+                                                                   style="border-radius: 25px 25px 25px 25px; padding: 15px; border-color: #ffffff; box-shadow: 0 3px 10px rgba(255,255,255,0.1);"
                                                                    id="service-search" onkeyup="searchServices(this.value)"/>
                                                         </div>
 
@@ -731,8 +731,8 @@
                                         <t t-if="services.filtered(lambda s: s.category_id.id == category.id)">
                                             <div class="category-section mb-5">
                                                 <!-- Category Header with Enhanced Styling -->
-                                                <div class="category-header mb-4 p-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
-                                                    <div class="category-decoration" style="position: absolute; top: -15px; right: -15px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,105,180,0.03); z-index: 1;"></div>
+                                                <div class="category-header mb-4 p-3" style="background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ffffff; position: relative; overflow: hidden;">
+                                                    <div class="category-decoration" style="position: absolute; top: -15px; right: -15px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.03); z-index: 1;"></div>
                                                     <div class="d-flex align-items-center position-relative" style="z-index: 2;">
                                                         <div style="width: 40px; height: 40px; min-width: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
                                                             <t t-if="category.image">
@@ -742,13 +742,13 @@
                                                                     alt="Category"/>
                                                             </t>
                                                             <t t-else="">
-                                                                <i class="fa fa-list" style="color: #ff69b4; font-size: 16px;"></i>
+                                                                <i class="fa fa-list" style="color: #ffffff; font-size: 16px;"></i>
                                                             </t>
                                                         </div>
                                                         <div>
                                                             <h4 class="font-weight-bold mb-0"><t t-esc="category.name"/></h4>
                                                             <t t-if="services.filtered(lambda s: s.category_id.id == category.id)">
-                                                                <p class="text-muted mb-0 small">
+                                                                <p class="text-light-muted mb-0 small">
                                                                     <t t-esc="len(services.filtered(lambda s: s.category_id.id == category.id))"/> services available
                                                                 </p>
                                                             </t>
@@ -773,13 +773,13 @@
                                                                                                 style="width: 100%; height: 100%; object-fit: cover;"
                                                                                                 alt="Service Image"/>
                                                                                             <!-- Image overlay -->
-                                                                                            <div class="service-image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,105,180,0.3) 0%, rgba(255,105,180,0) 50%); border-radius: 16px 0 0 16px;"></div>
+                                                                                            <div class="service-image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%); border-radius: 16px 0 0 16px;"></div>
                                                                                         </div>
                                                                                     </t>
                                                                                     <t t-else="">
                                                                                         <div class="service-image-placeholder h-100 d-flex align-items-center justify-content-center"
-                                                                                            style="background: linear-gradient(135deg, #fff5f8, #ffd6e7); border-radius: 16px 0 0 16px;">
-                                                                                            <i class="fa fa-spa text-pink" style="font-size: 32px; color: #ff69b4; opacity: 0.5;"></i>
+                                                                                            style="background: linear-gradient(135deg, rgba(255,255,255,0.05), #1a1a2e); border-radius: 16px 0 0 16px;">
+                                                                                            <i class="fa fa-spa text-pink" style="font-size: 32px; color: #ffffff; opacity: 0.5;"></i>
                                                                                         </div>
                                                                                     </t>
                                                                                 </div>
@@ -793,7 +793,7 @@
 
                                                                                         <!-- Service Description -->
                                                                                         <t t-if="service.description">
-                                                                                            <p class="text-muted mb-3 service-description small">
+                                                                                            <p class="text-light-muted mb-3 service-description small">
                                                                                                 <t t-esc="service.description[:100]"/>
                                                                                                 <t t-if="len(service.description) > 100">...</t>
                                                                                             </p>
@@ -801,12 +801,12 @@
 
                                                                                         <!-- Service Details with Enhanced Icons -->
                                                                                         <div class="service-details d-flex flex-wrap mb-3">
-                                                                                            <span class="badge mr-2 mb-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                            <span class="badge mr-2 mb-2" style="background: rgba(255,255,255,0.05); color: #ffffff; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
                                                                                                 <i class="fa fa-clock-o mr-1"></i>
                                                                                                 <t t-esc="service.duration"/> hour<t t-if="service.duration != 1">s</t>
                                                                                             </span>
                                                                                             <t t-if="service.category_id">
-                                                                                                <span class="badge mr-2 mb-2" style="background: #f0f0f0; color: #666; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
+                                                                                                <span class="badge mr-2 mb-2" style="background: rgba(255,255,255,0.1); color: #666; border-radius: 30px; padding: 8px 15px; font-weight: normal;">
                                                                                                     <i class="fa fa-tag mr-1"></i>
                                                                                                     <t t-esc="service.category_id.name"/>
                                                                                                 </span>
@@ -817,16 +817,16 @@
                                                                                         <div class="d-flex justify-content-between align-items-center">
                                                                                             <div class="service-price">
                                                                                                 <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
-                                                                                                    <span class="text-muted small mr-1">booking fee</span>
-                                                                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                    <span class="text-light-muted small mr-1">booking fee</span>
+                                                                                                    <span class="price font-weight-bold" style="color: #ffffff; font-size: 1.25rem;">
                                                                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/>
                                                                                                     </span>
                                                                                                     <br/>
-                                                                                                    <span class="text-muted small">Full price: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></span>
+                                                                                                    <span class="text-light-muted small">Full price: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></span>
                                                                                                 </t>
                                                                                                 <t t-else="">
-                                                                                                    <span class="text-muted small mr-1">from</span>
-                                                                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 1.25rem;">
+                                                                                                    <span class="text-light-muted small mr-1">from</span>
+                                                                                                    <span class="price font-weight-bold" style="color: #ffffff; font-size: 1.25rem;">
                                                                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
                                                                                                     </span>
                                                                                                 </t>
@@ -837,7 +837,7 @@
                                                                                                            t-att-id="'service-' + str(service.id)" class="custom-control-input position-absolute invisible"
                                                                                                            style="opacity: 0; cursor: pointer;"/>
                                                                                                     <label class="select-btn" t-att-for="'service-' + str(service.id)"
-                                                                                                           style="background: transparent; border: 2px solid #ff69b4; color: #ff69b4;
+                                                                                                           style="background: transparent; border: 2px solid #ffffff; color: #ffffff;
                                                                                                                   border-radius: 20px; padding: 6px 16px; font-weight: 600;
                                                                                                                   cursor: pointer; transition: all 0.3s ease;">
                                                                                                         Select
@@ -862,8 +862,8 @@
                                 <t t-else="">
                                     <div class="text-center py-5">
                                         <i class="fa fa-list fa-3x text-muted mb-3"></i>
-                                        <h5 class="text-muted">No Services Available</h5>
-                                        <p class="text-muted">Please contact us directly for service information.</p>
+                                        <h5 class="text-light-muted">No Services Available</h5>
+                                        <p class="text-light-muted">Please contact us directly for service information.</p>
                                     </div>
                                 </t>
                             </div>
@@ -873,7 +873,7 @@
                     <!-- Continue Button with Enhanced Styling -->
                     <div class="text-center mt-5 mb-5">
                         <button class="btn btn-lg"
-                                style="background: #ff69b4; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(255,105,180,0.3); transition: all 0.3s ease;"
+                                style="background: #ffffff; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(255,255,255,0.3); transition: all 0.3s ease;"
                                 onclick="proceedToBooking()">
                             <i class="fa fa-calendar-check-o mr-2"></i> Continue to Booking
                         </button>
@@ -884,57 +884,57 @@
                 <div class="container mb-5">
                     <div class="row">
                         <div class="col-lg-12 mb-4">
-                            <div class="location-card shadow-sm border-0" style="border-radius: 20px; overflow: hidden; background-image: linear-gradient(to right, #fff, #fff5f8); position: relative;">
+                            <div class="location-card shadow-sm border-0" style="border-radius: 20px; overflow: hidden; background: linear-gradient(to right, #0d1117, #111827); position: relative;">
                                 <!-- Decorative Elements -->
-                                <div class="decorative-circle" style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,105,180,0.1); z-index: 1;"></div>
-                                <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,105,180,0.08); z-index: 1;"></div>
+                                <div class="decorative-circle" style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1); z-index: 1;"></div>
+                                <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.08); z-index: 1;"></div>
 
                                 <div class="card-body p-4" style="position: relative; z-index: 2;">
                                     <!-- Full-width Map Placeholder with Enhanced Styling -->
                                     <div class="map-container mb-4" style="position: relative; height: 280px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
                                         <!-- Map Background -->
-                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #f8f9fa, #fff);">
+                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #0d1117, #1a1a2e);">
                                             <!-- Decorative Map Elements -->
-                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.1);"></div>
-                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05);"></div>
-                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,105,180,0.07);"></div>
+                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05);"></div>
+                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);"></div>
 
                                             <!-- Roads -->
-                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(200,200,200,0.5);"></div>
-                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(200,200,200,0.5);"></div>
-                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(200,200,200,0.3);"></div>
-                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(200,200,200,0.3);"></div>
+                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(255,255,255,0.1);"></div>
+                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
+                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(255,255,255,0.05);"></div>
                                         </div>
 
                                         <!-- Location Marker -->
                                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                             <!-- Pulse Animation -->
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.3); animation: pulse 2s infinite;"></div>
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,105,180,0.5); animation: pulse 2s infinite 0.3s;"></div>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); animation: pulse 2s infinite;"></div>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: pulse 2s infinite 0.3s;"></div>
 
                                             <!-- Marker Pin -->
                                             <div style="position: relative; width: 30px, height: 30px;">
-                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ff69b4; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
+                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ffffff; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
                                             </div>
                                         </div>
 
                                         <!-- Overlay with CTA -->
-                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
+                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
                                             <div class="text-center">
-                                                <div style="width: 70px; height: 70px; background: #ff69b4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,105,180,0.3);">
+                                                <div style="width: 70px; height: 70px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
                                                     <i class="fa fa-map-marker fa-2x text-white"></i>
                                                 </div>
-                                                <h5 class="font-weight-bold mb-1" style="color: #333;">Our Location</h5>
+                                                <h5 class="font-weight-bold mb-1" style="color: #ffffff;">Our Location</h5>
                                                 <t t-if="selected_branch">
-                                                    <p class="text-muted mb-2">
+                                                    <p class="text-light-muted mb-2">
                                                         <t t-if="selected_branch.street"><t t-esc="selected_branch.street"/></t>
                                                         <t t-if="selected_branch.city">, <t t-esc="selected_branch.city"/></t>
                                                     </p>
                                                 </t>
                                                 <t t-else="">
-                                                    <p class="text-muted mb-2">Select a branch to view location</p>
+                                                    <p class="text-light-muted mb-2">Select a branch to view location</p>
                                                 </t>
-                                                <button class="btn" style="background: #ff69b4; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,105,180,0.3); font-weight: 600;">
+                                                <button class="btn" style="background: #ffffff; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,255,255,0.3); font-weight: 600;">
                                                     <i class="fa fa-directions mr-2"></i>Get Directions
                                                 </button>
                                             </div>
@@ -944,73 +944,73 @@
                                     <div class="row">
                                         <!-- Hours Section -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ff69b4;">
+                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ffffff;">
                                                 <div class="d-flex align-items-center mb-3">
                                                     <h5 class="font-weight-bold ml-3 mb-0">Hours of Operation</h5>
                                                 </div>
 
                                                 <div class="hours-list mt-3">
                                                     <t t-if="selected_branch">
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Monday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.monday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.monday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.monday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.monday_open), int((selected_branch.monday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.monday_close), int((selected_branch.monday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Tuesday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.tuesday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.tuesday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.tuesday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.tuesday_open), int((selected_branch.tuesday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.tuesday_close), int((selected_branch.tuesday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Wednesday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.wednesday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.wednesday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.wednesday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.wednesday_open), int((selected_branch.wednesday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.wednesday_close), int((selected_branch.wednesday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Thursday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.thursday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.thursday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.thursday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.thursday_open), int((selected_branch.thursday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.thursday_close), int((selected_branch.thursday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Friday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.friday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.friday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.friday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.friday_open), int((selected_branch.friday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.friday_close), int((selected_branch.friday_close % 1) * 60))"/>
                                                                 </t>
                                                                 <t t-else="">Closed</t>
                                                             </div>
                                                         </div>
-                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed #f0f0f0;">
+                                                        <div class="hour-item d-flex justify-content-between align-items-center p-2 mb-2" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Saturday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.saturday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.saturday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.saturday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.saturday_open), int((selected_branch.saturday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.saturday_close), int((selected_branch.saturday_close % 1) * 60))"/>
                                                                 </t>
@@ -1021,7 +1021,7 @@
                                                             <div class="day-label">
                                                                 <span class="font-weight-bold">Sunday</span>
                                                             </div>
-                                                            <div class="hours-value" t-att-style="'color: ' + ('#ff69b4' if selected_branch.sunday_open > 0 else '#888') + '; font-weight: 600;'">
+                                                            <div class="hours-value" t-att-style="'color: ' + ('#ffffff' if selected_branch.sunday_open > 0 else '#888') + '; font-weight: 600;'">
                                                                 <t t-if="selected_branch.sunday_open > 0">
                                                                     <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.sunday_open), int((selected_branch.sunday_open % 1) * 60))"/> - <t t-esc="'{:02d}:{:02d}'.format(int(selected_branch.sunday_close), int((selected_branch.sunday_close % 1) * 60))"/>
                                                                 </t>
@@ -1031,7 +1031,7 @@
                                                     </t>
                                                     <t t-else="">
                                                         <div class="text-center p-3">
-                                                            <p class="text-muted">Select a branch to view hours</p>
+                                                            <p class="text-light-muted">Select a branch to view hours</p>
                                                         </div>
                                                     </t>
                                                 </div>
@@ -1049,8 +1049,8 @@
                                                     <t t-if="selected_branch">
                                                         <t t-if="selected_branch.phone">
                                                             <div class="contact-item d-flex align-items-center mb-3">
-                                                                <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                    <i class="fa fa-phone" style="color: #ff69b4;"></i>
+                                                                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                    <i class="fa fa-phone" style="color: #ffffff;"></i>
                                                                 </div>
                                                                 <div>
                                                                     <div class="small text-muted">Phone</div>
@@ -1060,8 +1060,8 @@
                                                         </t>
                                                         <t t-if="selected_branch.email">
                                                             <div class="contact-item d-flex align-items-center mb-3">
-                                                                <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                    <i class="fa fa-envelope" style="color: #ff69b4;"></i>
+                                                                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                    <i class="fa fa-envelope" style="color: #ffffff;"></i>
                                                                 </div>
                                                                 <div>
                                                                     <div class="small text-muted">Email</div>
@@ -1070,8 +1070,8 @@
                                                             </div>
                                                         </t>
                                                         <div class="contact-item d-flex align-items-center">
-                                                            <div style="width: 36px; height: 36px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                                                <i class="fa fa-map-marker" style="color: #ff69b4;"></i>
+                                                            <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                                                <i class="fa fa-map-marker" style="color: #ffffff;"></i>
                                                             </div>
                                                             <div>
                                                                 <div class="small text-muted">Address</div>
@@ -1084,7 +1084,7 @@
                                                     </t>
                                                     <t t-else="">
                                                         <div class="text-center p-3">
-                                                            <p class="text-muted">Select a branch to view contact information</p>
+                                                            <p class="text-light-muted">Select a branch to view contact information</p>
                                                         </div>
                                                     </t>
                                                 </div>
@@ -1126,8 +1126,8 @@
                         });
                         
                         const card = element.querySelector('.card');
-                        card.style.borderColor = '#ff69b4';
-                        card.style.background = '#fff5f8';
+                        card.style.borderColor = '#ffffff';
+                        card.style.background = 'rgba(255,255,255,0.05)';
                         
                         selectedTeamMember = memberId;
                     }
@@ -1144,8 +1144,8 @@
                             const selectBtn = item.querySelector('.select-btn');
                             if (selectBtn) {
                                 selectBtn.style.background = 'transparent';
-                                selectBtn.style.color = '#ff69b4';
-                                selectBtn.style.borderColor = '#ff69b4';
+                                selectBtn.style.color = '#ffffff';
+                                selectBtn.style.borderColor = '#ffffff';
                                 selectBtn.textContent = 'Select';
                             }
 
@@ -1154,17 +1154,17 @@
                         });
 
                         // Apply selection styling
-                        element.style.boxShadow = '0 8px 20px rgba(255,105,180,0.2)';
+                        element.style.boxShadow = '0 8px 20px rgba(255,255,255,0.2)';
                         element.style.transform = 'translateY(-3px)';
-                        element.style.borderLeft = '4px solid #ff69b4';
-                        element.style.background = '#fff5f8';
+                        element.style.borderLeft = '4px solid #ffffff';
+                        element.style.background = 'rgba(255,255,255,0.05)';
                         
                         // Apply selection styling to the button
                         const selectBtn = element.querySelector('.select-btn');
                         if (selectBtn) {
-                            selectBtn.style.background = '#ff69b4';
+                            selectBtn.style.background = '#ffffff';
                             selectBtn.style.color = 'white';
-                            selectBtn.style.borderColor = '#ff69b4';
+                            selectBtn.style.borderColor = '#ffffff';
                             selectBtn.textContent = 'Selected';
                         }
 
@@ -1237,17 +1237,17 @@
     <!-- Professional Booking Form Page -->
     <template id="booking_form_page" name="Book Appointment">
         <t t-call="website.layout">
-            <div id="wrap_booking_form" class="oe_structure">
+            <div id="wrap_booking_form" class="oe_structure" style="background: #0a0a0a; color: #ffffff;">
                 <!-- FullCalendar CSS -->
                 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet"/>
                 
                 <!-- Hero Section -->
-                <div class="hero-section" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px 0; margin-bottom: 30px;">
+                <div class="hero-section" style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); padding: 40px 0; margin-bottom: 30px;">
                     <div class="container">
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h1 class="display-5 font-weight-bold text-dark mb-2">Book Your Appointment</h1>
-                                <p class="text-muted mb-0">Select your preferred date and time</p>
+                                <p class="text-light-muted mb-0">Select your preferred date and time</p>
                             </div>
                         </div>
                     </div>
@@ -1258,7 +1258,7 @@
                         <!-- Left Panel - Calendar -->
                         <div class="col-lg-8 mb-4">
                             <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
                                     <h4 class="font-weight-bold mb-0">Select Date &amp; Time</h4>
                                     <p class="mb-0 opacity-75">Click on a date to view available time slots</p>
                                 </div>
@@ -1268,9 +1268,9 @@
                                     
                                     <!-- Time Slots Container (shown after date selection) -->
                                     <div id="time-slots-section" style="display: none; margin-top: 30px;">
-                                        <div class="date-header p-3 mb-3" style="background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; border-left: 4px solid #ff69b4;">
-                                            <h5 class="font-weight-bold mb-0" style="color: #333;">
-                                                <i class="fa fa-clock-o mr-2" style="color: #ff69b4;"></i>
+                                        <div class="date-header p-3 mb-3" style="background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-left: 4px solid #ffffff;">
+                                            <h5 class="font-weight-bold mb-0" style="color: #ffffff;">
+                                                <i class="fa fa-clock-o mr-2" style="color: #ffffff;"></i>
                                                 Available Times for <span id="selected-date-display"></span>
                                             </h5>
                                         </div>
@@ -1286,7 +1286,7 @@
                         <div class="col-lg-4 mb-4">
                             <div class="card shadow-sm border-0" style="border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08);">
                                 <!-- Summary Card Header with Gradient -->
-                                <div class="card-header p-4" style="background: linear-gradient(135deg, #ff69b4, #ff8da1); border: none;">
+                                <div class="card-header p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
                                     <h5 class="font-weight-bold text-white mb-0">
                                         <i class="fa fa-clipboard-list mr-2"></i>
                                         Booking Summary
@@ -1296,40 +1296,40 @@
                                     <!-- Booking Summary -->
                                     <div class="booking-summary mb-4">
                                         <!-- Service Details with Enhanced Styling -->
-                                        <div class="summary-item mb-4 service-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
+                                        <div class="summary-item mb-4 service-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ffffff; position: relative; overflow: hidden;">
                                             <!-- Decorative Element -->
-                                            <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+                                            <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
 
                                             <div class="d-flex align-items-center p-3 position-relative" style="z-index: 2;">
                                                 <t t-if="service.image">
-                                                    <div style="width: 60px; height: 60px; min-width: 60px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 15px; background: #f8f9fa;">
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 15px; background: rgba(255,255,255,0.05);">
                                                         <img t-att-src="'/web/image/company.service/%s/image/60x60' % service.id"
                                                              style="width: 100%; height: 100%; object-fit: cover;"
                                                              alt="Service Image"/>
                                                     </div>
                                                 </t>
                                                 <t t-else="">
-                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: #fff5f8; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-                                                        <i class="fa fa-spa" style="color: #ff69b4; font-size: 24px;"></i>
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                                                        <i class="fa fa-spa" style="color: #ffffff; font-size: 24px;"></i>
                                                     </div>
                                                 </t>
                                                 <div class="flex-grow-1">
                                                     <span class="d-block small text-muted mb-1" style="text-transform: uppercase; letter-spacing: 0.5px;">Service</span>
-                                                    <h6 class="font-weight-bold mb-1" style="color: #333;"><t t-esc="service.name"/></h6>
+                                                    <h6 class="font-weight-bold mb-1" style="color: #ffffff;"><t t-esc="service.name"/></h6>
                                                     <div class="d-flex align-items-center">
-                                                        <span class="badge mr-2" style="background: #fff5f8; color: #ff69b4; border-radius: 30px; padding: 5px 10px; font-weight: normal;">
+                                                        <span class="badge mr-2" style="background: rgba(255,255,255,0.05); color: #ffffff; border-radius: 30px; padding: 5px 10px; font-weight: normal;">
                                                             <i class="fa fa-clock-o mr-1"></i><t t-esc="service.duration"/>h
                                                         </span>
                                                         <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
                                                             <div class="d-flex flex-column">
-                                                                <span class="price font-weight-bold" style="color: #ff69b4;">
-                                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/> <small class="text-muted">(booking fee)</small>
+                                                                <span class="price font-weight-bold" style="color: #ffffff;">
+                                                                    <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/> <small class="text-light-muted">(booking fee)</small>
                                                                 </span>
-                                                                <small class="text-muted">Full: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></small>
+                                                                <small class="text-light-muted">Full: <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/></small>
                                                             </div>
                                                         </t>
                                                         <t t-else="">
-                                                            <span class="price font-weight-bold" style="color: #ff69b4;">
+                                                            <span class="price font-weight-bold" style="color: #ffffff;">
                                                                 <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
                                                             </span>
                                                         </t>
@@ -1339,9 +1339,9 @@
                                         </div>
 
                                         <!-- Staff Member Details with Enhanced Styling -->
-                                        <div class="summary-item mb-4 staff-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ff69b4; position: relative; overflow: hidden;">
+                                        <div class="summary-item mb-4 staff-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ffffff; position: relative; overflow: hidden;">
                                             <!-- Decorative Element -->
-                                            <div style="position: absolute; top: -15px; right: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+                                            <div style="position: absolute; top: -15px; right: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
 
                                             <div class="d-flex align-items-center p-3 position-relative" style="z-index: 2;">
                                                 <t t-if="staff.image">
@@ -1352,67 +1352,67 @@
                                                     </div>
                                                 </t>
                                                 <t t-else="">
-                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 3px solid white;">
-                                                        <i class="fa fa-user" style="color: #ff69b4; font-size: 24px;"></i>
+                                                    <div style="width: 60px; height: 60px; min-width: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 3px solid white;">
+                                                        <i class="fa fa-user" style="color: #ffffff; font-size: 24px;"></i>
                                                     </div>
                                                 </t>
                                                 <div class="flex-grow-1">
                                                     <span class="d-block small text-muted mb-1" style="text-transform: uppercase; letter-spacing: 0.5px;">Specialist</span>
-                                                    <h6 class="font-weight-bold mb-1" style="color: #333;"><t t-esc="staff.name"/></h6>
+                                                    <h6 class="font-weight-bold mb-1" style="color: #ffffff;"><t t-esc="staff.name"/></h6>
                                                     <t t-if="staff.specialization">
-                                                        <p class="text-muted small mb-0" style="font-style: italic;"><t t-esc="staff.specialization"/></p>
+                                                        <p class="text-light-muted small mb-0" style="font-style: italic;"><t t-esc="staff.specialization"/></p>
                                                     </t>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Selected Time with Enhanced Styling -->
-                                        <div class="selected-time-display mb-4" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 2px dashed #ff69b4; padding: 15px; display: none; position: relative; overflow: hidden;">
+                                        <div class="selected-time-display mb-4" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 2px dashed #ffffff; padding: 15px; display: none; position: relative; overflow: hidden;">
                                             <!-- Decorative Elements -->
-                                            <div style="position: absolute; top: -15px; left: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
-                                            <div style="position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,105,180,0.05); z-index: 1;"></div>
+                                            <div style="position: absolute; top: -15px; left: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
+                                            <div style="position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
 
                                             <div class="position-relative" style="z-index: 2;">
                                                 <div class="d-flex align-items-center mb-2">
-                                                    <div style="width: 40px; height: 40px; min-width: 40px; background: #fff5f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
-                                                        <i class="fa fa-calendar-check-o" style="color: #ff69b4; font-size: 18px;"></i>
+                                                    <div style="width: 40px; height: 40px; min-width: 40px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                                        <i class="fa fa-calendar-check-o" style="color: #ffffff; font-size: 18px;"></i>
                                                     </div>
                                                     <span class="d-block text-muted" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 12px;">Selected Date &amp; Time</span>
                                                 </div>
-                                                <div class="selected-time-content pl-4 ml-2 mt-2 border-left" style="border-color: #ff69b4 !important;">
-                                                    <h6 class="font-weight-bold" style="color: #ff69b4;" id="selected-time-text">Please select a time slot</h6>
+                                                <div class="selected-time-content pl-4 ml-2 mt-2 border-left" style="border-color: #ffffff !important;">
+                                                    <h6 class="font-weight-bold" style="color: #ffffff;" id="selected-time-text">Please select a time slot</h6>
                                                     <p class="small text-muted mb-0">Duration: <t t-esc="service.duration"/> hour<t t-if="service.duration != 1">s</t></p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Total Price Summary -->
-                                        <div class="summary-total p-3 mb-4" style="background: #fff5f8; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03);">
+                                        <div class="summary-total p-3 mb-4" style="background: rgba(255,255,255,0.05); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03);">
                                             <t t-if="service.fee_type == 'partial' and service.booking_fee > 0">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="font-weight-bold" style="color: #333; font-size: 14px;">Booking Fee (Pay Now)</span>
-                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 18px;">
+                                                    <span class="font-weight-bold" style="color: #ffffff; font-size: 14px;">Booking Fee (Pay Now)</span>
+                                                    <span class="price font-weight-bold" style="color: #ffffff; font-size: 18px;">
                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.booking_fee"/>
                                                     </span>
                                                 </div>
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="text-muted" style="font-size: 14px;">Balance Due at Appointment</span>
-                                                    <span class="text-muted" style="font-size: 14px;">
+                                                    <span class="text-light-muted" style="font-size: 14px;">Balance Due at Appointment</span>
+                                                    <span class="text-light-muted" style="font-size: 14px;">
                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.price - service.booking_fee"/>
                                                     </span>
                                                 </div>
                                                 <hr class="my-2"/>
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total Price</span>
-                                                    <span class="font-weight-bold" style="color: #333; font-size: 18px;">
+                                                    <span class="font-weight-bold" style="color: #ffffff; font-size: 16px;">Total Price</span>
+                                                    <span class="font-weight-bold" style="color: #ffffff; font-size: 18px;">
                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
                                                     </span>
                                                 </div>
                                             </t>
                                             <t t-else="">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>
-                                                    <span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">
+                                                    <span class="font-weight-bold" style="color: #ffffff; font-size: 16px;">Total</span>
+                                                    <span class="price font-weight-bold" style="color: #ffffff; font-size: 20px;">
                                                         <t t-esc="service.currency_id.symbol"/><t t-esc="service.price"/>
                                                     </span>
                                                 </div>
@@ -1422,8 +1422,8 @@
 
                                     <!-- Customer Information Form -->
                                     <div class="customer-form-section">
-                                        <h5 class="font-weight-bold mb-3" style="color: #333; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
-                                            <i class="fa fa-user-circle mr-2" style="color: #ff69b4;"></i>
+                                        <h5 class="font-weight-bold mb-3" style="color: #ffffff; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                                            <i class="fa fa-user-circle mr-2" style="color: #ffffff;"></i>
                                             Your Information
                                         </h5>
                                         <form id="booking-form" method="post" t-attf-action="/appointments/book?service_id={{service.id}}&amp;staff_id={{staff.id}}">
@@ -1433,31 +1433,31 @@
                                             <input type="hidden" name="appointment_datetime" id="appointment_datetime"/>
 
                                             <div class="form-group mb-3">
-                                                <label class="font-weight-bold small" style="color: #555;">Full Name *</label>
-                                                <input type="text" class="form-control" name="customer_name" required="" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                                <label class="font-weight-bold small" style="color: rgba(255,255,255,0.7);">Full Name *</label>
+                                                <input type="text" class="form-control" name="customer_name" required="" style="border-radius: 10px; padding: 12px; border-color: rgba(255,255,255,0.2);"/>
                                             </div>
 
                                             <div class="form-group mb-3">
-                                                <label class="font-weight-bold small" style="color: #555;">Email Address *</label>
-                                                <input type="email" class="form-control" name="customer_email" required="" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                                <label class="font-weight-bold small" style="color: rgba(255,255,255,0.7);">Email Address *</label>
+                                                <input type="email" class="form-control" name="customer_email" required="" style="border-radius: 10px; padding: 12px; border-color: rgba(255,255,255,0.2);"/>
                                             </div>
 
                                             <div class="form-group mb-3">
-                                                <label class="font-weight-bold small" style="color: #555;">Phone Number</label>
-                                                <input type="tel" class="form-control" name="customer_phone" style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"/>
+                                                <label class="font-weight-bold small" style="color: rgba(255,255,255,0.7);">Phone Number</label>
+                                                <input type="tel" class="form-control" name="customer_phone" style="border-radius: 10px; padding: 12px; border-color: rgba(255,255,255,0.2);"/>
                                             </div>
 
                                             <div class="form-group mb-3">
-                                                <label class="font-weight-bold small" style="color: #555;">
-                                                    <i class="fa fa-ticket mr-1" style="color: #ff69b4;"></i>
+                                                <label class="font-weight-bold small" style="color: rgba(255,255,255,0.7);">
+                                                    <i class="fa fa-ticket mr-1" style="color: #ffffff;"></i>
                                                     Promo Code
                                                 </label>
                                                 <div class="input-group" style="display: flex; align-items: stretch;">
                                                     <input type="text" class="form-control" name="promo_code" id="promo_code" 
                                                            placeholder="Enter promo code (optional)" 
-                                                           style="border-radius: 10px 0 0 10px; padding: 12px; border-color: #e0e0e0; flex: 1;"/>
+                                                           style="border-radius: 10px 0 0 10px; padding: 12px; border-color: rgba(255,255,255,0.2); flex: 1;"/>
                                                     <button type="button" class="btn" onclick="validatePromoCode()" 
-                                                            style="background: #ff69b4; color: white; border-radius: 0 10px 10px 0; padding: 12px 20px; border: none; height: auto;">
+                                                            style="background: #ffffff; color: white; border-radius: 0 10px 10px 0; padding: 12px 20px; border: none; height: auto;">
                                                         Apply
                                                     </button>
                                                 </div>
@@ -1466,40 +1466,40 @@
 
                                             <!-- Health Disclosure Section -->
                                             <div class="form-group mb-4">
-                                                <label class="font-weight-bold small mb-3" style="color: #555;">
-                                                    <i class="fa fa-heartbeat mr-1" style="color: #ff69b4;"></i>
+                                                <label class="font-weight-bold small mb-3" style="color: rgba(255,255,255,0.7);">
+                                                    <i class="fa fa-heartbeat mr-1" style="color: #ffffff;"></i>
                                                     Health Disclosure (Tick where applicable)
                                                 </label>
-                                                <div class="health-disclosure-options" style="background: #fff5f8; padding: 15px; border-radius: 12px;">
+                                                <div class="health-disclosure-options" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
                                                     <div class="custom-control custom-checkbox mb-2">
                                                         <input type="checkbox" class="custom-control-input" id="has_allergies" name="has_allergies" value="1" onchange="toggleAllergiesField()"/>
-                                                        <label class="custom-control-label" for="has_allergies" style="color: #555; cursor: pointer;">
+                                                        <label class="custom-control-label" for="has_allergies" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                             Allergies
                                                         </label>
                                                     </div>
                                                     <div id="allergies_details_container" style="display: none; margin-left: 25px; margin-bottom: 10px;">
                                                         <input type="text" class="form-control form-control-sm" name="allergies_details" 
                                                                placeholder="Please specify your allergies..." 
-                                                               style="border-radius: 8px; border-color: #e0e0e0;"/>
+                                                               style="border-radius: 8px; border-color: rgba(255,255,255,0.2);"/>
                                                     </div>
                                                     
                                                     <div class="custom-control custom-checkbox mb-2">
                                                         <input type="checkbox" class="custom-control-input" id="has_eye_conditions" name="has_eye_conditions" value="1"/>
-                                                        <label class="custom-control-label" for="has_eye_conditions" style="color: #555; cursor: pointer;">
+                                                        <label class="custom-control-label" for="has_eye_conditions" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                             Eye conditions
                                                         </label>
                                                     </div>
                                                     
                                                     <div class="custom-control custom-checkbox mb-2">
                                                         <input type="checkbox" class="custom-control-input" id="is_pregnant" name="is_pregnant" value="1"/>
-                                                        <label class="custom-control-label" for="is_pregnant" style="color: #555; cursor: pointer;">
+                                                        <label class="custom-control-label" for="is_pregnant" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                             Pregnancy
                                                         </label>
                                                     </div>
                                                     
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input" id="no_health_conditions" name="no_health_conditions" value="1"/>
-                                                        <label class="custom-control-label" for="no_health_conditions" style="color: #555; cursor: pointer;">
+                                                        <label class="custom-control-label" for="no_health_conditions" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                             None
                                                         </label>
                                                     </div>
@@ -1508,16 +1508,16 @@
                                             
                                             <!-- Desired Outcome Section -->
                                             <div class="form-group mb-4">
-                                                <label class="font-weight-bold small mb-2" style="color: #555;">
-                                                    <i class="fa fa-star mr-1" style="color: #ff69b4;"></i>
+                                                <label class="font-weight-bold small mb-2" style="color: rgba(255,255,255,0.7);">
+                                                    <i class="fa fa-star mr-1" style="color: #ffffff;"></i>
                                                     Desired Outcome
                                                 </label>
-                                                <div style="background: #fff5f8; padding: 15px; border-radius: 12px;">
+                                                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
                                                     <div class="mb-3">
                                                         <label class="small text-muted mb-1">What lash look are you hoping to achieve?</label>
                                                         <textarea class="form-control" name="desired_lash_look" rows="2" 
                                                                   placeholder="e.g., Natural, Dramatic, Cat eye, Wispy..."
-                                                                  style="border-radius: 10px; padding: 12px; border-color: #e0e0e0;"></textarea>
+                                                                  style="border-radius: 10px; padding: 12px; border-color: rgba(255,255,255,0.2);"></textarea>
                                                     </div>
                                                     
                                                     <div>
@@ -1525,13 +1525,13 @@
                                                         <div class="d-flex">
                                                             <div class="custom-control custom-radio mr-4">
                                                                 <input type="radio" class="custom-control-input" id="prev_extensions_yes" name="has_previous_extensions" value="yes"/>
-                                                                <label class="custom-control-label" for="prev_extensions_yes" style="color: #555; cursor: pointer;">
+                                                                <label class="custom-control-label" for="prev_extensions_yes" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                                     Yes
                                                                 </label>
                                                             </div>
                                                             <div class="custom-control custom-radio">
                                                                 <input type="radio" class="custom-control-input" id="prev_extensions_no" name="has_previous_extensions" value="no"/>
-                                                                <label class="custom-control-label" for="prev_extensions_no" style="color: #555; cursor: pointer;">
+                                                                <label class="custom-control-label" for="prev_extensions_no" style="color: rgba(255,255,255,0.7); cursor: pointer;">
                                                                     No
                                                                 </label>
                                                             </div>
@@ -1543,7 +1543,7 @@
                                             <!-- Hidden notes field for any additional system notes -->
                                             <input type="hidden" name="notes" value=""/>
 
-                                            <button type="submit" class="btn btn-lg w-100" style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,105,180,0.3);" disabled="" id="book-btn">
+                                            <button type="submit" class="btn btn-lg w-100" style="background: #ffffff; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,255,255,0.3);" disabled="" id="book-btn">
                                                 <i class="fa fa-calendar-check-o mr-2"></i>
                                                 Book Appointment
                                             </button>
@@ -1628,7 +1628,7 @@
                         const slots = availableSlotsData[dateStr] || [];
                         
                         if (slots.length === 0) {
-                            timeSlotsContainer.innerHTML = '<div class="col-12 text-center p-4"><p class="text-muted">No available time slots for this date.</p></div>';
+                            timeSlotsContainer.innerHTML = '<div class="col-12 text-center p-4"><p class="text-light-muted">No available time slots for this date.</p></div>';
                             return;
                         }
                         
@@ -1638,7 +1638,7 @@
                             slotsHTML += `
                                 <div class="col-md-3 col-sm-4 col-6 mb-3">
                                     <button class="btn btn-outline-primary time-slot-btn w-100"
-                                            style="border-radius: 20px; padding: 12px; transition: all 0.3s ease; border-color: #ff69b4; color: #ff69b4; font-weight: 500;"
+                                            style="border-radius: 20px; padding: 12px; transition: all 0.3s ease; border-color: #ffffff; color: #ffffff; font-weight: 500;"
                                             onclick="selectTimeSlot(this, '${slot.datetime}', '${slot.display_time}')">
                                         <i class="fa fa-clock-o mr-1"></i>
                                         ${slot.display_time}
@@ -1664,7 +1664,7 @@
                                 events.push({
                                     start: dateStr,
                                     display: 'background',
-                                    backgroundColor: '#fff5f8',
+                                    backgroundColor: 'rgba(255,255,255,0.08)',
                                     classNames: ['available-date']
                                 });
                             }
@@ -1803,8 +1803,8 @@
                         let html = '';
                         if (feeType === 'partial' &amp;&amp; bookingFee > 0) {
                             html = '<div class="d-flex justify-content-between align-items-center mb-2">' +
-                                '<span class="font-weight-bold" style="color: #333; font-size: 14px;">Booking Fee (Pay Now)</span>' +
-                                '<span class="price font-weight-bold" style="color: #ff69b4; font-size: 18px;">' +
+                                '<span class="font-weight-bold" style="color: #ffffff; font-size: 14px;">Booking Fee (Pay Now)</span>' +
+                                '<span class="price font-weight-bold" style="color: #ffffff; font-size: 18px;">' +
                                 currencySymbol + finalBookingFee.toFixed(2) + '</span></div>';
                             if (promoDiscount > 0) {
                                 html += '<div class="d-flex justify-content-between align-items-center mb-2">' +
@@ -1812,25 +1812,25 @@
                                     '<span class="text-success" style="font-size: 14px;">-' + currencySymbol + promoDiscount.toFixed(2) + '</span></div>';
                             }
                             html += '<div class="d-flex justify-content-between align-items-center mb-2">' +
-                                '<span class="text-muted" style="font-size: 14px;">Balance Due at Appointment</span>' +
-                                '<span class="text-muted" style="font-size: 14px;">' + currencySymbol + (finalPrice - finalBookingFee).toFixed(2) + '</span></div>' +
+                                '<span class="text-light-muted" style="font-size: 14px;">Balance Due at Appointment</span>' +
+                                '<span class="text-light-muted" style="font-size: 14px;">' + currencySymbol + (finalPrice - finalBookingFee).toFixed(2) + '</span></div>' +
                                 '<hr class="my-2"/>' +
                                 '<div class="d-flex justify-content-between align-items-center">' +
-                                '<span class="font-weight-bold" style="color: #333; font-size: 16px;">Total Price</span>' +
-                                '<span class="font-weight-bold" style="color: #333; font-size: 18px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
+                                '<span class="font-weight-bold" style="color: #ffffff; font-size: 16px;">Total Price</span>' +
+                                '<span class="font-weight-bold" style="color: #ffffff; font-size: 18px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
                         } else {
                             if (promoDiscount > 0) {
                                 html = '<div class="d-flex justify-content-between align-items-center mb-2">' +
-                                    '<span class="text-muted" style="font-size: 14px;">Original Price</span>' +
-                                    '<span class="text-muted text-decoration-line-through" style="font-size: 14px;">' + currencySymbol + servicePrice.toFixed(2) + '</span></div>' +
+                                    '<span class="text-light-muted" style="font-size: 14px;">Original Price</span>' +
+                                    '<span class="text-light-muted text-decoration-line-through" style="font-size: 14px;">' + currencySymbol + servicePrice.toFixed(2) + '</span></div>' +
                                     '<div class="d-flex justify-content-between align-items-center mb-2">' +
                                     '<span class="text-success" style="font-size: 14px;"><i class="fa fa-tag mr-1"></i>Promo Discount</span>' +
                                     '<span class="text-success" style="font-size: 14px;">-' + currencySymbol + promoDiscount.toFixed(2) + '</span></div>' +
                                     '<hr class="my-2"/>';
                             }
                             html += '<div class="d-flex justify-content-between align-items-center">' +
-                                '<span class="font-weight-bold" style="color: #333; font-size: 16px;">Total</span>' +
-                                '<span class="price font-weight-bold" style="color: #ff69b4; font-size: 20px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
+                                '<span class="font-weight-bold" style="color: #ffffff; font-size: 16px;">Total</span>' +
+                                '<span class="price font-weight-bold" style="color: #ffffff; font-size: 20px;">' + currencySymbol + finalPrice.toFixed(2) + '</span></div>';
                         }
                         
                         summaryTotal.innerHTML = html;
@@ -1855,19 +1855,19 @@
                     }
                     
                     .fc .fc-button-primary {
-                        background-color: #ff69b4;
-                        border-color: #ff69b4;
+                        background-color: #ffffff;
+                        border-color: #ffffff;
                     }
                     
                     .fc .fc-button-primary:hover {
-                        background-color: #ff8da1;
-                        border-color: #ff8da1;
+                        background-color: #1a1a2e;
+                        border-color: #1a1a2e;
                     }
                     
                     .fc .fc-button-primary:not(:disabled):active,
                     .fc .fc-button-primary:not(:disabled).fc-button-active {
-                        background-color: #ff69b4;
-                        border-color: #ff69b4;
+                        background-color: #ffffff;
+                        border-color: #ffffff;
                     }
                     
                     .fc-day.has-slots {
@@ -1876,11 +1876,11 @@
                     }
                     
                     .fc-day.has-slots:hover {
-                        background-color: #fff5f8 !important;
+                        background-color: rgba(255,255,255,0.05) !important;
                     }
                     
                     .fc-day.has-slots .fc-daygrid-day-number {
-                        color: #ff69b4;
+                        color: #ffffff;
                         font-weight: 600;
                     }
                     
@@ -1892,13 +1892,13 @@
                         transform: translateX(-50%);
                         width: 6px;
                         height: 6px;
-                        background-color: #ff69b4;
+                        background-color: #ffffff;
                         border-radius: 50%;
                     }
                     
                     .fc-day.selected-date {
-                        background-color: #fff5f8 !important;
-                        border: 2px solid #ff69b4 !important;
+                        background-color: rgba(255,255,255,0.05) !important;
+                        border: 2px solid #ffffff !important;
                     }
                     
                     .fc .fc-daygrid-day.fc-day-today {
@@ -1908,19 +1908,19 @@
                     .fc .fc-toolbar-title {
                         font-size: 1.5rem;
                         font-weight: 600;
-                        color: #333;
+                        color: #ffffff;
                     }
                     
                     .time-slot-btn:hover {
-                        background-color: #ff69b4 !important;
+                        background-color: #ffffff !important;
                         color: white !important;
                         transform: translateY(-2px);
                         box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
                     }
                     
                     .time-slot-btn.btn-primary {
-                        background-color: #ff69b4 !important;
-                        border-color: #ff69b4 !important;
+                        background-color: #ffffff !important;
+                        border-color: #ffffff !important;
                         color: white !important;
                     }
                 </style>
@@ -1939,9 +1939,9 @@
                                 <div class="card-body p-5">
                                     <i class="fa fa-check-circle fa-5x text-success mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Booking Confirmed!</h2>
-                                    <p class="text-muted mb-4">Your appointment has been successfully booked.</p>
+                                    <p class="text-light-muted mb-4">Your appointment has been successfully booked.</p>
                                     
-                                    <div class="booking-details p-4" style="background: #f8f9fa; border-radius: 10px;">
+                                    <div class="booking-details p-4" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="service.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="staff.name"/></p>
@@ -1974,7 +1974,7 @@
                                 <div class="card-body p-5">
                                     <i class="fa fa-exclamation-triangle fa-5x text-warning mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Booking Error</h2>
-                                    <p class="text-muted mb-4">There was an issue processing your booking.</p>
+                                    <p class="text-light-muted mb-4">There was an issue processing your booking.</p>
                                     
                                     <div class="error-details p-4" style="background: #fff3cd; border-radius: 10px;">
                                         <p class="mb-0"><t t-esc="error"/></p>
@@ -2005,7 +2005,7 @@
                                     <h2 class="font-weight-bold mb-4 text-center">Complete Your Payment</h2>
                                     
                                     <!-- Appointment Summary -->
-                                    <div class="appointment-summary mb-4 p-4" style="background: #f8f9fa; border-radius: 10px;">
+                                    <div class="appointment-summary mb-4 p-4" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                         <h5 class="font-weight-bold mb-3">Appointment Summary</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
@@ -2014,7 +2014,7 @@
                                         
                                         <!-- Promo Code Applied -->
                                         <t t-if="appointment.promo_id and appointment.discount_amount > 0">
-                                            <div class="promo-applied mb-3 p-2" style="background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                                            <div class="promo-applied mb-3 p-2" style="background: rgba(40,167,69,0.15); border-radius: 8px; border-left: 4px solid #28a745;">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fa fa-tag mr-2 text-success"></i>
                                                     <span class="text-success font-weight-bold">
@@ -2042,8 +2042,8 @@
                                                     </div>
                                                 </t>
                                                 <div class="d-flex justify-content-between mb-2">
-                                                    <span class="text-muted">Balance Due at Appointment:</span>
-                                                    <span class="text-muted">
+                                                    <span class="text-light-muted">Balance Due at Appointment:</span>
+                                                    <span class="text-light-muted">
                                                         <t t-esc="currency.symbol"/><t t-esc="appointment.service_id.price - amount - appointment.discount_amount"/>
                                                     </span>
                                                 </div>
@@ -2061,8 +2061,8 @@
                                             <div class="price-breakdown">
                                                 <t t-if="appointment.discount_amount > 0">
                                                     <div class="d-flex justify-content-between mb-2">
-                                                        <span class="text-muted">Original Price:</span>
-                                                        <span class="text-muted text-decoration-line-through">
+                                                        <span class="text-light-muted">Original Price:</span>
+                                                        <span class="text-light-muted text-decoration-line-through">
                                                             <t t-esc="currency.symbol"/><t t-esc="appointment.price"/>
                                                         </span>
                                                     </div>
@@ -2100,7 +2100,7 @@
                                                                 <input type="radio" name="acquirer_id" t-att-value="acquirer.id" class="mr-3"/>
                                                                 <div class="flex-grow-1">
                                                                     <h6 class="mb-1"><t t-esc="acquirer.name"/></h6>
-                                                                    <small class="text-muted">Secure payment processing</small>
+                                                                    <small class="text-light-muted">Secure payment processing</small>
                                                                 </div>
                                                                 <div class="ml-3">
                                                                     <i class="fa fa-credit-card fa-2x text-primary"></i>
@@ -2129,7 +2129,7 @@
                                         </div>
                                         
                                         <button type="submit" class="btn btn-lg w-100" 
-                                                style="background: #ff69b4; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;"
+                                                style="background: #ffffff; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;"
                                                 disabled="" id="pay-btn">
                                             Pay <t t-esc="currency.symbol"/><t t-esc="amount"/>
                                         </button>
@@ -2182,7 +2182,7 @@
                                 <div class="card-body p-5">
                                     <i class="fa fa-exclamation-triangle fa-5x text-warning mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Payment Error</h2>
-                                    <p class="text-muted mb-4">There was an issue processing your payment.</p>
+                                    <p class="text-light-muted mb-4">There was an issue processing your payment.</p>
                                     
                                     <div class="error-details p-4" style="background: #fff3cd; border-radius: 10px;">
                                         <p class="mb-0"><t t-esc="error"/></p>
@@ -2214,14 +2214,14 @@
                                         <span class="sr-only">Processing...</span>
                                     </div>
                                     <h2 class="font-weight-bold mb-3">Payment Processing</h2>
-                                    <p class="text-muted mb-4">Please check your phone and enter your M-Pesa PIN to complete the payment.</p>
+                                    <p class="text-light-muted mb-4">Please check your phone and enter your M-Pesa PIN to complete the payment.</p>
                                     
                                     <div class="alert alert-info" role="alert">
                                         <i class="fa fa-info-circle mr-2"></i>
                                         You should receive an M-Pesa prompt on your phone. Once you complete the payment, this page will automatically update.
                                     </div>
                                     
-                                    <div class="appointment-details p-4 mt-4" style="background: #f8f9fa; border-radius: 10px;">
+                                    <div class="appointment-details p-4 mt-4" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
@@ -2309,9 +2309,9 @@
                                 <div class="card-body p-5">
                                     <i class="fa fa-check-circle fa-5x text-success mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Payment Successful!</h2>
-                                    <p class="text-muted mb-4">Your appointment has been confirmed and payment processed.</p>
+                                    <p class="text-light-muted mb-4">Your appointment has been confirmed and payment processed.</p>
                                     
-                                    <div class="appointment-details p-4" style="background: #d4edda; border-radius: 10px;">
+                                    <div class="appointment-details p-4" style="background: rgba(40,167,69,0.15); border-radius: 10px;">
                                         <h5 class="font-weight-bold mb-3">Appointment Details</h5>
                                         <p><strong>Service:</strong> <t t-esc="appointment.service_id.name"/></p>
                                         <p><strong>Staff:</strong> <t t-esc="appointment.staff_member_id.name"/></p>
