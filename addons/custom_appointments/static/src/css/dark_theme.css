@@ -1,0 +1,628 @@
+/* ===== REVIVE AESTHETICS - PREMIUM DARK THEME ===== */
+/* Loaded as a website asset AFTER Bootstrap for proper override precedence */
+
+/* ===== ROOT VARIABLE OVERRIDES ===== */
+:root {
+    --bs-body-color: #ffffff !important;
+    --bs-body-bg: #080b12 !important;
+    --bs-body-color-rgb: 255, 255, 255 !important;
+    --bs-secondary-color: rgba(255, 255, 255, 0.6) !important;
+    --bs-secondary-color-rgb: 255, 255, 255 !important;
+    --bs-tertiary-color: rgba(255, 255, 255, 0.5) !important;
+    --bs-emphasis-color: #ffffff !important;
+    --bs-border-color: rgba(255, 255, 255, 0.08) !important;
+    --bs-heading-color: #ffffff !important;
+    --bs-link-color: rgba(255, 255, 255, 0.85) !important;
+    --bs-link-hover-color: #ffffff !important;
+    --bs-card-bg: #111827 !important;
+    --bs-card-color: #ffffff !important;
+    --bs-card-border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ===== GLOBAL ===== */
+body,
+#wrapwrap {
+    background: #080b12 !important;
+    color: #ffffff !important;
+}
+
+/* ===== HERO SECTION ===== */
+.hero-bg-image,
+.hero-section img,
+.hero-section > div.position-absolute,
+div[class*="hero-bg"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+.hero-bg-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    background: none !important;
+    background-image: none !important;
+}
+.hero-section {
+    background: #080b12 !important;
+    color: #ffffff !important;
+    padding: 60px 0 40px !important;
+    overflow: hidden !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.hero-section .position-absolute {
+    display: none !important;
+}
+.hero-section h1 {
+    color: #ffffff !important;
+    font-weight: 300 !important;
+    font-size: 2.8rem !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+.hero-section p,
+.hero-section .container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+.hero-section p {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ===== NAVBAR ===== */
+header,
+header nav,
+.o_header_standard,
+nav.navbar,
+.navbar {
+    background: rgba(8, 11, 18, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+header a,
+header .nav-link,
+header .navbar-nav a,
+.navbar a {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+header a:hover,
+.navbar a:hover {
+    color: #ffffff !important;
+}
+header .btn-primary,
+header a.btn-primary,
+.navbar .btn-primary {
+    background: #ffffff !important;
+    color: #080b12 !important;
+    border-radius: 30px !important;
+    border: none !important;
+    padding: 8px 24px !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+}
+
+/* ===== MAIN WRAPPERS ===== */
+#wrap_booking,
+#wrap_services,
+#wrap,
+main,
+.oe_structure {
+    background: linear-gradient(180deg, #080b12 0%, #0d1117 50%, #080b12 100%) !important;
+    color: #ffffff !important;
+    min-height: 100vh !important;
+}
+
+/* ===== ALL HEADINGS ===== */
+h1, h2, h3, h4, h5, h6,
+.section-title {
+    color: #ffffff !important;
+}
+
+/* ===== BOOTSTRAP TEXT-MUTED OVERRIDE ===== */
+/* This MUST come after Bootstrap to win the cascade with !important */
+.text-muted,
+p.text-muted,
+span.text-muted,
+div.text-muted,
+small.text-muted,
+body .text-muted,
+#wrapwrap .text-muted,
+#wrap_booking .text-muted,
+#wrap_services .text-muted,
+main .text-muted {
+    --bs-secondary-color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+.text-body-secondary,
+body .text-body-secondary {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+.text-dark,
+.text-body {
+    color: #ffffff !important;
+}
+.text-white {
+    color: #ffffff !important;
+}
+
+/* ===== PINK COLOR OVERRIDES ===== */
+.bg-gradient-primary,
+.card-header.bg-gradient-primary,
+div[style*="ff69b4"],
+div[style*="ff8da1"],
+[class*="bg-gradient"] {
+    background: linear-gradient(135deg, #111827 0%, #1a2332 100%) !important;
+    background-image: none !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+div[style*="fff5f8"],
+div[style*="fff0f7"] {
+    background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
+}
+.hours-value,
+[style*="color: #ff69b4"],
+div[style*="color: #ff69b4"] {
+    color: #ffffff !important;
+}
+[style*="solid #ff69b4"] {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.hours-section[style*="border-left"] {
+    border-left-color: rgba(255, 255, 255, 0.2) !important;
+}
+.location-card,
+div[style*="linear-gradient(to right"] {
+    background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
+    background-image: none !important;
+}
+
+/* ===== CARDS ===== */
+.branch-card,
+.staff-card,
+.service-item,
+.card,
+.team-card .card,
+.branch-select-card,
+.contact-section,
+.hours-section,
+.location-section,
+.booking-summary,
+.order-summary,
+.summary-card,
+.payment-card,
+.terms-card,
+.map-section,
+.card.h-100,
+.location-card {
+    background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    color: #ffffff !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+.branch-card:hover,
+.staff-card:hover,
+.service-item:hover,
+.card:hover,
+.team-card .card:hover {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Card text - force light colors on all descendants */
+.branch-card *,
+.staff-card *,
+.card-body *,
+.card *,
+.team-card .card * {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.branch-card h5,
+.staff-card h5,
+.card h5,
+.card-title,
+.service-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+.branch-card .text-muted,
+.card .text-muted,
+.branch-card small,
+.card small {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+.card-body,
+.card-header,
+.card-footer {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    color: #ffffff !important;
+}
+
+/* Selected state */
+.branch-card.selected,
+.card.selected,
+.staff-card.selected {
+    border: 2px solid #ffffff !important;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Staff avatars */
+.team-card .rounded-circle,
+.staff-avatar,
+.avatar,
+.rounded-circle {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary,
+.btn-lg,
+a.btn-primary,
+a.btn,
+.btn-book,
+.select-btn,
+.book-btn,
+input[type="submit"],
+button[type="submit"],
+a.btn-lg {
+    background: #ffffff !important;
+    color: #080b12 !important;
+    border: none !important;
+    border-radius: 30px !important;
+    padding: 14px 40px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    font-size: 0.85rem !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+}
+.btn-primary:hover,
+.btn-lg:hover,
+a.btn:hover {
+    background: rgba(255, 255, 255, 0.92) !important;
+    color: #080b12 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.12) !important;
+}
+.btn-secondary,
+.btn-outline-primary,
+.btn-outline-secondary {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 30px !important;
+}
+
+/* ===== FORM ELEMENTS ===== */
+input,
+select,
+textarea,
+.form-control,
+.form-select {
+    background: rgba(17, 24, 39, 0.8) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+}
+input::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus,
+.form-select:focus {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04) !important;
+    outline: none !important;
+}
+label,
+.form-label,
+.control-label {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 500 !important;
+}
+
+/* ===== CALENDAR ===== */
+.calendar-container,
+.datepicker,
+#calendar,
+.fc {
+    background: #111827 !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+.fc *,
+.calendar-container *,
+.datepicker * {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+.fc-button,
+.fc-button-primary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+.fc-day-today {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ===== TIME SLOTS ===== */
+.time-slot,
+.slot-item,
+.time-btn,
+.available-slot {
+    background: rgba(17, 24, 39, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+.time-slot:hover,
+.slot-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.time-slot.selected,
+.slot-item.selected {
+    background: #ffffff !important;
+    color: #080b12 !important;
+}
+
+/* ===== BADGES ===== */
+.badge {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 20px !important;
+}
+.service-price,
+.price,
+.amount {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* ===== RATING ===== */
+.fa-star {
+    color: #f59e0b !important;
+}
+
+/* ===== CONTACT / HOURS / LOCATION ===== */
+.contact-section *,
+.hours-section *,
+.location-section *,
+.location-card * {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.contact-section .text-muted,
+.hours-section .text-muted,
+.contact-section .small,
+.hours-section .small {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+.day-label,
+.day-label span {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.hour-item {
+    border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ===== FOOTER ===== */
+footer,
+#footer,
+.o_footer {
+    background: #060910 !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+footer *,
+#footer * {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+footer h5,
+#footer h5 {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+footer a:hover,
+#footer a:hover {
+    color: #ffffff !important;
+}
+
+/* ===== ALERTS ===== */
+.alert-success {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+    color: #10b981 !important;
+    border-radius: 16px !important;
+}
+.alert-success * {
+    color: #10b981 !important;
+}
+.alert-danger {
+    background: rgba(239, 68, 68, 0.08) !important;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+    color: #ef4444 !important;
+    border-radius: 16px !important;
+}
+.alert-danger * {
+    color: #ef4444 !important;
+}
+.alert-warning,
+.alert-info {
+    background: rgba(245, 158, 11, 0.08) !important;
+    border: 1px solid rgba(245, 158, 11, 0.25) !important;
+    color: #f59e0b !important;
+    border-radius: 16px !important;
+}
+
+/* ===== UTILITY OVERRIDES ===== */
+.bg-white,
+.bg-light {
+    background: #111827 !important;
+}
+.border,
+.border-top,
+.border-bottom {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+hr {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    opacity: 1 !important;
+}
+.shadow,
+.shadow-sm {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none !important;
+}
+a:hover {
+    color: #ffffff !important;
+}
+
+/* ===== MAP ===== */
+.map-container,
+.map-section {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+.map-overlay {
+    background: rgba(8, 11, 18, 0.3) !important;
+}
+
+/* ===== MODAL ===== */
+.modal-content {
+    background: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    color: #ffffff !important;
+}
+
+/* ===== DROPDOWN ===== */
+.dropdown-menu {
+    background: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.dropdown-item {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #080b12;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+
+/* ===== TERMS PAGE ===== */
+.terms-content,
+.terms-section {
+    background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
+    border-radius: 16px !important;
+    padding: 30px !important;
+}
+.terms-content *,
+.terms-section * {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+.terms-content h3,
+.terms-section h3 {
+    color: #ffffff !important;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    background: transparent !important;
+}
+.breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ===== ODOO SPECIFIC ===== */
+.o_portal,
+.o_portal_wrap {
+    background: #080b12 !important;
+}
+#wrapwrap > main {
+    background: transparent !important;
+}
+
+/* ===== SEARCH ===== */
+.search-input,
+input[type="search"] {
+    border-radius: 30px !important;
+    padding: 12px 24px !important;
+}
+
+/* ===== BOOKING DETAILS ===== */
+.booking-details,
+.confirmation-details {
+    background: rgba(17, 24, 39, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+}
+
+/* ===== TABLES ===== */
+table,
+.table {
+    color: #ffffff !important;
+}
+table th {
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+table td {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ===== PAGINATION ===== */
+.page-link {
+    background: rgba(17, 24, 39, 0.8) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.page-item.active .page-link {
+    background: #ffffff !important;
+    color: #080b12 !important;
+}
+
+/* ===== LIST GROUP ===== */
+.list-group-item {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    color: #ffffff !important;
+}
+
+/* ===== PROGRESS ===== */
+.progress {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+.progress-bar {
+    background: #ffffff !important;
+}
