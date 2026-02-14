@@ -270,20 +270,17 @@
               name="All Appointments" 
               parent="appointments_main_menu"
               action="appointment_action"
-              sequence="50"
-              groups="group_appointment_supervisor"/>
+              sequence="50"/>
               
     <menuitem id="my_appointments_menu" 
               name="My Appointments" 
               parent="appointments_main_menu"
               action="my_appointments_action"
-              sequence="20"
-              groups="group_appointment_staff"/>
+              sequence="20"/>
               
     <menuitem id="customer_appointments_menu" 
               name="My Bookings" 
               parent="appointments_main_menu"
               action="customer_appointments_action"
-              sequence="70"
-              groups="base.group_portal,base.group_public"/>
+              sequence="70"/>
 </odoo>
