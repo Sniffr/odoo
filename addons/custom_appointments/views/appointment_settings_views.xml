@@ -91,18 +91,16 @@
         </field>
     </record>
 
-    <!-- Configuration Menu (Manager only) -->
+    <!-- Configuration Menu -->
     <menuitem id="menu_appointments_configuration"
               name="Configuration"
               parent="appointments_main_menu"
-              sequence="100"
-              groups="group_appointment_manager"/>
+              sequence="100"/>
 
     <!-- Communication Settings Menu Item -->
     <menuitem id="menu_communication_settings"
               name="Communication Settings"
               parent="menu_appointments_configuration"
               action="action_appointment_settings"
-              sequence="10"
-              groups="group_appointment_manager"/>
+              sequence="10"/>
 </odoo>

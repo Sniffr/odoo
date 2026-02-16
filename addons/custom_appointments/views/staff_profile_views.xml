@@ -108,7 +108,6 @@ else:
               name="My Profile"
               parent="appointments_main_menu"
               action="action_open_my_profile"
-              sequence="15"
-              groups="group_appointment_staff"/>
+              sequence="15"/>
 
 </odoo>

@@ -174,20 +174,18 @@
         </field>
     </record>
 
-    <!-- Parent Menu for Promo Codes (Manager only) -->
+    <!-- Parent Menu for Promo Codes -->
     <menuitem id="menu_promo_parent"
               name="Promo Codes"
               parent="appointments_main_menu"
-              sequence="25"
-              groups="group_appointment_manager"/>
+              sequence="25"/>
 
     <!-- Menu Item for Promo Codes List -->
     <menuitem id="menu_promo_codes"
               name="All Promo Codes"
               parent="menu_promo_parent"
               action="action_promo_codes"
-              sequence="10"
-              groups="group_appointment_manager"/>
+              sequence="10"/>
 
     <!-- Promo Code Performance Report Action -->
     <record id="action_promo_code_report" model="ir.actions.act_window">
@@ -203,7 +201,6 @@
               name="Performance Report"
               parent="menu_promo_parent"
               action="action_promo_code_report"
-              sequence="20"
-              groups="group_appointment_manager"/>
+              sequence="20"/>
 
 </odoo>
