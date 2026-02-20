@@ -61,21 +61,21 @@
                 </div>
 
                 <!-- Policy Notice Section -->
-                <div style="background: linear-gradient(135deg, #fff5f8, #ffe4ec); border-radius: 10px; padding: 20px; margin-bottom: 25px; border-left: 4px solid #ff69b4;">
-                    <h4 style="color: #ff69b4; margin: 0 0 15px 0; font-size: 16px; font-weight: bold;">
+                <div style="background: linear-gradient(135deg, #f0f0f0, #e8e8e8); border-radius: 10px; padding: 20px; margin-bottom: 25px; border-left: 4px solid #1a1a2e;">
+                    <h4 style="color: #1a1a2e; margin: 0 0 15px 0; font-size: 16px; font-weight: bold;">
                         ✨ Please Note
                     </h4>
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 6px 0; color: #555; font-size: 13px; vertical-align: top; width: 20px;">•</td>
                             <td style="padding: 6px 0; color: #555; font-size: 13px;">
-                                <strong style="color: #d63384;">KES 500</strong> booking fee is mandatory to reserve an appointment and deductible from the total lash cost
+                                <strong style="color: #1a1a2e;">KES 500</strong> booking fee is mandatory to reserve an appointment and deductible from the total service cost
                             </td>
                         </tr>
                         <tr>
                             <td style="padding: 6px 0; color: #555; font-size: 13px; vertical-align: top;">•</td>
                             <td style="padding: 6px 0; color: #555; font-size: 13px;">
-                                Cancellations within <strong style="color: #d63384;">6 hours</strong> are refundable
+                                Cancellations within <strong style="color: #1a1a2e;">6 hours</strong> are refundable
                             </td>
                         </tr>
                         <tr>
@@ -87,12 +87,12 @@
                         <tr>
                             <td style="padding: 6px 0; color: #555; font-size: 13px; vertical-align: top;">•</td>
                             <td style="padding: 6px 0; color: #555; font-size: 13px;">
-                                Corrections allowed within <strong style="color: #d63384;">3 days</strong> only
+                                Corrections allowed within <strong style="color: #1a1a2e;">3 days</strong> only
                             </td>
                         </tr>
                     </table>
-                    <p style="margin: 15px 0 0 0; padding-top: 12px; border-top: 1px solid #ffb6c1; color: #666; font-size: 12px; text-align: center;">
-                        By attending, you agree to our <a href="https://booking.lashesbyshazz.com/tcs" style="color: #ff69b4; text-decoration: none; font-weight: bold;">Terms &amp; Conditions</a>
+                    <p style="margin: 15px 0 0 0; padding-top: 12px; border-top: 1px solid #cccccc; color: #666; font-size: 12px; text-align: center;">
+                        By attending, you agree to our <a href="https://booking.reviveaesthetics.com/tcs" style="color: #1a1a2e; text-decoration: none; font-weight: bold;">Terms &amp; Conditions</a>
                     </p>
                 </div>
 
