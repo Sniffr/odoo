@@ -47,19 +47,6 @@ services:
         - action: rebuild
           path: requirements.txt
 
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./ssl:/etc/nginx/ssl
-    depends_on:
-      - odoo
-    restart: unless-stopped
-
 volumes:
   odoo-web-data:
   odoo-db-data:
