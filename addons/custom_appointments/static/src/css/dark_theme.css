@@ -1,48 +1,32 @@
 /* ===== REVIVE AESTHETICS - PREMIUM DARK THEME ===== */
-/* Loaded as a website asset AFTER Bootstrap for proper override precedence */
+/* Scoped to appointment pages only via body.appointment-dark-theme class */
+/* This class is set via t-set="body_classname" in each appointment template */
 
-/* ===== ROOT VARIABLE OVERRIDES ===== */
-:root {
-    --bs-body-color: #ffffff !important;
-    --bs-body-bg: #080b12 !important;
-    --bs-body-color-rgb: 255, 255, 255 !important;
-    --bs-secondary-color: rgba(255, 255, 255, 0.6) !important;
-    --bs-secondary-color-rgb: 255, 255, 255 !important;
-    --bs-tertiary-color: rgba(255, 255, 255, 0.5) !important;
-    --bs-emphasis-color: #ffffff !important;
-    --bs-border-color: rgba(255, 255, 255, 0.08) !important;
-    --bs-heading-color: #ffffff !important;
-    --bs-link-color: rgba(255, 255, 255, 0.85) !important;
-    --bs-link-hover-color: #ffffff !important;
-    --bs-card-bg: #111827 !important;
-    --bs-card-color: #ffffff !important;
-    --bs-card-border-color: rgba(255, 255, 255, 0.08) !important;
-}
 
 /* ===== GLOBAL ===== */
-body,
-#wrapwrap {
+body.appointment-dark-theme,
+body.appointment-dark-theme #wrapwrap {
     background: #080b12 !important;
     color: #ffffff !important;
 }
 
 /* ===== HERO SECTION ===== */
-.hero-bg-image,
-.hero-section img,
-.hero-section > div.position-absolute,
-div[class*="hero-bg"] {
+body.appointment-dark-theme .hero-bg-image,
+body.appointment-dark-theme .hero-section img,
+body.appointment-dark-theme .hero-section > div.position-absolute,
+body.appointment-dark-theme div[class*="hero-bg"] {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
 }
-.hero-bg-overlay {
+body.appointment-dark-theme .hero-bg-overlay {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
     background: none !important;
     background-image: none !important;
 }
-.hero-section {
+body.appointment-dark-theme .hero-section {
     background: #080b12 !important;
     color: #ffffff !important;
     padding: 60px 0 40px !important;
@@ -50,49 +34,49 @@ div[class*="hero-bg"] {
     border: none !important;
     box-shadow: none !important;
 }
-.hero-section .position-absolute {
+body.appointment-dark-theme .hero-section .position-absolute {
     display: none !important;
 }
-.hero-section h1 {
+body.appointment-dark-theme .hero-section h1 {
     color: #ffffff !important;
     font-weight: 300 !important;
     font-size: 2.8rem !important;
     position: relative !important;
     z-index: 2 !important;
 }
-.hero-section p,
-.hero-section .container {
+body.appointment-dark-theme .hero-section p,
+body.appointment-dark-theme .hero-section .container {
     position: relative !important;
     z-index: 2 !important;
 }
-.hero-section p {
+body.appointment-dark-theme .hero-section p {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* ===== NAVBAR ===== */
-header,
-header nav,
-.o_header_standard,
-nav.navbar,
-.navbar {
+body.appointment-dark-theme header,
+body.appointment-dark-theme header nav,
+body.appointment-dark-theme .o_header_standard,
+body.appointment-dark-theme nav.navbar,
+body.appointment-dark-theme .navbar {
     background: rgba(8, 11, 18, 0.95) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
-header a,
-header .nav-link,
-header .navbar-nav a,
-.navbar a {
+body.appointment-dark-theme header a,
+body.appointment-dark-theme header .nav-link,
+body.appointment-dark-theme header .navbar-nav a,
+body.appointment-dark-theme .navbar a {
     color: rgba(255, 255, 255, 0.85) !important;
 }
-header a:hover,
-.navbar a:hover {
+body.appointment-dark-theme header a:hover,
+body.appointment-dark-theme .navbar a:hover {
     color: #ffffff !important;
 }
-header .btn-primary,
-header a.btn-primary,
-.navbar .btn-primary {
+body.appointment-dark-theme header .btn-primary,
+body.appointment-dark-theme header a.btn-primary,
+body.appointment-dark-theme .navbar .btn-primary {
     background: #ffffff !important;
     color: #080b12 !important;
     border-radius: 30px !important;
@@ -105,99 +89,89 @@ header a.btn-primary,
 }
 
 /* ===== MAIN WRAPPERS ===== */
-#wrap_booking,
-#wrap_services,
-#wrap,
-main,
-.oe_structure {
+body.appointment-dark-theme #wrap_booking,
+body.appointment-dark-theme #wrap_services,
+body.appointment-dark-theme #wrap,
+body.appointment-dark-theme main {
     background: linear-gradient(180deg, #080b12 0%, #0d1117 50%, #080b12 100%) !important;
     color: #ffffff !important;
     min-height: 100vh !important;
 }
 
 /* ===== ALL HEADINGS ===== */
-h1, h2, h3, h4, h5, h6,
-.section-title {
+body.appointment-dark-theme h1, h2, h3, h4, h5, h6,
+body.appointment-dark-theme .section-title {
     color: #ffffff !important;
 }
 
 /* ===== BOOTSTRAP TEXT-MUTED OVERRIDE ===== */
 /* This MUST come after Bootstrap to win the cascade with !important */
-.text-muted,
-p.text-muted,
-span.text-muted,
-div.text-muted,
-small.text-muted,
-body .text-muted,
-#wrapwrap .text-muted,
-#wrap_booking .text-muted,
-#wrap_services .text-muted,
-main .text-muted {
+body.appointment-dark-theme .text-muted,
+body.appointment-dark-theme p.text-muted,
+body.appointment-dark-theme span.text-muted,
+body.appointment-dark-theme div.text-muted,
+body.appointment-dark-theme small.text-muted, {
     --bs-secondary-color: rgba(255, 255, 255, 0.6) !important;
     color: rgba(255, 255, 255, 0.6) !important;
 }
-.text-body-secondary,
-body .text-body-secondary {
+body.appointment-dark-theme .text-body-secondary, {
     color: rgba(255, 255, 255, 0.6) !important;
 }
-.text-dark,
-.text-body {
-    color: #ffffff !important;
-}
-.text-white {
+body.appointment-dark-theme .text-dark,
+body.appointment-dark-theme .text-body {
     color: #ffffff !important;
 }
 
 /* ===== PINK COLOR OVERRIDES ===== */
-.bg-gradient-primary,
-.card-header.bg-gradient-primary,
-div[style*="ff69b4"],
-div[style*="ff8da1"],
-[class*="bg-gradient"] {
+body.appointment-dark-theme .bg-gradient-primary,
+body.appointment-dark-theme .card-header.bg-gradient-primary,
+body.appointment-dark-theme div[style*="ff69b4"],
+body.appointment-dark-theme div[style*="ff8da1"],
+body.appointment-dark-theme [class*="bg-gradient"] {
     background: linear-gradient(135deg, #111827 0%, #1a2332 100%) !important;
     background-image: none !important;
     border: none !important;
     color: #ffffff !important;
 }
-div[style*="fff5f8"],
-div[style*="fff0f7"] {
+body.appointment-dark-theme div[style*="fff5f8"],
+body.appointment-dark-theme div[style*="fff0f7"] {
     background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
 }
-.hours-value,
-[style*="color: #ff69b4"],
-div[style*="color: #ff69b4"] {
+body.appointment-dark-theme .hours-value,
+body.appointment-dark-theme [style*="color: #ff69b4"],
+body.appointment-dark-theme div[style*="color: #ff69b4"] {
     color: #ffffff !important;
 }
-[style*="solid #ff69b4"] {
+body.appointment-dark-theme [style*="solid #ff69b4"] {
     border-color: rgba(255, 255, 255, 0.15) !important;
 }
-.hours-section[style*="border-left"] {
+body.appointment-dark-theme .hours-section[style*="border-left"] {
     border-left-color: rgba(255, 255, 255, 0.2) !important;
 }
-.location-card,
-div[style*="linear-gradient(to right"] {
+body.appointment-dark-theme .location-card,
+body.appointment-dark-theme div[style*="linear-gradient(to right"] {
     background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
     background-image: none !important;
 }
 
 /* ===== CARDS ===== */
-.branch-card,
-.staff-card,
-.service-item,
-.card,
-.team-card .card,
-.branch-select-card,
-.contact-section,
-.hours-section,
-.location-section,
-.booking-summary,
-.order-summary,
-.summary-card,
-.payment-card,
-.terms-card,
-.map-section,
-.card.h-100,
-.location-card {
+body.appointment-dark-theme .branch-card,
+body.appointment-dark-theme .staff-card,
+body.appointment-dark-theme .service-item,
+body.appointment-dark-theme .card,
+body.appointment-dark-theme .team-card .card,
+body.appointment-dark-theme .branch-select-card,
+body.appointment-dark-theme .contact-section,
+body.appointment-dark-theme .hours-section,
+body.appointment-dark-theme .location-section,
+body.appointment-dark-theme .booking-summary,
+body.appointment-dark-theme .order-summary,
+body.appointment-dark-theme .summary-card,
+body.appointment-dark-theme .payment-card,
+body.appointment-dark-theme .terms-card,
+body.appointment-dark-theme .map-section,
+body.appointment-dark-theme .card.h-100,
+body.appointment-dark-theme .location-card {
     background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 16px !important;
@@ -205,75 +179,72 @@ div[style*="linear-gradient(to right"] {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
-.branch-card:hover,
-.staff-card:hover,
-.service-item:hover,
-.card:hover,
-.team-card .card:hover {
+body.appointment-dark-theme .branch-card:hover,
+body.appointment-dark-theme .staff-card:hover,
+body.appointment-dark-theme .service-item:hover,
+body.appointment-dark-theme .card:hover,
+body.appointment-dark-theme .team-card .card:hover {
     border-color: rgba(255, 255, 255, 0.15) !important;
     transform: translateY(-3px) !important;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Card text - force light colors on all descendants */
-.branch-card *,
-.staff-card *,
-.card-body *,
-.card *,
-.team-card .card * {
+body.appointment-dark-theme .branch-card *,
+body.appointment-dark-theme .staff-card *,
+body.appointment-dark-theme .card-body *,
+body.appointment-dark-theme .card *,
+body.appointment-dark-theme .team-card .card * {
     color: rgba(255, 255, 255, 0.85) !important;
 }
-.branch-card h5,
-.staff-card h5,
-.card h5,
-.card-title,
-.service-title {
+body.appointment-dark-theme .branch-card h5,
+body.appointment-dark-theme .staff-card h5,
+body.appointment-dark-theme .card h5,
+body.appointment-dark-theme .card-title,
+body.appointment-dark-theme .service-title {
     color: #ffffff !important;
     font-weight: 600 !important;
 }
-.branch-card .text-muted,
-.card .text-muted,
-.branch-card small,
-.card small {
+body.appointment-dark-theme .branch-card .text-muted,
+body.appointment-dark-theme .card .text-muted,
+body.appointment-dark-theme .branch-card small,
+body.appointment-dark-theme .card small {
     color: rgba(255, 255, 255, 0.55) !important;
 }
-.card-body,
-.card-header,
-.card-footer {
+body.appointment-dark-theme .card-body,
+body.appointment-dark-theme .card-header,
+body.appointment-dark-theme .card-footer {
     background: transparent !important;
     border-color: rgba(255, 255, 255, 0.06) !important;
     color: #ffffff !important;
 }
 
 /* Selected state */
-.branch-card.selected,
-.card.selected,
-.staff-card.selected {
+body.appointment-dark-theme .branch-card.selected,
+body.appointment-dark-theme .card.selected,
+body.appointment-dark-theme .staff-card.selected {
     border: 2px solid #ffffff !important;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Staff avatars */
-.team-card .rounded-circle,
-.staff-avatar,
-.avatar,
-.rounded-circle {
+body.appointment-dark-theme .team-card .rounded-circle,
+body.appointment-dark-theme .staff-avatar,
+body.appointment-dark-theme .avatar {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ===== BUTTONS ===== */
-.btn-primary,
-.btn-lg,
-a.btn-primary,
-a.btn,
-.btn-book,
-.select-btn,
-.book-btn,
-input[type="submit"],
-button[type="submit"],
-a.btn-lg {
+body.appointment-dark-theme .btn-primary,
+body.appointment-dark-theme .btn-lg,
+body.appointment-dark-theme a.btn-primary,
+body.appointment-dark-theme .btn-book,
+body.appointment-dark-theme .select-btn,
+body.appointment-dark-theme .book-btn,
+body.appointment-dark-theme input[type="submit"],
+body.appointment-dark-theme button[type="submit"], {
     background: #ffffff !important;
     color: #080b12 !important;
     border: none !important;
@@ -287,17 +258,16 @@ a.btn-lg {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     text-decoration: none !important;
 }
-.btn-primary:hover,
-.btn-lg:hover,
-a.btn:hover {
+body.appointment-dark-theme .btn-primary:hover,
+body.appointment-dark-theme .btn-lg:hover, {
     background: rgba(255, 255, 255, 0.92) !important;
     color: #080b12 !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 25px rgba(255, 255, 255, 0.12) !important;
 }
-.btn-secondary,
-.btn-outline-primary,
-.btn-outline-secondary {
+body.appointment-dark-theme .btn-secondary,
+body.appointment-dark-theme .btn-outline-primary,
+body.appointment-dark-theme .btn-outline-secondary {
     background: transparent !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
@@ -305,166 +275,164 @@ a.btn:hover {
 }
 
 /* ===== FORM ELEMENTS ===== */
-input,
-select,
-textarea,
-.form-control,
-.form-select {
+body.appointment-dark-theme input,
+body.appointment-dark-theme select,
+body.appointment-dark-theme textarea,
+body.appointment-dark-theme .form-control,
+body.appointment-dark-theme .form-select {
     background: rgba(17, 24, 39, 0.8) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 12px !important;
     padding: 12px 16px !important;
 }
-input::placeholder,
-textarea::placeholder {
+body.appointment-dark-theme input::placeholder,
+body.appointment-dark-theme textarea::placeholder {
     color: rgba(255, 255, 255, 0.35) !important;
 }
-input:focus,
-select:focus,
-textarea:focus,
-.form-control:focus,
-.form-select:focus {
+body.appointment-dark-theme input:focus,
+body.appointment-dark-theme select:focus,
+body.appointment-dark-theme textarea:focus,
+body.appointment-dark-theme .form-control:focus,
+body.appointment-dark-theme .form-select:focus {
     border-color: rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04) !important;
     outline: none !important;
 }
-label,
-.form-label,
-.control-label {
+body.appointment-dark-theme label,
+body.appointment-dark-theme .form-label,
+body.appointment-dark-theme .control-label {
     color: rgba(255, 255, 255, 0.75) !important;
     font-weight: 500 !important;
 }
 
 /* ===== CALENDAR ===== */
-.calendar-container,
-.datepicker,
-#calendar,
-.fc {
+body.appointment-dark-theme .calendar-container,
+body.appointment-dark-theme .datepicker,
+body.appointment-dark-theme #calendar,
+body.appointment-dark-theme .fc {
     background: #111827 !important;
     border-radius: 16px !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     color: #ffffff !important;
 }
-.fc *,
-.calendar-container *,
-.datepicker * {
+body.appointment-dark-theme .fc *,
+body.appointment-dark-theme .calendar-container *,
+body.appointment-dark-theme .datepicker * {
     color: #ffffff !important;
     border-color: rgba(255, 255, 255, 0.06) !important;
 }
-.fc-button,
-.fc-button-primary {
+body.appointment-dark-theme .fc-button,
+body.appointment-dark-theme .fc-button-primary {
     background: rgba(255, 255, 255, 0.08) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
-.fc-day-today {
+body.appointment-dark-theme .fc-day-today {
     background: rgba(255, 255, 255, 0.05) !important;
 }
 
 /* ===== TIME SLOTS ===== */
-.time-slot,
-.slot-item,
-.time-btn,
-.available-slot {
+body.appointment-dark-theme .time-slot,
+body.appointment-dark-theme .slot-item,
+body.appointment-dark-theme .time-btn,
+body.appointment-dark-theme .available-slot {
     background: rgba(17, 24, 39, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 10px !important;
     color: #ffffff !important;
     transition: all 0.2s ease !important;
 }
-.time-slot:hover,
-.slot-item:hover {
+body.appointment-dark-theme .time-slot:hover,
+body.appointment-dark-theme .slot-item:hover {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(255, 255, 255, 0.25) !important;
 }
-.time-slot.selected,
-.slot-item.selected {
+body.appointment-dark-theme .time-slot.selected,
+body.appointment-dark-theme .slot-item.selected {
     background: #ffffff !important;
     color: #080b12 !important;
 }
 
 /* ===== BADGES ===== */
-.badge {
+body.appointment-dark-theme .badge {
     background: rgba(255, 255, 255, 0.08) !important;
     color: rgba(255, 255, 255, 0.85) !important;
     border-radius: 20px !important;
 }
-.service-price,
-.price,
-.amount {
+body.appointment-dark-theme .service-price,
+body.appointment-dark-theme .price,
+body.appointment-dark-theme .amount {
     color: #ffffff !important;
     font-weight: 700 !important;
 }
 
 /* ===== RATING ===== */
-.fa-star {
+body.appointment-dark-theme .fa-star {
     color: #f59e0b !important;
 }
 
 /* ===== CONTACT / HOURS / LOCATION ===== */
-.contact-section *,
-.hours-section *,
-.location-section *,
-.location-card * {
+body.appointment-dark-theme .contact-section *,
+body.appointment-dark-theme .hours-section *,
+body.appointment-dark-theme .location-section *,
+body.appointment-dark-theme .location-card * {
     color: rgba(255, 255, 255, 0.85) !important;
 }
-.contact-section .text-muted,
-.hours-section .text-muted,
-.contact-section .small,
-.hours-section .small {
+body.appointment-dark-theme .contact-section .text-muted,
+body.appointment-dark-theme .hours-section .text-muted, {
     color: rgba(255, 255, 255, 0.5) !important;
 }
-.day-label,
-.day-label span {
+body.appointment-dark-theme .day-label,
+body.appointment-dark-theme .day-label span {
     color: rgba(255, 255, 255, 0.85) !important;
 }
-.hour-item {
+body.appointment-dark-theme .hour-item {
     border-bottom-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* ===== FOOTER ===== */
-footer,
-#footer,
-.o_footer {
+body.appointment-dark-theme footer,
+body.appointment-dark-theme #footer,
+body.appointment-dark-theme .o_footer {
     background: #060910 !important;
     color: rgba(255, 255, 255, 0.5) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
-footer *,
-#footer * {
+body.appointment-dark-theme footer *,
+body.appointment-dark-theme #footer * {
     color: rgba(255, 255, 255, 0.5) !important;
 }
-footer h5,
-#footer h5 {
+body.appointment-dark-theme footer h5,
+body.appointment-dark-theme #footer h5 {
     color: rgba(255, 255, 255, 0.8) !important;
 }
-footer a:hover,
-#footer a:hover {
+body.appointment-dark-theme footer a:hover,
+body.appointment-dark-theme #footer a:hover {
     color: #ffffff !important;
 }
 
 /* ===== ALERTS ===== */
-.alert-success {
+body.appointment-dark-theme .alert-success {
     background: rgba(16, 185, 129, 0.08) !important;
     border: 1px solid rgba(16, 185, 129, 0.25) !important;
     color: #10b981 !important;
     border-radius: 16px !important;
 }
-.alert-success * {
+body.appointment-dark-theme .alert-success * {
     color: #10b981 !important;
 }
-.alert-danger {
+body.appointment-dark-theme .alert-danger {
     background: rgba(239, 68, 68, 0.08) !important;
     border: 1px solid rgba(239, 68, 68, 0.25) !important;
     color: #ef4444 !important;
     border-radius: 16px !important;
 }
-.alert-danger * {
+body.appointment-dark-theme .alert-danger * {
     color: #ef4444 !important;
 }
-.alert-warning,
-.alert-info {
+body.appointment-dark-theme .alert-warning,
+body.appointment-dark-theme .alert-info {
     background: rgba(245, 158, 11, 0.08) !important;
     border: 1px solid rgba(245, 158, 11, 0.25) !important;
     color: #f59e0b !important;
@@ -472,43 +440,43 @@ footer a:hover,
 }
 
 /* ===== UTILITY OVERRIDES ===== */
-.bg-white,
-.bg-light {
+body.appointment-dark-theme .bg-white,
+body.appointment-dark-theme .bg-light {
     background: #111827 !important;
 }
-.border,
-.border-top,
-.border-bottom {
+body.appointment-dark-theme .border,
+body.appointment-dark-theme .border-top,
+body.appointment-dark-theme .border-bottom {
     border-color: rgba(255, 255, 255, 0.08) !important;
 }
-hr {
+body.appointment-dark-theme hr {
     border-color: rgba(255, 255, 255, 0.08) !important;
     opacity: 1 !important;
 }
-.shadow,
-.shadow-sm {
+body.appointment-dark-theme .shadow,
+body.appointment-dark-theme .shadow-sm {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
-a {
+body.appointment-dark-theme a {
     color: rgba(255, 255, 255, 0.85) !important;
     text-decoration: none !important;
 }
-a:hover {
+body.appointment-dark-theme a:hover {
     color: #ffffff !important;
 }
 
 /* ===== MAP ===== */
-.map-container,
-.map-section {
+body.appointment-dark-theme .map-container,
+body.appointment-dark-theme .map-section {
     border-radius: 16px !important;
     overflow: hidden !important;
 }
-.map-overlay {
+body.appointment-dark-theme .map-overlay {
     background: rgba(8, 11, 18, 0.3) !important;
 }
 
 /* ===== MODAL ===== */
-.modal-content {
+body.appointment-dark-theme .modal-content {
     background: #111827 !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 16px !important;
@@ -516,72 +484,72 @@ a:hover {
 }
 
 /* ===== DROPDOWN ===== */
-.dropdown-menu {
+body.appointment-dark-theme .dropdown-menu {
     background: #111827 !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
-.dropdown-item {
+body.appointment-dark-theme .dropdown-item {
     color: rgba(255, 255, 255, 0.8) !important;
 }
-.dropdown-item:hover {
+body.appointment-dark-theme .dropdown-item:hover {
     background: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
+body.appointment-dark-theme ::-webkit-scrollbar {
     width: 8px;
 }
-::-webkit-scrollbar-track {
+body.appointment-dark-theme ::-webkit-scrollbar-track {
     background: #080b12;
 }
-::-webkit-scrollbar-thumb {
+body.appointment-dark-theme ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 4px;
 }
 
 /* ===== TERMS PAGE ===== */
-.terms-content,
-.terms-section {
+body.appointment-dark-theme .terms-content,
+body.appointment-dark-theme .terms-section {
     background: linear-gradient(145deg, #111827 0%, #0d1117 100%) !important;
     border-radius: 16px !important;
     padding: 30px !important;
 }
-.terms-content *,
-.terms-section * {
+body.appointment-dark-theme .terms-content *,
+body.appointment-dark-theme .terms-section * {
     color: rgba(255, 255, 255, 0.8) !important;
 }
-.terms-content h3,
-.terms-section h3 {
+body.appointment-dark-theme .terms-content h3,
+body.appointment-dark-theme .terms-section h3 {
     color: #ffffff !important;
 }
 
 /* ===== BREADCRUMB ===== */
-.breadcrumb {
+body.appointment-dark-theme .breadcrumb {
     background: transparent !important;
 }
-.breadcrumb-item a {
+body.appointment-dark-theme .breadcrumb-item a {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* ===== ODOO SPECIFIC ===== */
-.o_portal,
-.o_portal_wrap {
+body.appointment-dark-theme .o_portal,
+body.appointment-dark-theme .o_portal_wrap {
     background: #080b12 !important;
 }
-#wrapwrap > main {
+body.appointment-dark-theme #wrapwrap > main {
     background: transparent !important;
 }
 
 /* ===== SEARCH ===== */
-.search-input,
-input[type="search"] {
+body.appointment-dark-theme .search-input,
+body.appointment-dark-theme input[type="search"] {
     border-radius: 30px !important;
     padding: 12px 24px !important;
 }
 
 /* ===== BOOKING DETAILS ===== */
-.booking-details,
-.confirmation-details {
+body.appointment-dark-theme .booking-details,
+body.appointment-dark-theme .confirmation-details {
     background: rgba(17, 24, 39, 0.6) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 16px !important;
@@ -589,40 +557,40 @@ input[type="search"] {
 }
 
 /* ===== TABLES ===== */
-table,
-.table {
+body.appointment-dark-theme table,
+body.appointment-dark-theme .table {
     color: #ffffff !important;
 }
-table th {
+body.appointment-dark-theme table th {
     color: rgba(255, 255, 255, 0.7) !important;
     border-color: rgba(255, 255, 255, 0.08) !important;
 }
-table td {
+body.appointment-dark-theme table td {
     border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* ===== PAGINATION ===== */
-.page-link {
+body.appointment-dark-theme .page-link {
     background: rgba(17, 24, 39, 0.8) !important;
     color: #ffffff !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
-.page-item.active .page-link {
+body.appointment-dark-theme .page-item.active .page-link {
     background: #ffffff !important;
     color: #080b12 !important;
 }
 
 /* ===== LIST GROUP ===== */
-.list-group-item {
+body.appointment-dark-theme .list-group-item {
     background: transparent !important;
     border-color: rgba(255, 255, 255, 0.06) !important;
     color: #ffffff !important;
 }
 
 /* ===== PROGRESS ===== */
-.progress {
+body.appointment-dark-theme .progress {
     background: rgba(255, 255, 255, 0.06) !important;
 }
-.progress-bar {
+body.appointment-dark-theme .progress-bar {
     background: #ffffff !important;
 }

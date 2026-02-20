@@ -3,6 +3,7 @@
     <!-- Terms and Conditions Page - Revive Aesthetics -->
     <template id="terms_page" name="Terms and Conditions">
         <t t-call="website.layout">
+            <t t-set="body_classname" t-value="'appointment-dark-theme'"/>
             <t t-set="title">Terms and Conditions - Revive Aesthetics</t>
             <div id="wrap_terms">
                 <!-- Custom Styles for Terms Page -->
