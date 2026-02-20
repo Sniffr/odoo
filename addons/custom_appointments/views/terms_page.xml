@@ -4,7 +4,7 @@
     <template id="terms_page" name="Terms and Conditions">
         <t t-call="website.layout">
             <t t-set="title">Terms and Conditions - Revive Aesthetics</t>
-            <div id="wrap_terms" class="oe_structure">
+            <div id="wrap_terms">
                 <!-- Custom Styles for Terms Page -->
                 <style>
                     .terms-hero {
