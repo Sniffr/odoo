@@ -104,15 +104,118 @@ header a.btn-primary,
     text-transform: uppercase !important;
 }
 
+/* ===== HEADER HEIGHT FIX (prevent navbar taking over whole page on desktop) ===== */
+header#top,
+header#top .navbar,
+header#top nav,
+#o_main_nav,
+header .o_main_nav,
+nav.navbar .container {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+}
+header#top {
+    max-height: 72px !important;
+    overflow: visible !important;
+    flex-shrink: 0 !important;
+}
+header#top .navbar,
+header#top nav.navbar {
+    max-height: 72px !important;
+    min-height: 56px !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    align-items: center !important;
+}
+#o_main_nav,
+header .o_main_nav.container {
+    max-height: 72px !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+/* ===== HEADER: remove oversized CONTACT US block (oe_structure_solo in navbar) ===== */
+header#top #o_main_nav .oe_structure.oe_structure_solo,
+header#top #o_main_nav .navbar-nav li:nth-child(2) div.oe_structure,
+header#top #o_main_nav div.oe_structure.oe_structure_solo,
+header#top #o_main_nav .navbar-nav > li:nth-child(2) {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 /* ===== MAIN WRAPPERS ===== */
 #wrap_booking,
 #wrap_services,
+#wrap_booking_form,
+#wrap_booking_success,
+#wrap_booking_error,
+#wrap_payment,
+#wrap_payment_error,
+#wrap_payment_pending,
+#wrap_payment_success,
+#wrap_terms,
 #wrap,
 main,
 .oe_structure {
     background: linear-gradient(180deg, #080b12 0%, #0d1117 50%, #080b12 100%) !important;
     color: #ffffff !important;
     min-height: 100vh !important;
+}
+
+/* Mobile: slight top spacing so content clears header */
+#wrap_booking,
+#wrap_services,
+#wrap_booking_form,
+#wrap_booking_success,
+#wrap_booking_error,
+#wrap_payment,
+#wrap_payment_error,
+#wrap_payment_pending,
+#wrap_payment_success,
+#wrap_terms {
+    padding-top: 1rem !important;
+}
+
+/* Tablet and up: push content below fixed/sticky header */
+@media (min-width: 768px) {
+    #wrap_booking,
+    #wrap_services,
+    #wrap_booking_form,
+    #wrap_booking_success,
+    #wrap_booking_error,
+    #wrap_payment,
+    #wrap_payment_error,
+    #wrap_payment_pending,
+    #wrap_payment_success,
+    #wrap_terms {
+        padding-top: 100px !important;
+    }
+}
+@media (min-width: 992px) {
+    #wrap_booking,
+    #wrap_services,
+    #wrap_booking_form,
+    #wrap_booking_success,
+    #wrap_booking_error,
+    #wrap_payment,
+    #wrap_payment_error,
+    #wrap_payment_pending,
+    #wrap_payment_success,
+    #wrap_terms {
+        padding-top: 120px !important;
+    }
 }
 
 /* ===== ALL HEADINGS ===== */

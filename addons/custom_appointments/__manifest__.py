@@ -49,11 +49,6 @@
         'data/services_demo_data.xml',
         'data/appointment_demo_data.xml',
     ],
-    'assets': {
-        'web.assets_frontend': [
-            'custom_appointments/static/src/css/dark_theme.css',
-        ],
-    },
     'external_dependencies': {
         'python': ['icalendar'],
     },

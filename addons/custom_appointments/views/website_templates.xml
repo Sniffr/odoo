@@ -3,6 +3,7 @@
     <!-- Professional Appointment Booking Page -->
     <template id="appointment_booking_page" name="Book Appointment">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking" style="background: #0a0a0a; color: #ffffff;">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
@@ -557,6 +558,7 @@
     <!-- Professional Service Selection Page -->
     <template id="service_selection_page" name="Select Services">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_services" style="background: #0a0a0a; color: #ffffff;">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
@@ -1237,6 +1239,7 @@
     <!-- Professional Booking Form Page -->
     <template id="booking_form_page" name="Book Appointment">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking_form" style="background: #0a0a0a; color: #ffffff;">
                 <!-- FullCalendar CSS -->
                 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet"/>
@@ -1931,6 +1934,7 @@
     <!-- Booking Success Page -->
     <template id="booking_success_page" name="Booking Confirmation">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking_success">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -1966,6 +1970,7 @@
     <!-- Booking Error Page -->
     <template id="booking_error_page" name="Booking Error">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking_error">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -1996,6 +2001,7 @@
     <!-- Payment Page -->
     <template id="payment_page" name="Payment for Appointment">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -2174,6 +2180,7 @@
     <!-- Payment Error Page -->
     <template id="payment_error_page" name="Payment Error">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_error">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -2204,6 +2211,7 @@
     <!-- Payment Success Page -->
     <template id="payment_pending_page" name="Payment Pending">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_pending">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -2301,6 +2309,7 @@
     
     <template id="payment_success_page" name="Payment Success">
         <t t-call="website.layout">
+            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_success">
                 <div class="container py-5">
                     <div class="row justify-content-center">
