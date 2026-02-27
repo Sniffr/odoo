@@ -1,10 +1,8 @@
 services:
   odoo:
     build: .
-    image: odoo-custom:18.0
     ports:
       - "8069:8069"
-      - "8070:8070"
       - "8072:8072"
     environment:
       - HOST=62.171.137.101
@@ -12,15 +10,7 @@ services:
       - PASSWORD=8EadLy4Eh7U6PJaZP04s1b
     volumes:
       - odoo-web-data:/var/lib/odoo
-      - ./config:/etc/odoo
-      - ./addons:/mnt/extra-addons
-      - ./logs:/var/log/odoo
     restart: unless-stopped
-    command: ["odoo",
-              "--config=/etc/odoo/odoo.conf",
-              "--gevent-port=8072"
-
-    ]
 
 volumes:
   odoo-web-data:

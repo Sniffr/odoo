@@ -4,10 +4,15 @@ USER root
 
 # Install system packages and Python dependencies
 RUN apt-get update && \
-    # Install net-tools (for netstat) and iproute2 (for ss)
     apt-get install -y net-tools iproute2 && \
     pip3 install --no-cache-dir --break-system-packages icalendar && \
-    # Clean up apt lists to keep the image small
     rm -rf /var/lib/apt/lists/*
 
+COPY --chown=odoo:odoo addons/ /mnt/extra-addons/
+COPY --chown=odoo:odoo config/odoo.conf /etc/odoo/odoo.conf
+
 USER odoo
+
+EXPOSE 8069 8072
+
+CMD ["odoo", "--config=/etc/odoo/odoo.conf"]
