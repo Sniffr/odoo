@@ -3,8 +3,7 @@
     <!-- Professional Appointment Booking Page -->
     <template id="appointment_booking_page" name="Book Appointment">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
-            <div id="wrap_booking" style="background: #0a0a0a; color: #ffffff;">
+            <div id="wrap_booking">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
                     <!-- Background image with fade effect -->
@@ -23,134 +22,96 @@
                     </div>
                 </div>
 
-                <style>
-                    .hero-section {
-                        min-height: 200px;
-                        display: flex;
-                        align-items: center;
-                    }
-                    .hero-bg-image {
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-image: url('/custom_appointments/static/src/img/lashes.JPG');
-                        background-size: cover;
-                        background-position: right center;
-                        z-index: 1;
-                    }
-                    .hero-bg-overlay {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: linear-gradient(90deg,
-                            rgba(10,10,10,1) 0%,
-                            rgba(10,10,10,0.9) 30%,
-                            rgba(10,10,10,0.6) 60%,
-                            rgba(10,10,10,0) 100%);
-                        z-index: 1;
-                    }
-                </style>
-
                 <div class="container">
-                    <!-- Branch Selection (Top) -->
-                    <div class="branch-selection mb-5">
-                        <div class="card shadow border-0" style="border-radius: 18px; overflow: hidden;">
-                            <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
-                                <h4 class="font-weight-bold mb-0">Select a Branch</h4>
-                                <p class="mb-0 opacity-75">Choose where you'd like to book your appointment</p>
-                            </div>
+                    <!-- Branch Selection -->
+                    <div class="bk-section mb-5">
+                        <div class="bk-section-header mb-4">
+                            <span class="bk-step-pill">Step 1</span>
+                            <h3 class="bk-section-title">Choose Your Location</h3>
+                            <p class="bk-section-sub">Select the branch where you'd like your appointment</p>
+                        </div>
 
-                            <div class="card-body p-4">
-                                <div class="branch-selection-container">
-                                    <div class="row">
-                                        <t t-if="branches">
-                                            <t t-foreach="branches" t-as="branch">
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="branch-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
-                                                        <div class="card h-100" t-att-style="'border-radius: 12px; border: 2px solid ' + ('#ffffff' if selected_branch and branch.id == selected_branch.id else 'transparent') + '; box-shadow: 0 3px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; background: ' + ('rgba(255,255,255,0.05)' if selected_branch and branch.id == selected_branch.id else '') + ';'">
-                                                            <div class="card-body p-4">
-                                                                <div class="d-flex flex-column h-100">
-                                                                    <div>
-                                                                        <div class="d-flex align-items-center mb-4">
-
-                                                                            <h5 class="font-weight-bold mb-0 ml-2"><t t-esc="branch.name"/></h5>
-                                                                        </div>
-
-                                                                        <div class="branch-details mt-3 ml-2">
-                                                                            <t t-if="branch.street">
-                                                                                <p class="text-light-muted mb-2">
-                                                                                    <i class="fa fa-map-marker mr-2"></i>
-                                                                                    <t t-esc="branch.street"/>
-                                                                                </p>
-                                                                            </t>
-                                                                            <t t-if="branch.phone">
-                                                                                <p class="text-light-muted mb-2">
-                                                                                    <i class="fa fa-phone mr-2"></i>
-                                                                                    <t t-esc="branch.phone"/>
-                                                                                </p>
-                                                                            </t>
-                                                                            <p class="text-light-muted mb-0">
-                                                                                <i class="fa fa-clock-o mr-2"></i>
-                                                                                Open today: 9:00 AM - 6:00 PM
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="mt-auto text-right">
-                                                                        <span class="badge px-3 py-2 selection-indicator" t-att-class="'badge-success' if selected_branch and branch.id == selected_branch.id else 'badge-light'" t-att-style="'border-radius: 50px; ' + ('visibility: visible;' if selected_branch and branch.id == selected_branch.id else 'visibility: hidden;')">
-                                                                            <i class="fa fa-check-circle mr-1"></i><t t-if="selected_branch and branch.id == selected_branch.id">Selected</t>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                        <div class="row">
+                            <t t-if="branches">
+                                <t t-foreach="branches" t-as="branch">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="bk-branch-card"
+                                             t-att-class="'selected' if selected_branch and branch.id == selected_branch.id else ''"
+                                             t-att-onclick="'selectBranch(this, \'' + str(branch.id) + '\')'">
+                                            <div class="bk-branch-accent"></div>
+                                            <div class="bk-branch-body">
+                                                <div class="bk-branch-top">
+                                                    <div class="bk-branch-icon">
+                                                        <span class="bk-branch-num"><t t-esc="'%02d' % (branch_index + 1)"/></span>
+                                                    </div>
+                                                    <h5 class="bk-branch-name"><t t-esc="branch.name"/></h5>
+                                                    <div class="bk-branch-check">
+                                                        <i class="fa fa-check"></i>
                                                     </div>
                                                 </div>
-                                            </t>
-                                        </t>
-                                        <t t-else="">
-                                            <div class="col-12 text-center py-4">
-                                                <i class="fa fa-building fa-2x text-muted mb-2"></i>
-                                                <p class="text-light-muted small">No branches available</p>
+                                                <div class="bk-branch-details">
+                                                    <t t-if="branch.street">
+                                                        <div class="bk-detail-row">
+                                                            <i class="fa fa-location-arrow"></i>
+                                                            <span><t t-esc="branch.street"/><t t-if="branch.city">, <t t-esc="branch.city"/></t></span>
+                                                        </div>
+                                                    </t>
+                                                    <t t-if="branch.phone">
+                                                        <div class="bk-detail-row">
+                                                            <i class="fa fa-phone"></i>
+                                                            <span><t t-esc="branch.phone"/></span>
+                                                        </div>
+                                                    </t>
+                                                    <div class="bk-detail-row">
+                                                        <i class="fa fa-clock-o"></i>
+                                                        <span>Open 7 days · 9:00 AM – 6:00 PM</span>
+                                                    </div>
+                                                </div>
+                                                <div class="bk-branch-footer">
+                                                    <span class="bk-select-label">Tap to select</span>
+                                                    <span class="bk-selected-label"><i class="fa fa-check-circle mr-1"></i>Selected</span>
+                                                </div>
                                             </div>
-                                        </t>
+                                        </div>
                                     </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div class="col-12 text-center py-4">
+                                    <i class="fa fa-building fa-2x mb-2" style="color: var(--text-muted);"></i>
+                                    <p style="color: var(--text-muted);">No branches available</p>
                                 </div>
-                            </div>
+                            </t>
                         </div>
                     </div>
 
                     <div class="row">
-                        <!-- Staff Selection Grid in a Separate Card (Full Width) -->
+                        <!-- Staff Selection -->
                         <div class="col-lg-12 mb-4">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                                <div class="card-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #0a0a0a, #1a1a2e); border: none;">
-                                    <h4 class="font-weight-bold mb-0">Select Your Specialist</h4>
-                                    <p class="mb-0 opacity-75">Choose the professional you'd like to work with</p>
+                            <div class="bk-section mb-0">
+                                <div class="bk-section-header mb-4">
+                                    <span class="bk-step-pill">Step 2</span>
+                                    <h3 class="bk-section-title">Choose Your Specialist</h3>
+                                    <p class="bk-section-sub">Select the professional you'd like to work with</p>
                                 </div>
-                                <div class="card-body p-4">
+                                <div>
                                     <div class="staff-grid">
                                         <div class="row">
                                             <t t-if="staff_members">
                                                 <t t-foreach="staff_members" t-as="staff">
                                                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                                         <div class="staff-card" style="cursor: pointer; height: 100%;" t-att-onclick="'selectStaff(this, \'' + str(staff.id) + '\')'">
-                                                            <div class="card h-100" style="border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; min-height: 350px;">
+                                                            <div class="card h-100 bk-staff-inner">
                                                                 <div class="card-body p-3 d-flex flex-column">
                                                                     <div class="text-center mb-3">
                                                                         <t t-if="staff.image">
                                                                             <img t-att-src="'/web/image/custom.staff.member/%s/image/120x120' % staff.id"
-                                                                                class="rounded-circle mx-auto staff-image"
-                                                                                style="width: 100px; height: 100px; object-fit: cover; border: 4px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"
+                                                                                class="rounded-circle mx-auto staff-avatar-img"
                                                                                 alt="Staff Photo"/>
                                                                         </t>
                                                                         <t t-else="">
-                                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto staff-image"
-                                                                                style="width: 100px; height: 100px; border: 4px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                                                                                <i class="fa fa-user text-white fa-2x"></i>
+                                                                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto staff-avatar-placeholder">
+                                                                                <i class="fa fa-user fa-2x"></i>
                                                                             </div>
                                                                         </t>
                                                                     </div>
@@ -171,8 +132,8 @@
                                                                                 <span class="text-light-muted small ml-1">5.0</span>
                                                                             </div>
                                                                             <div class="expertise-badges mt-2">
-                                                                                <span class="badge badge-light mr-1">Expert</span>
-                                                                                <span class="badge badge-light">5+ Years</span>
+                                                                                <span class="badge mr-1">Expert</span>
+                                                                                <span class="badge">5+ Years</span>
                                                                             </div>
                                                                         </div>
                                                                         <div class="selection-indicator mt-3" style="display: none;">
@@ -210,61 +171,11 @@
 
 
                                 <div class="card-body p-4" style="position: relative; z-index: 2;">
-                                    <!-- Full-width Map Placeholder with Enhanced Styling -->
-                                    <div class="map-container mb-4" style="position: relative; height: 280px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
-                                        <!-- Map Background -->
-                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #0d1117, #1a1a2e);">
-                                            <!-- Decorative Map Elements -->
-                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05);"></div>
-                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);"></div>
-
-                                            <!-- Roads -->
-                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
-                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(255,255,255,0.05);"></div>
-                                        </div>
-
-                                        <!-- Location Marker -->
-                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                            <!-- Pulse Animation -->
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); animation: pulse 2s infinite;"></div>
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: pulse 2s infinite 0.3s;"></div>
-
-                                            <!-- Marker Pin -->
-                                            <div style="position: relative; width: 30px, height: 30px;">
-                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ffffff; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Overlay with CTA -->
-                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
-                                            <div class="text-center">
-                                                <div style="width: 70px; height: 70px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
-                                                    <i class="fa fa-map-marker fa-2x text-white"></i>
-                                                </div>
-                                                <h5 class="font-weight-bold mb-1" style="color: #ffffff;">Our Location</h5>
-                                                <t t-if="selected_branch">
-                                                    <p class="text-light-muted mb-2">
-                                                        <t t-if="selected_branch.street"><t t-esc="selected_branch.street"/></t>
-                                                        <t t-if="selected_branch.city">, <t t-esc="selected_branch.city"/></t>
-                                                    </p>
-                                                </t>
-                                                <t t-else="">
-                                                    <p class="text-light-muted mb-2">Select a branch to view location</p>
-                                                </t>
-                                                <button class="btn" style="background: #ffffff; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,255,255,0.3); font-weight: 600;">
-                                                    <i class="fa fa-directions mr-2"></i>Get Directions
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="row">
                                         <!-- Hours Section -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ffffff;">
+                                            <div class="hours-section">
                                                 <div class="d-flex align-items-center mb-3">
 
                                                     <h5 class="font-weight-bold ml-3 mb-0">Hours of Operation</h5>
@@ -361,7 +272,7 @@
 
                                         <!-- Contact Info with Unique Style -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="contact-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+                                            <div class="contact-section">
                                                 <div class="d-flex align-items-center mb-3">
 
                                                     <h5 class="font-weight-bold ml-3 mb-0">Contact Us</h5>
@@ -454,31 +365,17 @@
                     function selectStaff(element, staffId) {
                         // Remove previous selection
                         document.querySelectorAll('.staff-card .card').forEach(card => {
-                            card.style.borderColor = '';
-                            card.style.background = '';
-                            card.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                            card.style.transform = '';
-
-                            // Hide selection indicator on all cards
+                            card.classList.remove('selected');
+                            card.style.cssText = '';
                             const indicator = card.querySelector('.selection-indicator');
-                            if (indicator) {
-                                indicator.style.display = 'none';
-                            }
+                            if (indicator) indicator.style.display = 'none';
                         });
 
-                        // Highlight selected staff with enhanced styling
+                        // Apply selection via CSS class
                         const card = element.querySelector('.card');
-                        card.style.borderColor = '#ffffff';
-                        card.style.borderWidth = '3px';
-                        card.style.background = 'rgba(255,255,255,0.08)';
-                        card.style.boxShadow = '0 8px 20px rgba(255,255,255,0.3)';
-                        card.style.transform = 'translateY(-5px)';
-
-                        // Show selection indicator for selected card
+                        card.classList.add('selected');
                         const indicator = card.querySelector('.selection-indicator');
-                        if (indicator) {
-                            indicator.style.display = 'block';
-                        }
+                        if (indicator) indicator.style.display = 'block';
 
                         selectedStaff = staffId;
 
@@ -490,33 +387,13 @@
                             continueButton.innerHTML = `
                                 <div class="row justify-content-center">
                                     <div class="col-12 col-md-8 col-lg-6">
-                                        <button class="btn btn-lg w-100 continue-services-btn"
-                                            style="background: #ffffff; color: white; border: none; padding: 15px 25px;
-                                            border-radius: 25px; font-weight: 600; transition: all 0.3s ease;
-                                            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3); max-width: 100%;"
+                                        <button class="btn btn-accent btn-lg w-100"
                                             onclick="proceedToServices()">
                                             <i class="fa fa-arrow-right mr-2"></i>
                                             Continue to Services
                                         </button>
                                     </div>
                                 </div>
-                                <style>
-                                    @media (max-width: 767px) {
-                                        .continue-services-btn {
-                                            font-size: 16px;
-                                            padding: 12px 20px !important;
-                                        }
-                                    }
-                                    .continue-services-btn:hover {
-                                        transform: translateY(-2px);
-                                        box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-                                        background: #cccccc !important;
-                                    }
-                                    .continue-services-btn:active {
-                                        transform: translateY(1px);
-                                        box-shadow: 0 2px 5px rgba(255, 105, 180, 0.4);
-                                    }
-                                </style>
                             `;
                             document.querySelector('.staff-grid').after(continueButton);
                         }
@@ -558,8 +435,7 @@
     <!-- Professional Service Selection Page -->
     <template id="service_selection_page" name="Select Services">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
-            <div id="wrap_services" style="background: #0a0a0a; color: #ffffff;">
+            <div id="wrap_services">
                 <!-- Hero Section with Background Image and Fade -->
                 <div class="hero-section position-relative" style="padding: 40px 0; margin-bottom: 30px; overflow: hidden;">
                     <!-- Background image with fade effect -->
@@ -576,8 +452,8 @@
                                 <p class="text-light-muted mb-0">Select your preferred services</p>
                             </div>
                             <div class="col-md-4 text-right">
-                                <a href="/appointments" class="btn" style="background: #ffffff; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: 600; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
-                                    <i class="fa fa-arrow-left mr-2"></i> Change branch
+                                <a href="/appointments" class="btn btn-accent" style="border-radius: 20px; padding: 10px 25px;">
+                                    <i class="fa fa-arrow-left mr-2"></i> Change Branch
                                 </a>
                             </div>
                         </div>
@@ -632,8 +508,8 @@
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <div class="selection-item p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                             <div class="d-flex align-items-center">
-                                                <div style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
-                                                    <i class="fa fa-building" style="color: #ffffff; font-size: 18px;"></i>
+                                                <div class="bk-icon-circle">
+                                                    <i class="fa fa-building"></i>
                                                 </div>
                                                 <div>
                                                     <div class="small text-muted">Selected Branch</div>
@@ -662,7 +538,7 @@
                                     <div class="col-md-6">
                                         <div class="selection-item p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
                                             <div class="d-flex align-items-center">
-                                                <div id="staff-avatar" style="width: 45px; height: 45px; min-width: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); overflow: hidden;">
+                                                <div id="staff-avatar" class="bk-icon-circle" style="overflow: hidden;">
                                                     <t t-if="selected_staff and selected_staff.image">
                                                         <img t-att-src="'/web/image/custom.staff.member/%s/image/90x90' % selected_staff.id"
                                                              style="width: 100%; height: 100%; object-fit: cover;"
@@ -763,7 +639,7 @@
                                                     <div class="row">
                                                         <t t-foreach="services.filtered(lambda s: s.category_id.id == category.id)" t-as="service">
                                                             <div class="col-lg-6 col-md-12 mb-4">
-                                                                <div class="service-item h-100" style="background: white; border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 15px rgba(0,0,0,0.05);" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
+                                                                <div class="service-item h-100" style="cursor: pointer; transition: all 0.3s ease;" t-att-onclick="'selectService(this, ' + str(service.id) + ')'">
                                                                     <div class="card border-0 h-100">
                                                                         <div class="card-body p-0">
                                                                             <div class="row no-gutters h-100">
@@ -874,8 +750,7 @@
 
                     <!-- Continue Button with Enhanced Styling -->
                     <div class="text-center mt-5 mb-5">
-                        <button class="btn btn-lg"
-                                style="background: #ffffff; color: white; border: none; padding: 15px 40px; border-radius: 25px; font-weight: 600; box-shadow: 0 5px 15px rgba(255,255,255,0.3); transition: all 0.3s ease;"
+                        <button class="btn btn-accent btn-lg"
                                 onclick="proceedToBooking()">
                             <i class="fa fa-calendar-check-o mr-2"></i> Continue to Booking
                         </button>
@@ -892,61 +767,11 @@
                                 <div class="decorative-circle" style="position: absolute; bottom: -20px; left: -40px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.08); z-index: 1;"></div>
 
                                 <div class="card-body p-4" style="position: relative; z-index: 2;">
-                                    <!-- Full-width Map Placeholder with Enhanced Styling -->
-                                    <div class="map-container mb-4" style="position: relative; height: 280px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
-                                        <!-- Map Background -->
-                                        <div class="map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #0d1117, #1a1a2e);">
-                                            <!-- Decorative Map Elements -->
-                                            <div style="position: absolute; top: 20%; left: 30%; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 60%; left: 20%; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05);"></div>
-                                            <div style="position: absolute; top: 40%; left: 70%; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07);"></div>
-
-                                            <!-- Roads -->
-                                            <div style="position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 0; left: 40%; width: 2px; height: 100%; background: rgba(255,255,255,0.1);"></div>
-                                            <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.05);"></div>
-                                            <div style="position: absolute; top: 0; left: 60%; width: 1px; height: 100%; background: rgba(255,255,255,0.05);"></div>
-                                        </div>
-
-                                        <!-- Location Marker -->
-                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                            <!-- Pulse Animation -->
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.3); animation: pulse 2s infinite;"></div>
-                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: pulse 2s infinite 0.3s;"></div>
-
-                                            <!-- Marker Pin -->
-                                            <div style="position: relative; width: 30px, height: 30px;">
-                                                <div style="position: absolute; top: 0; left: 0; width: 30px; height: 30px; background: #ffffff; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.3);"></div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Overlay with CTA -->
-                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.3s ease;">
-                                            <div class="text-center">
-                                                <div style="width: 70px; height: 70px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(255,255,255,0.3);">
-                                                    <i class="fa fa-map-marker fa-2x text-white"></i>
-                                                </div>
-                                                <h5 class="font-weight-bold mb-1" style="color: #ffffff;">Our Location</h5>
-                                                <t t-if="selected_branch">
-                                                    <p class="text-light-muted mb-2">
-                                                        <t t-if="selected_branch.street"><t t-esc="selected_branch.street"/></t>
-                                                        <t t-if="selected_branch.city">, <t t-esc="selected_branch.city"/></t>
-                                                    </p>
-                                                </t>
-                                                <t t-else="">
-                                                    <p class="text-light-muted mb-2">Select a branch to view location</p>
-                                                </t>
-                                                <button class="btn" style="background: #ffffff; color: white; border-radius: 20px; padding: 8px 20px; border: none; box-shadow: 0 2px 5px rgba(255,255,255,0.3); font-weight: 600;">
-                                                    <i class="fa fa-directions mr-2"></i>Get Directions
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="row">
                                         <!-- Hours Section -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="hours-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 4px solid #ffffff;">
+                                            <div class="hours-section">
                                                 <div class="d-flex align-items-center mb-3">
                                                     <h5 class="font-weight-bold ml-3 mb-0">Hours of Operation</h5>
                                                 </div>
@@ -1042,7 +867,7 @@
 
                                         <!-- Contact Info with Unique Style -->
                                         <div class="col-md-6 mb-4">
-                                            <div class="contact-section" style="background: white; border-radius: 15px; padding: 20px; height: 100%; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+                                            <div class="contact-section">
                                                 <div class="d-flex align-items-center mb-3">
                                                     <h5 class="font-weight-bold ml-3 mb-0">Contact Us</h5>
                                                 </div>
@@ -1123,53 +948,36 @@
 
                     function selectTeamMember(element, memberId) {
                         document.querySelectorAll('.team-card .card').forEach(card => {
-                            card.style.borderColor = '';
-                            card.style.background = '';
+                            card.classList.remove('selected');
+                            card.style.cssText = '';
                         });
-                        
-                        const card = element.querySelector('.card');
-                        card.style.borderColor = '#ffffff';
-                        card.style.background = 'rgba(255,255,255,0.05)';
-                        
+
+                        element.querySelector('.card').classList.add('selected');
                         selectedTeamMember = memberId;
                     }
 
                     function selectService(element, serviceId) {
                         // Reset all services
                         document.querySelectorAll('.service-item').forEach(item => {
-                            item.style.boxShadow = '0 3px 15px rgba(0,0,0,0.05)';
-                            item.style.transform = '';
-                            item.style.borderColor = 'transparent';
-                            item.style.background = 'white';
-
-                            // Reset all select buttons
+                            item.classList.remove('selected');
+                            item.style.cssText = '';
                             const selectBtn = item.querySelector('.select-btn');
                             if (selectBtn) {
-                                selectBtn.style.background = 'transparent';
-                                selectBtn.style.color = '#ffffff';
-                                selectBtn.style.borderColor = '#ffffff';
+                                selectBtn.classList.remove('active');
+                                selectBtn.style.cssText = '';
                                 selectBtn.textContent = 'Select';
                             }
-
                             const radio = item.querySelector('input[type="radio"]');
                             if (radio) radio.checked = false;
                         });
 
-                        // Apply selection styling
-                        element.style.boxShadow = '0 8px 20px rgba(255,255,255,0.2)';
-                        element.style.transform = 'translateY(-3px)';
-                        element.style.borderLeft = '4px solid #ffffff';
-                        element.style.background = 'rgba(255,255,255,0.05)';
-                        
-                        // Apply selection styling to the button
+                        // Apply selection via CSS class
+                        element.classList.add('selected');
                         const selectBtn = element.querySelector('.select-btn');
                         if (selectBtn) {
-                            selectBtn.style.background = '#ffffff';
-                            selectBtn.style.color = 'white';
-                            selectBtn.style.borderColor = '#ffffff';
-                            selectBtn.textContent = 'Selected';
+                            selectBtn.classList.add('active');
+                            selectBtn.textContent = 'Selected ✓';
                         }
-
                         const radio = element.querySelector('input[type="radio"]');
                         if (radio) radio.checked = true;
 
@@ -1239,8 +1047,7 @@
     <!-- Professional Booking Form Page -->
     <template id="booking_form_page" name="Book Appointment">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
-            <div id="wrap_booking_form" style="background: #0a0a0a; color: #ffffff;">
+            <div id="wrap_booking_form">
                 <!-- FullCalendar CSS -->
                 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet"/>
                 
@@ -1299,7 +1106,7 @@
                                     <!-- Booking Summary -->
                                     <div class="booking-summary mb-4">
                                         <!-- Service Details with Enhanced Styling -->
-                                        <div class="summary-item mb-4 service-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ffffff; position: relative; overflow: hidden;">
+                                        <div class="summary-item mb-4 service-summary" style="border-radius: 15px; position: relative; overflow: hidden;">
                                             <!-- Decorative Element -->
                                             <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
 
@@ -1342,7 +1149,7 @@
                                         </div>
 
                                         <!-- Staff Member Details with Enhanced Styling -->
-                                        <div class="summary-item mb-4 staff-summary" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-left: 4px solid #ffffff; position: relative; overflow: hidden;">
+                                        <div class="summary-item mb-4 staff-summary" style="border-radius: 15px; position: relative; overflow: hidden;">
                                             <!-- Decorative Element -->
                                             <div style="position: absolute; top: -15px; right: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
 
@@ -1370,7 +1177,7 @@
                                         </div>
 
                                         <!-- Selected Time with Enhanced Styling -->
-                                        <div class="selected-time-display mb-4" style="background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 2px dashed #ffffff; padding: 15px; display: none; position: relative; overflow: hidden;">
+                                        <div class="selected-time-display mb-4" style="border-radius: 15px; border: 2px dashed rgba(201,149,106,0.4); padding: 15px; display: none; position: relative; overflow: hidden;">
                                             <!-- Decorative Elements -->
                                             <div style="position: absolute; top: -15px; left: -15px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
                                             <div style="position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.05); z-index: 1;"></div>
@@ -1459,8 +1266,8 @@
                                                     <input type="text" class="form-control" name="promo_code" id="promo_code" 
                                                            placeholder="Enter promo code (optional)" 
                                                            style="border-radius: 10px 0 0 10px; padding: 12px; border-color: rgba(255,255,255,0.2); flex: 1;"/>
-                                                    <button type="button" class="btn" onclick="validatePromoCode()" 
-                                                            style="background: #ffffff; color: white; border-radius: 0 10px 10px 0; padding: 12px 20px; border: none; height: auto;">
+                                                    <button type="button" class="btn btn-accent" onclick="validatePromoCode()"
+                                                            style="border-radius: 0 10px 10px 0; padding: 12px 20px; height: auto;">
                                                         Apply
                                                     </button>
                                                 </div>
@@ -1546,7 +1353,7 @@
                                             <!-- Hidden notes field for any additional system notes -->
                                             <input type="hidden" name="notes" value=""/>
 
-                                            <button type="submit" class="btn btn-lg w-100" style="background: #ffffff; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,255,255,0.3);" disabled="" id="book-btn">
+                                            <button type="submit" class="btn btn-accent btn-lg w-100" disabled="" id="book-btn">
                                                 <i class="fa fa-calendar-check-o mr-2"></i>
                                                 Book Appointment
                                             </button>
@@ -1852,41 +1659,45 @@
                 
                 <!-- Custom Calendar Styles -->
                 <style>
-                    /* FullCalendar customization */
+                    /* FullCalendar — rose gold theme */
                     #calendar {
                         font-family: inherit;
                     }
-                    
+
                     .fc .fc-button-primary {
-                        background-color: #ffffff;
-                        border-color: #ffffff;
+                        background-color: rgba(201, 149, 106, 0.15);
+                        border-color: rgba(201, 149, 106, 0.3);
+                        color: #ffffff;
                     }
-                    
+
                     .fc .fc-button-primary:hover {
-                        background-color: #1a1a2e;
-                        border-color: #1a1a2e;
+                        background-color: rgba(201, 149, 106, 0.3);
+                        border-color: #c9956a;
+                        color: #ffffff;
                     }
-                    
+
                     .fc .fc-button-primary:not(:disabled):active,
                     .fc .fc-button-primary:not(:disabled).fc-button-active {
-                        background-color: #ffffff;
-                        border-color: #ffffff;
+                        background-color: #c9956a;
+                        border-color: #c9956a;
+                        color: #ffffff;
                     }
-                    
+
                     .fc-day.has-slots {
                         cursor: pointer;
                         position: relative;
                     }
-                    
+
                     .fc-day.has-slots:hover {
-                        background-color: rgba(255,255,255,0.05) !important;
+                        background-color: rgba(201, 149, 106, 0.08) !important;
                     }
-                    
+
                     .fc-day.has-slots .fc-daygrid-day-number {
-                        color: #ffffff;
+                        color: #c9956a;
                         font-weight: 600;
                     }
-                    
+
+                    /* Availability dot */
                     .fc-day.has-slots::after {
                         content: '';
                         position: absolute;
@@ -1895,36 +1706,38 @@
                         transform: translateX(-50%);
                         width: 6px;
                         height: 6px;
-                        background-color: #ffffff;
+                        background-color: #c9956a;
                         border-radius: 50%;
                     }
-                    
+
                     .fc-day.selected-date {
-                        background-color: rgba(255,255,255,0.05) !important;
-                        border: 2px solid #ffffff !important;
+                        background-color: rgba(201, 149, 106, 0.12) !important;
+                        border: 2px solid #c9956a !important;
                     }
-                    
+
                     .fc .fc-daygrid-day.fc-day-today {
-                        background-color: #f0f8ff !important;
+                        background-color: rgba(201, 149, 106, 0.08) !important;
                     }
-                    
+
                     .fc .fc-toolbar-title {
                         font-size: 1.5rem;
                         font-weight: 600;
                         color: #ffffff;
                     }
-                    
+
+                    /* Time slot buttons */
                     .time-slot-btn:hover {
-                        background-color: #ffffff !important;
-                        color: white !important;
+                        background-color: rgba(201, 149, 106, 0.2) !important;
+                        border-color: #c9956a !important;
+                        color: #ffffff !important;
                         transform: translateY(-2px);
-                        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+                        box-shadow: 0 4px 12px rgba(201, 149, 106, 0.25);
                     }
-                    
+
                     .time-slot-btn.btn-primary {
-                        background-color: #ffffff !important;
-                        border-color: #ffffff !important;
-                        color: white !important;
+                        background-color: #c9956a !important;
+                        border-color: #c9956a !important;
+                        color: #ffffff !important;
                     }
                 </style>
             </div>
@@ -1934,14 +1747,13 @@
     <!-- Booking Success Page -->
     <template id="booking_success_page" name="Booking Confirmation">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking_success">
                 <div class="container py-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card status-card success shadow-sm border-0">
                                 <div class="card-body p-5">
-                                    <i class="fa fa-check-circle fa-5x text-success mb-4"></i>
+                                    <i class="fa fa-check-circle status-icon text-success mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Booking Confirmed!</h2>
                                     <p class="text-light-muted mb-4">Your appointment has been successfully booked.</p>
                                     
@@ -1970,18 +1782,17 @@
     <!-- Booking Error Page -->
     <template id="booking_error_page" name="Booking Error">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_booking_error">
                 <div class="container py-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card status-card error shadow-sm border-0">
                                 <div class="card-body p-5">
                                     <i class="fa fa-exclamation-triangle fa-5x text-warning mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Booking Error</h2>
                                     <p class="text-light-muted mb-4">There was an issue processing your booking.</p>
-                                    
-                                    <div class="error-details p-4" style="background: #fff3cd; border-radius: 10px;">
+
+                                    <div class="error-details p-4">
                                         <p class="mb-0"><t t-esc="error"/></p>
                                     </div>
                                     
@@ -2001,7 +1812,6 @@
     <!-- Payment Page -->
     <template id="payment_page" name="Payment for Appointment">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment">
                 <div class="container py-5">
                     <div class="row justify-content-center">
@@ -2134,8 +1944,7 @@
                                             </t>
                                         </div>
                                         
-                                        <button type="submit" class="btn btn-lg w-100" 
-                                                style="background: #ffffff; color: white; border: none; padding: 15px; border-radius: 25px; font-weight: 600;"
+                                        <button type="submit" class="btn btn-accent btn-lg w-100"
                                                 disabled="" id="pay-btn">
                                             Pay <t t-esc="currency.symbol"/><t t-esc="amount"/>
                                         </button>
@@ -2180,18 +1989,17 @@
     <!-- Payment Error Page -->
     <template id="payment_error_page" name="Payment Error">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_error">
                 <div class="container py-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card status-card error shadow-sm border-0">
                                 <div class="card-body p-5">
                                     <i class="fa fa-exclamation-triangle fa-5x text-warning mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Payment Error</h2>
                                     <p class="text-light-muted mb-4">There was an issue processing your payment.</p>
-                                    
-                                    <div class="error-details p-4" style="background: #fff3cd; border-radius: 10px;">
+
+                                    <div class="error-details p-4">
                                         <p class="mb-0"><t t-esc="error"/></p>
                                     </div>
                                     
@@ -2211,14 +2019,13 @@
     <!-- Payment Success Page -->
     <template id="payment_pending_page" name="Payment Pending">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_pending">
                 <div class="container py-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card status-card shadow-sm border-0">
                                 <div class="card-body p-5">
-                                    <div class="spinner-border text-primary mb-4" role="status" style="width: 4rem; height: 4rem;">
+                                    <div class="spinner-border spinner-accent mb-4" role="status">
                                         <span class="sr-only">Processing...</span>
                                     </div>
                                     <h2 class="font-weight-bold mb-3">Payment Processing</h2>
@@ -2309,14 +2116,13 @@
     
     <template id="payment_success_page" name="Payment Success">
         <t t-call="website.layout">
-            <link rel="stylesheet" t-att-href="'/custom_appointments/static/src/css/dark_theme.css'"/>
             <div id="wrap_payment_success">
                 <div class="container py-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
-                            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card status-card success shadow-sm border-0">
                                 <div class="card-body p-5">
-                                    <i class="fa fa-check-circle fa-5x text-success mb-4"></i>
+                                    <i class="fa fa-check-circle status-icon text-success mb-4"></i>
                                     <h2 class="font-weight-bold mb-3">Payment Successful!</h2>
                                     <p class="text-light-muted mb-4">Your appointment has been confirmed and payment processed.</p>
                                     

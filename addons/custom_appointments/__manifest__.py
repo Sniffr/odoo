@@ -24,6 +24,7 @@
     'author': 'Custom Development',
     'depends': ['base', 'hr', 'calendar', 'website', 'mail', 'sms', 'account', 'payment'],
     'data': [
+        'data/assets.xml',
         'security/appointment_security.xml',
         'security/ir.model.access.csv',
         'wizard/employee_import_wizard_views.xml',
@@ -38,6 +39,7 @@
         'views/appointment_settings_views.xml',
         'views/promo_code_views.xml',
         'views/customer_views.xml',
+        'views/homepage.xml',
         'views/website_templates.xml',
         'views/terms_page.xml',
         'data/mail_templates.xml',
@@ -51,6 +53,11 @@
     ],
     'external_dependencies': {
         'python': ['icalendar'],
+    },
+    'assets': {
+        'web.assets_frontend': [
+            'custom_appointments/static/src/css/dark_theme.css',
+        ],
     },
     'installable': True,
     'application': True,
