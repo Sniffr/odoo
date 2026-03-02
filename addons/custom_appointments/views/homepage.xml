@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Revive Aesthetics — Custom Homepage -->
+    <template id="homepage" name="Revive Aesthetics — Home">
+        <t t-call="website.layout">
+            <div id="wrap_homepage">
+
+                <!-- ══════════════════════════════════════
+                     HERO
+                ══════════════════════════════════════ -->
+                <section class="revive-hero-section">
+                    <!-- Subtle background image (fades to left) -->
+                    <div class="revive-hero-bg"></div>
+                    <!-- Rose gold radial glow -->
+                    <div class="revive-hero-glow"></div>
+
+                    <div class="container revive-hero-content">
+                        <div class="row align-items-center">
+                            <div class="col-lg-7 col-md-10">
+                                <p class="revive-eyebrow">Revive Aesthetics</p>
+                                <h1 class="revive-hero-headline">
+                                    Enhance Your Beauty.<br/>
+                                    <span class="revive-accent-text">Revive Your Glow.</span>
+                                </h1>
+                                <p class="revive-hero-sub">
+                                    Expert lash extensions and premium beauty services in Nairobi.
+                                    Professional care, stunning results — book online in minutes.
+                                </p>
+                                <div class="revive-hero-actions">
+                                    <a href="/appointments" class="btn btn-accent btn-lg">
+                                        <i class="fa fa-calendar-plus-o mr-2"></i>Book Your Appointment
+                                    </a>
+                                    <a href="#services" class="btn btn-ghost btn-lg">
+                                        Explore Services
+                                    </a>
+                                </div>
+                                <!-- Trust signals -->
+                                <div class="revive-trust-row">
+                                    <span><i class="fa fa-star"></i> 5-Star Rated</span>
+                                    <span><i class="fa fa-shield"></i> Secure Online Booking</span>
+                                    <span><i class="fa fa-clock-o"></i> Open 7 Days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════
+                     SERVICES
+                ══════════════════════════════════════ -->
+                <section class="revive-section" id="services">
+                    <div class="container">
+                        <div class="revive-section-header text-center">
+                            <p class="revive-eyebrow">What We Offer</p>
+                            <h2 class="revive-section-title">Our Services</h2>
+                            <p class="revive-section-sub">Premium treatments tailored to bring out your best.</p>
+                        </div>
+
+                        <div class="row">
+                            <t t-if="service_categories">
+                                <t t-foreach="service_categories" t-as="cat">
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="revive-service-card">
+                                            <div class="revive-service-icon">
+                                                <i class="fa fa-star fa-lg"></i>
+                                            </div>
+                                            <h5 class="revive-service-name"><t t-esc="cat.name"/></h5>
+                                            <t t-if="cat.description">
+                                                <p class="revive-service-desc"><t t-esc="cat.description"/></p>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="revive-service-desc">Professional treatment delivered with care and precision.</p>
+                                            </t>
+                                            <a href="/appointments" class="revive-service-link">
+                                                Book Now <i class="fa fa-arrow-right ml-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <!-- Static fallback cards -->
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="revive-service-card">
+                                        <div class="revive-service-icon"><i class="fa fa-eye fa-lg"></i></div>
+                                        <h5 class="revive-service-name">Lash Extensions</h5>
+                                        <p class="revive-service-desc">Classic, hybrid and volume sets applied with precision for a natural to dramatic look.</p>
+                                        <a href="/appointments" class="revive-service-link">Book Now <i class="fa fa-arrow-right ml-1"></i></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="revive-service-card">
+                                        <div class="revive-service-icon"><i class="fa fa-magic fa-lg"></i></div>
+                                        <h5 class="revive-service-name">Beauty Treatments</h5>
+                                        <p class="revive-service-desc">Curated beauty treatments to refresh and enhance your natural features.</p>
+                                        <a href="/appointments" class="revive-service-link">Book Now <i class="fa fa-arrow-right ml-1"></i></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="revive-service-card">
+                                        <div class="revive-service-icon"><i class="fa fa-home fa-lg"></i></div>
+                                        <h5 class="revive-service-name">Mobile Services</h5>
+                                        <p class="revive-service-desc">We bring the salon to you — house calls available across Nairobi with a convenience fee.</p>
+                                        <a href="/appointments" class="revive-service-link">Book Now <i class="fa fa-arrow-right ml-1"></i></a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <a href="/appointments" class="btn btn-outline-accent">
+                                View All Services &amp; Book
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════
+                     HOW IT WORKS
+                ══════════════════════════════════════ -->
+                <section class="revive-section revive-section-alt" id="how-it-works">
+                    <div class="container">
+                        <div class="revive-section-header text-center">
+                            <p class="revive-eyebrow">Simple &amp; Fast</p>
+                            <h2 class="revive-section-title">How It Works</h2>
+                            <p class="revive-section-sub">Three steps to your perfect look.</p>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="revive-step-card text-center">
+                                    <div class="revive-step-number">01</div>
+                                    <div class="revive-step-icon">
+                                        <i class="fa fa-th-list fa-2x"></i>
+                                    </div>
+                                    <h5>Choose Your Service</h5>
+                                    <p>Browse our full menu and select the treatment that fits your look and goals.</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="revive-step-card revive-step-card--featured text-center">
+                                    <div class="revive-step-number">02</div>
+                                    <div class="revive-step-icon">
+                                        <i class="fa fa-calendar-check-o fa-2x"></i>
+                                    </div>
+                                    <h5>Pick a Time</h5>
+                                    <p>Choose your preferred specialist and a date and time that works for you.</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="revive-step-card text-center">
+                                    <div class="revive-step-number">03</div>
+                                    <div class="revive-step-icon">
+                                        <i class="fa fa-check-circle fa-2x"></i>
+                                    </div>
+                                    <h5>Confirm &amp; Relax</h5>
+                                    <p>Secure your slot with a booking fee and arrive ready to glow.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════
+                     MEET THE TEAM
+                ══════════════════════════════════════ -->
+                <t t-if="staff_members">
+                    <section class="revive-section" id="team">
+                        <div class="container">
+                            <div class="revive-section-header text-center">
+                                <p class="revive-eyebrow">Our Specialists</p>
+                                <h2 class="revive-section-title">Meet the Team</h2>
+                                <p class="revive-section-sub">Skilled professionals dedicated to making you look and feel incredible.</p>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <t t-foreach="staff_members" t-as="member">
+                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                        <div class="revive-team-card text-center">
+                                            <t t-if="member.image">
+                                                <img t-att-src="'/web/image/custom.staff.member/%s/image/160x160' % member.id"
+                                                    class="revive-team-avatar"
+                                                    t-att-alt="member.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="revive-team-avatar-placeholder">
+                                                    <i class="fa fa-user fa-2x"></i>
+                                                </div>
+                                            </t>
+                                            <h6 class="revive-team-name"><t t-esc="member.name"/></h6>
+                                            <t t-if="member.specialization">
+                                                <p class="revive-team-role"><t t-esc="member.specialization"/></p>
+                                            </t>
+                                            <a t-attf-href="/appointments?staff_id=#{member.id}" class="revive-team-book">
+                                                Book with <t t-esc="member.name.split()[0]"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </section>
+                </t>
+
+                <!-- ══════════════════════════════════════
+                     FINAL CTA
+                ══════════════════════════════════════ -->
+                <section class="revive-cta-section">
+                    <div class="revive-cta-glow"></div>
+                    <div class="container text-center revive-cta-content">
+                        <h2 class="revive-cta-headline">Ready to Transform Your Look?</h2>
+                        <p class="revive-cta-sub">
+                            Join hundreds of clients who trust Revive Aesthetics for their beauty needs.
+                        </p>
+                        <a href="/appointments" class="btn btn-accent btn-lg">
+                            <i class="fa fa-calendar-plus-o mr-2"></i>Book Your Appointment
+                        </a>
+                        <p class="revive-cta-note">
+                            <span><i class="fa fa-shield mr-1"></i>Secure online booking</span>
+                            <span><i class="fa fa-map-marker mr-1"></i>Multiple locations</span>
+                            <span><i class="fa fa-clock-o mr-1"></i>Open 7 days a week</span>
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+</odoo>
