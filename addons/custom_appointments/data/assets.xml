@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_appointments_dark_theme_css" model="ir.asset">
+        <field name="name">Custom Appointments Dark Theme CSS</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">custom_appointments/static/src/css/dark_theme.css</field>
+        <field name="sequence">100</field>
+    </record>
+</odoo>

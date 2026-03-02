@@ -7,6 +7,23 @@ import json
 
 class AppointmentController(http.Controller):
 
+    @http.route(['/home'], type='http', auth='public', website=True)
+    def homepage(self, **kwargs):
+        """Custom Revive Aesthetics homepage"""
+        service_categories = request.env['service.category'].sudo().search([
+            ('active', '=', True)
+        ], order='sequence, name')
+
+        staff_members = request.env['custom.staff.member'].sudo().search([
+            ('is_bookable', '=', True),
+            ('active', '=', True),
+        ], order='name', limit=8)
+
+        return request.render('custom_appointments.homepage', {
+            'service_categories': service_categories,
+            'staff_members': staff_members,
+        })
+
     @http.route('/appointments', type='http', auth='public', website=True)
     def appointment_booking(self, **kwargs):
         """Main appointment booking page - Location and staff selection"""
