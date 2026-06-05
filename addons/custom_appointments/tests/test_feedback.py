@@ -41,3 +41,15 @@ class TestAppointmentFeedback(TransactionCase):
     def test_fixtures_load(self):
         appt = self._make_appointment()
         self.assertEqual(appt.state, 'draft')
+
+    def test_completed_date_stamped_on_action_complete(self):
+        appt = self._make_appointment()
+        self.assertFalse(appt.completed_date)
+        appt.action_complete()
+        self.assertEqual(appt.state, 'completed')
+        self.assertTrue(appt.completed_date)
+
+    def test_completed_date_stamped_on_write(self):
+        appt = self._make_appointment()
+        appt.write({'state': 'completed'})
+        self.assertTrue(appt.completed_date)

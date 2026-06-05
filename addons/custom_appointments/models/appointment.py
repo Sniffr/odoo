@@ -30,7 +30,8 @@ class Appointment(models.Model):
     start = fields.Datetime(string='Start Time', required=True)
     stop = fields.Datetime(string='End Time', required=True)
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
-    
+    completed_date = fields.Datetime(string='Completed On', readonly=True, copy=False)
+
     description = fields.Text(string='Description')
     
     calendar_event_id = fields.Many2one('calendar.event', string='Calendar Event')
@@ -252,6 +253,8 @@ class Appointment(models.Model):
                 appointment.calendar_event_id = calendar_event.id
     
     def write(self, vals):
+        if vals.get('state') == 'completed' and 'completed_date' not in vals:
+            vals = dict(vals, completed_date=fields.Datetime.now())
         result = super(Appointment, self).write(vals)
         if any(field in vals for field in ['name', 'start', 'stop', 'description', 'user_id']):
             self._update_calendar_event()
