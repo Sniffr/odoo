@@ -31,6 +31,8 @@ class Appointment(models.Model):
     stop = fields.Datetime(string='End Time', required=True)
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
     completed_date = fields.Datetime(string='Completed On', readonly=True, copy=False)
+    feedback_ids = fields.One2many('custom.appointment.feedback', 'appointment_id', string='Feedback')
+    feedback_count = fields.Integer(string='Feedback Count', compute='_compute_feedback_count')
 
     description = fields.Text(string='Description')
     
@@ -126,7 +128,12 @@ class Appointment(models.Model):
     def _compute_payment_count(self):
         for appointment in self:
             appointment.payment_count = 1 if appointment.payment_id else 0
-    
+
+    @api.depends('feedback_ids')
+    def _compute_feedback_count(self):
+        for appointment in self:
+            appointment.feedback_count = len(appointment.feedback_ids)
+
     @api.depends('start', 'stop')
     def _compute_duration(self):
         for appointment in self:
@@ -481,7 +488,18 @@ class Appointment(models.Model):
             'view_mode': 'form',
             'res_id': self.payment_id.id,
         }
-    
+
+    def action_view_feedback(self):
+        self.ensure_one()
+        return {
+            'name': 'Feedback',
+            'type': 'ir.actions.act_window',
+            'res_model': 'custom.appointment.feedback',
+            'view_mode': 'form,list',
+            'domain': [('appointment_id', '=', self.id)],
+            'context': {'default_appointment_id': self.id},
+        }
+
     @api.model
     def get_my_appointments(self):
         """Get appointments for the current user"""

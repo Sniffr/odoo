@@ -38,6 +38,7 @@
         'views/appointment_settings_views.xml',
         'views/promo_code_views.xml',
         'views/customer_views.xml',
+        'views/appointment_feedback_views.xml',
         'views/website_templates.xml',
         'views/feedback_website_templates.xml',
         'views/terms_page.xml',
