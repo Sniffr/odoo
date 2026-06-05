@@ -167,3 +167,93 @@ class AppointmentFeedback(models.Model):
             'request_count': self.request_count + 1,
             'last_request_date': fields.Datetime.now(),
         })
+
+    ANSWER_FIELDS = [
+        'staff_rating', 'service_rating', 'recommend_score',
+        'cleanliness_rating', 'comfort_rating', 'value_rating', 'comments',
+    ]
+
+    def submit_feedback(self, values):
+        """Save answers, mark submitted, generate reward promo. Idempotent."""
+        self.ensure_one()
+        if self.state == 'submitted':
+            return self.reward_promo_id
+        to_write = {k: values[k] for k in self.ANSWER_FIELDS if k in values}
+        to_write['state'] = 'submitted'
+        to_write['submitted_date'] = fields.Datetime.now()
+        self.write(to_write)
+        settings = self.env['custom.appointment.settings'].sudo().get_settings()
+        if settings.feedback_reward_enabled and not self.reward_promo_id:
+            self._generate_reward_promo(settings)
+        return self.reward_promo_id
+
+    def _reward_discount_label(self, settings):
+        if settings.feedback_reward_discount_type == 'percentage':
+            return f"{settings.feedback_reward_discount_value:g}%"
+        if settings.feedback_reward_discount_type == 'free_booking':
+            return "a free booking fee"
+        currency = self.env.company.currency_id
+        return f"{currency.symbol}{settings.feedback_reward_discount_value:g}"
+
+    def _generate_reward_promo(self, settings):
+        self.ensure_one()
+        Promo = self.env['custom.appointment.promo'].sudo()
+        code = (settings.feedback_reward_code_prefix or '') + Promo.generate_unique_code()
+        valid_to = fields.Date.today() + timedelta(days=settings.feedback_reward_validity_days or 0)
+        promo = Promo.create({
+            'name': f"Feedback reward - {self.customer_name or 'Customer'}",
+            'code': code,
+            'discount_type': settings.feedback_reward_discount_type,
+            'discount_value': settings.feedback_reward_discount_value,
+            'applies_to': settings.feedback_reward_applies_to,
+            'maximum_discount': settings.feedback_reward_max_discount,
+            'valid_from': fields.Date.today(),
+            'valid_to': valid_to,
+            'max_uses': 1,
+            'max_uses_per_customer': 1,
+            'assigned_partner_id': self.partner_id.id if self.partner_id else False,
+            'active': True,
+        })
+        self.reward_promo_id = promo.id
+        self._send_reward_notification(settings, promo)
+        return promo
+
+    def _send_reward_notification(self, settings, promo):
+        self.ensure_one()
+        company = self.env.company
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        booking_link = f"{base_url}/appointments"
+        discount = self._reward_discount_label(settings)
+        valid_to = promo.valid_to.strftime('%B %d, %Y') if promo.valid_to else ''
+
+        if settings.feedback_channel in ('email', 'both') and self.customer_email:
+            try:
+                template = self.appointment_id._load_email_template('feedback_reward')
+                body_html = template.format(
+                    customer_name=self.customer_name or 'there',
+                    promo_code=promo.code,
+                    discount=discount,
+                    valid_to=valid_to,
+                    booking_link=booking_link,
+                )
+                email_from = (self.branch_id.email or company.email or 'noreply@localhost')
+                self.env['mail.mail'].sudo().create({
+                    'subject': 'Your feedback reward is here!',
+                    'body_html': body_html,
+                    'email_to': self.customer_email,
+                    'email_from': email_from,
+                }).send()
+            except Exception as e:
+                _logger.error('Feedback: failed to send reward email for %s: %s', self.id, str(e))
+
+        if settings.feedback_channel in ('sms', 'both') and self.customer_phone:
+            tmpl = settings.feedback_reward_sms_template or (
+                'Thank you! Use code {promo_code} for {discount} off (valid until {valid_to}). {booking_link}')
+            sms_body = tmpl.format(
+                customer_name=self.customer_name or 'there',
+                promo_code=promo.code,
+                discount=discount,
+                valid_to=valid_to,
+                booking_link=booking_link,
+            )
+            self.appointment_id._send_sms_notification(self.customer_phone, sms_body)

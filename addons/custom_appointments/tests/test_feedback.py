@@ -149,3 +149,55 @@ class TestAppointmentFeedback(TransactionCase):
         appt.write({'state': 'cancelled'})
         self.env['custom.appointment.feedback']._send_due_requests(self.settings)
         self.assertEqual(fb.request_count, 0)
+
+    def test_submit_saves_answers_and_rewards(self):
+        self.settings.write({
+            'enable_feedback_requests': True,
+            'feedback_reward_enabled': True,
+            'feedback_reward_discount_type': 'percentage',
+            'feedback_reward_discount_value': 15.0,
+            'feedback_reward_validity_days': 30,
+            'feedback_reward_code_prefix': 'LASH-',
+        })
+        appt = self._make_appointment()
+        appt.action_complete()
+        fb = self.env['custom.appointment.feedback']._create_for_appointment(appt)
+        promo = fb.submit_feedback({
+            'staff_rating': 5,
+            'service_rating': 4,
+            'recommend_score': '9',
+            'comments': 'Loved it!',
+        })
+        self.assertEqual(fb.state, 'submitted')
+        self.assertTrue(fb.submitted_date)
+        self.assertEqual(fb.staff_rating, 5)
+        self.assertEqual(fb.recommend_score, '9')
+        self.assertEqual(fb.comments, 'Loved it!')
+        self.assertTrue(promo)
+        self.assertEqual(fb.reward_promo_id, promo)
+        self.assertTrue(promo.code.startswith('LASH-'))
+        self.assertEqual(promo.discount_type, 'percentage')
+        self.assertEqual(promo.discount_value, 15.0)
+        self.assertEqual(promo.max_uses, 1)
+        self.assertEqual(promo.max_uses_per_customer, 1)
+        self.assertEqual(promo.assigned_partner_id, appt.partner_id)
+
+    def test_submit_no_reward_when_disabled(self):
+        self.settings.write({'feedback_reward_enabled': False})
+        appt = self._make_appointment()
+        appt.action_complete()
+        fb = self.env['custom.appointment.feedback']._create_for_appointment(appt)
+        promo = fb.submit_feedback({'staff_rating': 5})
+        self.assertEqual(fb.state, 'submitted')
+        self.assertFalse(promo)
+        self.assertFalse(fb.reward_promo_id)
+
+    def test_submit_is_idempotent(self):
+        self.settings.write({'feedback_reward_enabled': True})
+        appt = self._make_appointment()
+        appt.action_complete()
+        fb = self.env['custom.appointment.feedback']._create_for_appointment(appt)
+        promo1 = fb.submit_feedback({'staff_rating': 5})
+        promo2 = fb.submit_feedback({'staff_rating': 1})
+        self.assertEqual(promo1, promo2)
+        self.assertEqual(fb.staff_rating, 5)  # second submit ignored
