@@ -57,3 +57,47 @@ class AppointmentFeedback(models.Model):
             if not vals.get('access_token'):
                 vals['access_token'] = secrets.token_urlsafe(24)
         return super().create(vals_list)
+
+    @api.model
+    def _create_for_appointment(self, appointment):
+        """Create a pending feedback record copying appointment data."""
+        return self.create({
+            'appointment_id': appointment.id,
+            'partner_id': appointment.partner_id.id,
+            'customer_name': appointment.customer_name,
+            'customer_email': appointment.customer_email,
+            'customer_phone': appointment.customer_phone,
+            'staff_member_id': appointment.staff_member_id.id,
+            'service_id': appointment.service_id.id,
+            'branch_id': appointment.branch_id.id,
+        })
+
+    @api.model
+    def _backfill_feedback_records(self):
+        """Create pending feedback records for completed appointments missing one."""
+        Appointment = self.env['custom.appointment']
+        completed = Appointment.search([
+            ('state', '=', 'completed'),
+            ('completed_date', '!=', False),
+        ])
+        if not completed:
+            return
+        existing = self.search([('appointment_id', 'in', completed.ids)])
+        existing_appt_ids = set(existing.mapped('appointment_id').ids)
+        for appt in completed:
+            if appt.id not in existing_appt_ids:
+                self._create_for_appointment(appt)
+
+    @api.model
+    def cron_send_feedback_requests(self):
+        """Cron entrypoint: backfill records, then send any due feedback requests."""
+        settings = self.env['custom.appointment.settings'].get_settings()
+        if not settings.enable_feedback_requests:
+            return
+        self._backfill_feedback_records()
+        self._send_due_requests(settings)
+
+    @api.model
+    def _send_due_requests(self, settings):
+        """Send feedback requests that are due. Implemented in Task 5."""
+        return

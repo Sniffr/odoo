@@ -85,3 +85,32 @@ class TestAppointmentFeedback(TransactionCase):
         self.assertEqual(s.feedback_reward_discount_type, 'percentage')
         self.assertEqual(s.feedback_reward_validity_days, 30)
         self.assertEqual(s.feedback_reward_code_prefix, 'LASH-')
+
+    def test_backfill_creates_feedback_when_enabled(self):
+        self.settings.write({'enable_feedback_requests': True})
+        appt = self._make_appointment()
+        appt.action_complete()
+        Feedback = self.env['custom.appointment.feedback']
+        Feedback.cron_send_feedback_requests()
+        fb = Feedback.search([('appointment_id', '=', appt.id)])
+        self.assertEqual(len(fb), 1)
+        self.assertEqual(fb.customer_email, 'alice@test.com')
+        self.assertEqual(fb.staff_member_id, self.staff)
+        self.assertEqual(fb.state, 'pending')
+
+    def test_backfill_skipped_when_disabled(self):
+        self.settings.write({'enable_feedback_requests': False})
+        appt = self._make_appointment()
+        appt.action_complete()
+        Feedback = self.env['custom.appointment.feedback']
+        Feedback.cron_send_feedback_requests()
+        self.assertFalse(Feedback.search([('appointment_id', '=', appt.id)]))
+
+    def test_backfill_no_duplicate(self):
+        self.settings.write({'enable_feedback_requests': True})
+        appt = self._make_appointment()
+        appt.action_complete()
+        Feedback = self.env['custom.appointment.feedback']
+        Feedback.cron_send_feedback_requests()
+        Feedback.cron_send_feedback_requests()
+        self.assertEqual(len(Feedback.search([('appointment_id', '=', appt.id)])), 1)
