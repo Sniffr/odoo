@@ -97,7 +97,73 @@ class AppointmentFeedback(models.Model):
         self._backfill_feedback_records()
         self._send_due_requests(settings)
 
+    def _get_feedback_link(self):
+        self.ensure_one()
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        return f"{base_url}/appointments/feedback/{self.access_token}"
+
     @api.model
     def _send_due_requests(self, settings):
-        """Send feedback requests that are due. Implemented in Task 5."""
-        return
+        now = fields.Datetime.now()
+        first_delay = timedelta(minutes=settings.feedback_first_delay_minutes or 0)
+        repeat = timedelta(minutes=settings.feedback_repeat_interval_minutes or 0)
+        pending = self.search([('state', '=', 'pending')])
+        for fb in pending:
+            if fb.appointment_id.state == 'cancelled':
+                continue
+            if fb.request_count >= settings.feedback_max_requests:
+                fb.state = 'expired'
+                continue
+            if fb.request_count == 0:
+                anchor = fb.appointment_id.completed_date
+                if not anchor:
+                    continue
+                due = anchor + first_delay
+            else:
+                if not fb.last_request_date:
+                    continue
+                due = fb.last_request_date + repeat
+            if now >= due:
+                fb._send_request(settings)
+
+    def _send_request(self, settings):
+        self.ensure_one()
+        link = self._get_feedback_link()
+        company = self.env.company
+
+        if settings.feedback_channel in ('email', 'both') and self.customer_email:
+            try:
+                template = self.appointment_id._load_email_template('feedback_request')
+                body_html = template.format(
+                    customer_name=self.customer_name or 'there',
+                    company_name=company.name,
+                    service_name=self.service_id.name or '',
+                    staff_name=self.staff_member_id.name or '',
+                    feedback_link=link,
+                )
+                email_from = (self.branch_id.email or company.email or 'noreply@localhost')
+                self.env['mail.mail'].sudo().create({
+                    'subject': settings.feedback_request_email_subject or 'We value your feedback',
+                    'body_html': body_html,
+                    'email_to': self.customer_email,
+                    'email_from': email_from,
+                }).send()
+            except Exception as e:
+                _logger.error('Feedback: failed to send request email for %s: %s', self.id, str(e))
+
+        if settings.feedback_channel in ('sms', 'both') and self.customer_phone:
+            tmpl = settings.feedback_request_sms_template or (
+                'Hi {customer_name}! How was your {service_name}? Share feedback: {feedback_link}')
+            sms_body = tmpl.format(
+                customer_name=self.customer_name or 'there',
+                service_name=self.service_id.name or '',
+                staff_name=self.staff_member_id.name or '',
+                branch_name=self.branch_id.name or '',
+                feedback_link=link,
+            )
+            self.appointment_id._send_sms_notification(self.customer_phone, sms_body)
+
+        self.write({
+            'request_count': self.request_count + 1,
+            'last_request_date': fields.Datetime.now(),
+        })

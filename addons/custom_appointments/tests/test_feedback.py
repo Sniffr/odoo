@@ -114,3 +114,38 @@ class TestAppointmentFeedback(TransactionCase):
         Feedback.cron_send_feedback_requests()
         Feedback.cron_send_feedback_requests()
         self.assertEqual(len(Feedback.search([('appointment_id', '=', appt.id)])), 1)
+
+    def _completed_feedback(self, minutes_ago):
+        """Helper: completed appointment + pending feedback with completed_date in the past."""
+        self.settings.write({'enable_feedback_requests': True})
+        appt = self._make_appointment()
+        appt.action_complete()
+        appt.completed_date = fields.Datetime.now() - timedelta(minutes=minutes_ago)
+        fb = self.env['custom.appointment.feedback']._create_for_appointment(appt)
+        return appt, fb
+
+    def test_first_request_sent_when_due(self):
+        appt, fb = self._completed_feedback(minutes_ago=10)  # delay default 5
+        self.env['custom.appointment.feedback']._send_due_requests(self.settings)
+        self.assertEqual(fb.request_count, 1)
+        self.assertTrue(fb.last_request_date)
+        sms = self.env['sms.sms'].search([('number', '=', '254711111111')])
+        self.assertTrue(sms)
+        self.assertIn('feedback', sms[0].body.lower())
+
+    def test_first_request_not_sent_when_too_early(self):
+        appt, fb = self._completed_feedback(minutes_ago=2)  # delay default 5
+        self.env['custom.appointment.feedback']._send_due_requests(self.settings)
+        self.assertEqual(fb.request_count, 0)
+
+    def test_request_expires_at_max(self):
+        appt, fb = self._completed_feedback(minutes_ago=10)
+        fb.write({'request_count': 3, 'last_request_date': fields.Datetime.now() - timedelta(days=10)})
+        self.env['custom.appointment.feedback']._send_due_requests(self.settings)
+        self.assertEqual(fb.state, 'expired')
+
+    def test_cancelled_appointment_not_requested(self):
+        appt, fb = self._completed_feedback(minutes_ago=10)
+        appt.write({'state': 'cancelled'})
+        self.env['custom.appointment.feedback']._send_due_requests(self.settings)
+        self.assertEqual(fb.request_count, 0)
