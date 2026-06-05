@@ -39,6 +39,7 @@
         'views/promo_code_views.xml',
         'views/customer_views.xml',
         'views/website_templates.xml',
+        'views/feedback_website_templates.xml',
         'views/terms_page.xml',
         'data/mail_templates.xml',
         'data/cron_jobs.xml',
