@@ -65,6 +65,72 @@ class AppointmentSettings(models.Model):
         help='SMS template with placeholders: {customer_name}, {service_name}, {branch_name}, {booking_link}'
     )
 
+    # ==================== CUSTOMER FEEDBACK ====================
+
+    enable_feedback_requests = fields.Boolean(
+        string='Collect Customer Feedback', default=False,
+        help='Enable requesting feedback from customers after their appointment is completed')
+
+    feedback_channel = fields.Selection([
+        ('sms', 'SMS Only'),
+        ('email', 'Email Only'),
+        ('both', 'Both SMS and Email'),
+    ], string='Feedback Channel', default='both', required=True)
+
+    feedback_first_delay_minutes = fields.Integer(
+        string='First Request After (Minutes)', default=5,
+        help='Minutes after appointment completion before the first feedback request is sent')
+    feedback_repeat_interval_minutes = fields.Integer(
+        string='Repeat Every (Minutes)', default=1440,
+        help='Minutes between repeated feedback requests (1440 = 1 day)')
+    feedback_max_requests = fields.Integer(
+        string='Maximum Requests', default=3,
+        help='Maximum number of feedback requests to send per appointment')
+
+    # Which fields to ask
+    feedback_ask_staff_rating = fields.Boolean(string='Ask Staff Rating', default=True)
+    feedback_ask_service_rating = fields.Boolean(string='Ask Service Rating', default=True)
+    feedback_ask_recommend = fields.Boolean(string='Ask Recommend Score (NPS)', default=True)
+    feedback_ask_cleanliness = fields.Boolean(string='Ask Cleanliness Rating', default=True)
+    feedback_ask_comfort = fields.Boolean(string='Ask Comfort Rating', default=True)
+    feedback_ask_value = fields.Boolean(string='Ask Value Rating', default=True)
+    feedback_ask_comments = fields.Boolean(string='Ask Comments', default=True)
+
+    # Request messages
+    feedback_request_email_subject = fields.Char(
+        string='Feedback Email Subject',
+        default="How was your visit? We'd love your feedback")
+    feedback_request_email_template = fields.Text(string='Feedback Email Template')
+    feedback_request_sms_template = fields.Text(
+        string='Feedback SMS Template',
+        default='Hi {customer_name}! How was your {service_name}? Share quick feedback: {feedback_link}')
+
+    # Promo reward
+    feedback_reward_enabled = fields.Boolean(
+        string='Reward Feedback with Promo', default=False,
+        help='Generate a unique promo code for customers who submit feedback')
+    feedback_reward_discount_type = fields.Selection([
+        ('percentage', 'Percentage'),
+        ('fixed', 'Fixed Amount'),
+        ('free_booking', 'Free Booking Fee'),
+    ], string='Reward Discount Type', default='percentage')
+    feedback_reward_discount_value = fields.Float(string='Reward Discount Value', default=10.0)
+    feedback_reward_applies_to = fields.Selection([
+        ('booking_fee', 'Booking Fee Only'),
+        ('full_price', 'Full Service Price'),
+        ('both', 'Both (Booking Fee + Balance)'),
+    ], string='Reward Applies To', default='full_price')
+    feedback_reward_max_discount = fields.Float(
+        string='Reward Maximum Discount', default=0.0,
+        help='Cap on discount amount for percentage rewards. 0 = no cap')
+    feedback_reward_validity_days = fields.Integer(string='Reward Valid For (Days)', default=30)
+    feedback_reward_code_prefix = fields.Char(string='Reward Code Prefix', default='LASH-')
+    feedback_reward_email_template = fields.Text(string='Reward Email Template')
+    feedback_reward_sms_template = fields.Text(
+        string='Reward SMS Template',
+        default='Thank you for your feedback! Enjoy {discount} off your next visit. '
+                'Use code {promo_code} (valid until {valid_to}). Book: {booking_link}')
+
     @api.model
     def get_settings(self):
         """Get or create the singleton settings record"""

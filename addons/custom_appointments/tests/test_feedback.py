@@ -71,3 +71,17 @@ class TestAppointmentFeedback(TransactionCase):
         with mute_logger('odoo.sql_db'), self.assertRaises(IntegrityError):
             Feedback.create({'appointment_id': appt.id})
             self.env.flush_all()
+
+    def test_feedback_settings_defaults(self):
+        s = self.env['custom.appointment.settings'].get_settings()
+        self.assertFalse(s.enable_feedback_requests)
+        self.assertEqual(s.feedback_channel, 'both')
+        self.assertEqual(s.feedback_first_delay_minutes, 5)
+        self.assertEqual(s.feedback_repeat_interval_minutes, 1440)
+        self.assertEqual(s.feedback_max_requests, 3)
+        self.assertTrue(s.feedback_ask_staff_rating)
+        self.assertTrue(s.feedback_ask_comments)
+        self.assertFalse(s.feedback_reward_enabled)
+        self.assertEqual(s.feedback_reward_discount_type, 'percentage')
+        self.assertEqual(s.feedback_reward_validity_days, 30)
+        self.assertEqual(s.feedback_reward_code_prefix, 'LASH-')
