@@ -53,3 +53,21 @@ class TestAppointmentFeedback(TransactionCase):
         appt = self._make_appointment()
         appt.write({'state': 'completed'})
         self.assertTrue(appt.completed_date)
+
+    def test_feedback_token_generated_on_create(self):
+        appt = self._make_appointment()
+        fb = self.env['custom.appointment.feedback'].create({
+            'appointment_id': appt.id,
+        })
+        self.assertTrue(fb.access_token)
+        self.assertEqual(fb.state, 'pending')
+
+    def test_feedback_appointment_unique(self):
+        from psycopg2 import IntegrityError
+        from odoo.tools import mute_logger
+        appt = self._make_appointment()
+        Feedback = self.env['custom.appointment.feedback']
+        Feedback.create({'appointment_id': appt.id})
+        with mute_logger('odoo.sql_db'), self.assertRaises(IntegrityError):
+            Feedback.create({'appointment_id': appt.id})
+            self.env.flush_all()
