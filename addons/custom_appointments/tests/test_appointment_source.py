@@ -73,3 +73,12 @@ class TestAppointmentSource(TransactionCase):
         self.assertIn('Online', counts, 'read_group returned no Online bucket — check count key')
         self.assertEqual(counts.get('Online'), 1)
         self.assertEqual(counts.get('Call-in'), 1)
+
+    def test_backfill_sets_online_for_null_source(self):
+        from odoo.addons.custom_appointments import _backfill_appointment_source
+        online = self.env.ref('custom_appointments.appointment_source_online')
+        appt = self._make_appointment()
+        appt.source_id = False
+        self.assertFalse(appt.source_id)
+        _backfill_appointment_source(self.env)
+        self.assertEqual(appt.source_id, online)
