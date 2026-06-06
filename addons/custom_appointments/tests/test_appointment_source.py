@@ -46,3 +46,30 @@ class TestAppointmentSource(TransactionCase):
         self.assertEqual(call_in.name, 'Call-in')
         self.assertEqual(walk_in.name, 'Walk-in')
         self.assertTrue(online.active)
+
+    def test_new_appointment_defaults_to_online(self):
+        appt = self._make_appointment()
+        online = self.env.ref('custom_appointments.appointment_source_online')
+        self.assertEqual(appt.source_id, online)
+
+    def test_explicit_source_is_preserved(self):
+        call_in = self.env.ref('custom_appointments.appointment_source_call_in')
+        appt = self._make_appointment(source_id=call_in.id)
+        self.assertEqual(appt.source_id, call_in)
+
+    def test_group_by_source(self):
+        from datetime import datetime
+        call_in = self.env.ref('custom_appointments.appointment_source_call_in')
+        self._make_appointment()                       # Online (default)
+        self._make_appointment(                        # Call-in, non-overlapping slot
+            source_id=call_in.id,
+            start=datetime(2026, 1, 2, 9, 0),
+            stop=datetime(2026, 1, 2, 11, 0),
+        )
+        groups = self.env['custom.appointment'].read_group(
+            [], fields=['source_id'], groupby=['source_id'])
+        # Odoo 18 lazy read_group uses '<field>_count' key for single groupby
+        count_key = 'source_id_count'
+        counts = {g['source_id'][1]: g[count_key] for g in groups if g['source_id']}
+        self.assertEqual(counts.get('Online'), 1)
+        self.assertEqual(counts.get('Call-in'), 1)
