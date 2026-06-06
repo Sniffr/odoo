@@ -11,6 +11,7 @@
                 <field name="service_id"/>
                 <field name="staff_member_id"/>
                 <field name="branch_id"/>
+                <field name="source_id"/>
                 <field name="promo_id"/>
                 <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
                 <filter string="Today" name="today" domain="[('start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('start', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
@@ -20,6 +21,7 @@
                     <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Staff Member" name="group_by_staff" context="{'group_by': 'staff_member_id'}"/>
                     <filter string="Branch" name="group_by_branch" context="{'group_by': 'branch_id'}"/>
+                    <filter string="Source" name="group_by_source" context="{'group_by': 'source_id'}"/>
                     <filter string="Promo Code" name="group_by_promo" context="{'group_by': 'promo_id'}"/>
                 </group>
             </search>
@@ -37,6 +39,7 @@
                 <field name="service_id"/>
                 <field name="staff_member_id"/>
                 <field name="branch_id"/>
+                <field name="source_id" optional="show"/>
                 <field name="start"/>
                 <field name="duration"/>
                 <field name="price"/>
@@ -82,6 +85,7 @@
                             <field name="service_id"/>
                             <field name="staff_member_id"/>
                             <field name="branch_id"/>
+                            <field name="source_id"/>
                         </group>
                         <group string="Customer Information">
                             <field name="partner_id"/>

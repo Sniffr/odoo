@@ -336,6 +336,8 @@ class AppointmentController(http.Controller):
                 'service_id': service.id,
                 'staff_member_id': staff.id,
                 'branch_id': staff.branch_id.id,
+                'source_id': request.env.ref(
+                    'custom_appointments.appointment_source_online').id,
                 'start': start_dt,
                 'stop': end_dt,
                 'description': notes,
