@@ -23,4 +23,16 @@
         <field name="active">True</field>
         <field name="user_id" ref="base.user_root"/>
     </record>
+
+    <!-- Scheduled Action for Feedback Requests (after appointment completion) -->
+    <record id="feedback_request_cron" model="ir.cron">
+        <field name="name">Send Feedback Requests</field>
+        <field name="model_id" ref="model_custom_appointment_feedback"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_feedback_requests()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
 </odoo>

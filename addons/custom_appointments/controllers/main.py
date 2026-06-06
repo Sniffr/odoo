@@ -606,3 +606,41 @@ class AppointmentController(http.Controller):
     def terms_page(self, **kwargs):
         """Terms and Conditions page - editable in website editor"""
         return request.render('custom_appointments.terms_page', {})
+
+    @http.route('/appointments/feedback/<string:token>', type='http', auth='public',
+                website=True, methods=['GET', 'POST'])
+    def appointment_feedback(self, token, **kwargs):
+        """Public tokenized feedback page (GET shows form, POST submits)."""
+        feedback = request.env['custom.appointment.feedback'].sudo().search(
+            [('access_token', '=', token)], limit=1)
+        if not feedback:
+            return request.render('custom_appointments.feedback_invalid_page', {})
+
+        settings = request.env['custom.appointment.settings'].sudo().get_settings()
+
+        if request.httprequest.method == 'POST' and feedback.state != 'submitted':
+            values = {}
+            for field in ['staff_rating', 'service_rating', 'cleanliness_rating',
+                          'comfort_rating', 'value_rating']:
+                raw = kwargs.get(field)
+                if raw:
+                    try:
+                        values[field] = int(raw)
+                    except (ValueError, TypeError):
+                        pass
+            if kwargs.get('recommend_score'):
+                values['recommend_score'] = kwargs.get('recommend_score')
+            if kwargs.get('comments'):
+                values['comments'] = kwargs.get('comments').strip()
+            feedback.submit_feedback(values)
+
+        if feedback.state == 'submitted':
+            return request.render('custom_appointments.feedback_thankyou_page', {
+                'feedback': feedback,
+                'promo': feedback.reward_promo_id,
+            })
+
+        return request.render('custom_appointments.feedback_form_page', {
+            'feedback': feedback,
+            'settings': settings,
+        })
