@@ -82,3 +82,13 @@ class TestAppointmentSource(TransactionCase):
         self.assertFalse(appt.source_id)
         _backfill_appointment_source(self.env)
         self.assertEqual(appt.source_id, online)
+
+    def test_source_in_use_cannot_be_deleted(self):
+        from psycopg2 import IntegrityError
+        from odoo.tools import mute_logger
+        call_in = self.env.ref('custom_appointments.appointment_source_call_in')
+        self._make_appointment(source_id=call_in.id)
+        # ondelete='restrict' must block deleting a source that's still referenced.
+        with mute_logger('odoo.sql_db'), self.assertRaises(IntegrityError):
+            call_in.unlink()
+            self.env.flush_all()
