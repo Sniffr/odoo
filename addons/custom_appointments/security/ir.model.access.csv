@@ -18,3 +18,5 @@ access_custom_appointment_promo_public,custom.appointment.promo.public,model_cus
 access_custom_appointment_settings_user,custom.appointment.settings.user,model_custom_appointment_settings,base.group_user,1,1,1,1
 access_custom_appointment_feedback_user,custom.appointment.feedback.user,model_custom_appointment_feedback,base.group_user,1,1,1,1
 access_custom_appointment_feedback_public,custom.appointment.feedback.public,model_custom_appointment_feedback,base.group_public,1,1,0,0
+access_custom_appointment_source_user,custom.appointment.source.user,model_custom_appointment_source,base.group_user,1,1,1,1
+access_custom_appointment_source_public,custom.appointment.source.public,model_custom_appointment_source,base.group_public,1,0,0,0

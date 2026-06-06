@@ -26,6 +26,7 @@
     'data': [
         'security/appointment_security.xml',
         'security/ir.model.access.csv',
+        'data/appointment_source_data.xml',
         'wizard/employee_import_wizard_views.xml',
         'wizard/company_import_wizard_views.xml',
         'views/staff_member_views.xml',
@@ -36,6 +37,7 @@
         'views/service_category_views.xml',
         'views/appointment_views.xml',
         'views/appointment_settings_views.xml',
+        'views/appointment_source_views.xml',
         'views/promo_code_views.xml',
         'views/customer_views.xml',
         'views/appointment_feedback_views.xml',
@@ -58,4 +60,5 @@
     'application': True,
     'auto_install': False,
     'license': 'LGPL-3',
+    'post_init_hook': '_backfill_appointment_source',
 }

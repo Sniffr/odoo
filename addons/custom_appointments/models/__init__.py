@@ -9,3 +9,4 @@ from . import payment_transaction
 from . import account_move
 from . import promo_code
 from . import appointment_feedback
+from . import appointment_source

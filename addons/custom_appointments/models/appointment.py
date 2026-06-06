@@ -26,7 +26,13 @@ class Appointment(models.Model):
     service_id = fields.Many2one('company.service', string='Service', required=True, ondelete='cascade')
     staff_member_id = fields.Many2one('custom.staff.member', string='Staff Member', required=True, ondelete='cascade')
     branch_id = fields.Many2one('custom.branch', string='Branch', ondelete='set null')
-    
+    source_id = fields.Many2one(
+        'custom.appointment.source', string='Source',
+        ondelete='restrict',
+        default=lambda self: self.env.ref(
+            'custom_appointments.appointment_source_online',
+            raise_if_not_found=False))
+
     start = fields.Datetime(string='Start Time', required=True)
     stop = fields.Datetime(string='End Time', required=True)
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
