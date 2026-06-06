@@ -26,6 +26,7 @@
     'data': [
         'security/appointment_security.xml',
         'security/ir.model.access.csv',
+        'data/appointment_source_data.xml',
         'wizard/employee_import_wizard_views.xml',
         'wizard/company_import_wizard_views.xml',
         'views/staff_member_views.xml',
