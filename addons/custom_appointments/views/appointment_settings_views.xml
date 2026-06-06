@@ -9,43 +9,38 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>Communication Settings</h1>
-                        <p class="text-muted">Configure follow-up messages sent to customers after their appointments</p>
+                        <p class="text-muted">Configure follow-up and feedback messages sent to customers after their appointments</p>
                     </div>
-                    
-                    <group>
-                        <group string="Enable Follow-up Messages">
-                            <field name="send_followup_messages" widget="boolean_toggle"/>
-                        </group>
-                    </group>
-                    
-                    <div invisible="not send_followup_messages">
-                        <group>
-                            <group string="Communication Channel">
-                                <field name="followup_channel" widget="radio"/>
+
+                    <notebook>
+                        <page string="Follow-up Messages" name="followup">
+                            <group>
+                                <group string="Enable Follow-up Messages">
+                                    <field name="send_followup_messages" widget="boolean_toggle"/>
+                                </group>
                             </group>
-                        </group>
-                        
-                        <group>
-                            <group string="Timing">
-                                <field name="followup_start_days"/>
-                                <field name="followup_repeat_interval"/>
-                            </group>
-                            <group string="Follow-up Limits">
-                                <field name="max_followup_count" invisible="followup_until_rebooked"/>
-                                <field name="followup_until_rebooked"/>
-                            </group>
-                        </group>
-                        
-                        <notebook>
-                            <page string="Message Templates" name="templates">
+                            <div invisible="not send_followup_messages">
                                 <group>
-                                    <group string="Email Settings">
-                                        <field name="followup_email_subject" placeholder="We Miss You! Book Your Next Session"/>
-                                        <field name="followup_email_template" placeholder="Custom email body (uses HTML template if left blank)"/>
+                                    <group string="Communication Channel">
+                                        <field name="followup_channel" widget="radio"/>
                                     </group>
-                                    <group string="SMS Settings">
-                                        <field name="followup_sms_template" placeholder="Hi {customer_name}! Ready for your next {service_name}? Book now: {booking_link}"/>
+                                </group>
+                                <group>
+                                    <group string="Timing">
+                                        <field name="followup_start_days"/>
+                                        <field name="followup_repeat_interval"/>
                                     </group>
+                                    <group string="Follow-up Limits">
+                                        <field name="max_followup_count" invisible="followup_until_rebooked"/>
+                                        <field name="followup_until_rebooked"/>
+                                    </group>
+                                </group>
+                                <group string="Email Settings">
+                                    <field name="followup_email_subject" placeholder="We Miss You! Book Your Next Session"/>
+                                    <field name="followup_email_template" placeholder="Custom email body (uses HTML template if left blank)"/>
+                                </group>
+                                <group string="SMS Settings">
+                                    <field name="followup_sms_template" placeholder="Hi {customer_name}! Ready for your next {service_name}? Book now: {booking_link}"/>
                                 </group>
                                 <div class="alert alert-info" role="alert">
                                     <strong>Available Placeholders:</strong><br/>
@@ -54,9 +49,73 @@
                                     <code>{branch_name}</code> - Branch name<br/>
                                     <code>{booking_link}</code> - Link to booking page
                                 </div>
-                            </page>
-                        </notebook>
-                    </div>
+                            </div>
+                        </page>
+
+                        <page string="Customer Feedback" name="feedback">
+                            <group>
+                                <group string="Collect Customer Feedback">
+                                    <field name="enable_feedback_requests" widget="boolean_toggle"/>
+                                </group>
+                            </group>
+                            <div invisible="not enable_feedback_requests">
+                                <group>
+                                    <group string="Channel">
+                                        <field name="feedback_channel" widget="radio"/>
+                                    </group>
+                                    <group string="Timing">
+                                        <field name="feedback_first_delay_minutes"/>
+                                        <field name="feedback_repeat_interval_minutes"/>
+                                        <field name="feedback_max_requests"/>
+                                    </group>
+                                </group>
+                                <group string="Which Questions to Ask">
+                                    <field name="feedback_ask_staff_rating"/>
+                                    <field name="feedback_ask_service_rating"/>
+                                    <field name="feedback_ask_recommend"/>
+                                    <field name="feedback_ask_cleanliness"/>
+                                    <field name="feedback_ask_comfort"/>
+                                    <field name="feedback_ask_value"/>
+                                    <field name="feedback_ask_comments"/>
+                                </group>
+                                <group string="Request Messages">
+                                    <field name="feedback_request_email_subject"/>
+                                    <field name="feedback_request_sms_template"
+                                           placeholder="Hi {customer_name}! How was your {service_name}? Share feedback: {feedback_link}"/>
+                                </group>
+                                <group string="Feedback Reward">
+                                    <field name="feedback_reward_enabled" widget="boolean_toggle"/>
+                                </group>
+                                <group invisible="not feedback_reward_enabled">
+                                    <group string="Discount">
+                                        <field name="feedback_reward_discount_type"/>
+                                        <field name="feedback_reward_discount_value"
+                                               invisible="feedback_reward_discount_type == 'free_booking'"/>
+                                        <field name="feedback_reward_applies_to"/>
+                                        <field name="feedback_reward_max_discount"
+                                               invisible="feedback_reward_discount_type != 'percentage'"/>
+                                    </group>
+                                    <group string="Code">
+                                        <field name="feedback_reward_validity_days"/>
+                                        <field name="feedback_reward_code_prefix"/>
+                                    </group>
+                                </group>
+                                <group invisible="not feedback_reward_enabled" string="Reward SMS">
+                                    <field name="feedback_reward_sms_template"
+                                           placeholder="Thank you! Use code {promo_code} for {discount} off..."/>
+                                </group>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Feedback placeholders:</strong>
+                                    <code>{customer_name}</code>, <code>{service_name}</code>,
+                                    <code>{staff_name}</code>, <code>{branch_name}</code>,
+                                    <code>{feedback_link}</code><br/>
+                                    <strong>Reward placeholders:</strong>
+                                    <code>{promo_code}</code>, <code>{discount}</code>,
+                                    <code>{valid_to}</code>, <code>{booking_link}</code>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

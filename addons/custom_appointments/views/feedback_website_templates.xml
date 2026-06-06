@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Feedback form page -->
+    <template id="feedback_form_page" name="Appointment Feedback Form">
+        <t t-call="website.layout">
+            <div class="container my-5" style="max-width: 640px;">
+                <h2 class="mb-1">Share your feedback</h2>
+                <p class="text-muted">
+                    <t t-esc="feedback.service_id.name"/> with <t t-esc="feedback.staff_member_id.name"/>
+                </p>
+                <form method="post" t-attf-action="/appointments/feedback/#{feedback.access_token}" class="mt-4">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div t-if="settings.feedback_ask_staff_rating" class="mb-4">
+                        <label class="form-label fw-bold">How would you rate your technician?</label>
+                        <div>
+                            <t t-foreach="[1,2,3,4,5]" t-as="n">
+                                <label class="me-3">
+                                    <input type="radio" name="staff_rating" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_service_rating" class="mb-4">
+                        <label class="form-label fw-bold">How would you rate the service?</label>
+                        <div>
+                            <t t-foreach="[1,2,3,4,5]" t-as="n">
+                                <label class="me-3">
+                                    <input type="radio" name="service_rating" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_recommend" class="mb-4">
+                        <label class="form-label fw-bold">How likely are you to recommend us? (0-10)</label>
+                        <div>
+                            <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10]" t-as="n">
+                                <label class="me-2">
+                                    <input type="radio" name="recommend_score" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_cleanliness" class="mb-4">
+                        <label class="form-label fw-bold">Cleanliness</label>
+                        <div>
+                            <t t-foreach="[1,2,3,4,5]" t-as="n">
+                                <label class="me-3">
+                                    <input type="radio" name="cleanliness_rating" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_comfort" class="mb-4">
+                        <label class="form-label fw-bold">Comfort during your service</label>
+                        <div>
+                            <t t-foreach="[1,2,3,4,5]" t-as="n">
+                                <label class="me-3">
+                                    <input type="radio" name="comfort_rating" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_value" class="mb-4">
+                        <label class="form-label fw-bold">Value for money</label>
+                        <div>
+                            <t t-foreach="[1,2,3,4,5]" t-as="n">
+                                <label class="me-3">
+                                    <input type="radio" name="value_rating" t-att-value="n"/>
+                                    <span t-esc="n"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="settings.feedback_ask_comments" class="mb-4">
+                        <label class="form-label fw-bold">Any comments?</label>
+                        <textarea name="comments" class="form-control" rows="4"
+                                  placeholder="Tell us about your experience..."/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Feedback</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Thank-you page -->
+    <template id="feedback_thankyou_page" name="Appointment Feedback Thank You">
+        <t t-call="website.layout">
+            <div class="container my-5 text-center" style="max-width: 640px;">
+                <h2 class="mb-3">Thank you for your feedback!</h2>
+                <p class="lead">We truly appreciate you taking the time.</p>
+                <div t-if="promo" class="card mx-auto mt-4" style="max-width: 420px;">
+                    <div class="card-body">
+                        <p class="mb-2">Here's a little thank-you for your next visit:</p>
+                        <h3 class="text-primary" style="letter-spacing: 2px;">
+                            <t t-esc="promo.code"/>
+                        </h3>
+                        <p class="text-muted mb-3">
+                            Valid until <t t-esc="promo.valid_to" t-options='{"widget": "date"}'/>
+                        </p>
+                        <a href="/appointments" class="btn btn-primary">Book Your Next Visit</a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Invalid / expired link page -->
+    <template id="feedback_invalid_page" name="Appointment Feedback Invalid">
+        <t t-call="website.layout">
+            <div class="container my-5 text-center" style="max-width: 640px;">
+                <h2 class="mb-3">Link not found</h2>
+                <p class="text-muted">This feedback link is invalid or has expired.</p>
+                <a href="/appointments" class="btn btn-primary mt-3">Go to Booking</a>
+            </div>
+        </t>
+    </template>
+</odoo>

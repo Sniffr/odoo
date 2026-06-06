@@ -71,6 +71,9 @@
                         <button name="action_view_payment" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0">
                             <field name="payment_count" widget="statinfo" string="Payment"/>
                         </button>
+                        <button name="action_view_feedback" type="object" class="oe_stat_button" icon="fa-comments" invisible="feedback_count == 0">
+                            <field name="feedback_count" widget="statinfo" string="Feedback"/>
+                        </button>
                     </div>
                     
                     <group>

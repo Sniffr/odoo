@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="feedback_search_view" model="ir.ui.view">
+        <field name="name">custom.appointment.feedback.search</field>
+        <field name="model">custom.appointment.feedback</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="customer_name"/>
+                <field name="staff_member_id"/>
+                <field name="service_id"/>
+                <field name="branch_id"/>
+                <filter name="submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="pending" string="Pending" domain="[('state', '=', 'pending')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_customer" string="Customer" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_staff" string="Staff Member" context="{'group_by': 'staff_member_id'}"/>
+                    <filter name="group_service" string="Service" context="{'group_by': 'service_id'}"/>
+                    <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="feedback_list_view" model="ir.ui.view">
+        <field name="name">custom.appointment.feedback.list</field>
+        <field name="model">custom.appointment.feedback</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="submitted_date"/>
+                <field name="customer_name"/>
+                <field name="staff_member_id"/>
+                <field name="service_id"/>
+                <field name="branch_id"/>
+                <field name="staff_rating"/>
+                <field name="service_rating"/>
+                <field name="recommend_score"/>
+                <field name="reward_promo_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="feedback_form_view" model="ir.ui.view">
+        <field name="name">custom.appointment.feedback.form</field>
+        <field name="model">custom.appointment.feedback</field>
+        <field name="arch" type="xml">
+            <form string="Feedback" create="false">
+                <sheet>
+                    <group>
+                        <group string="Customer">
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="customer_phone"/>
+                            <field name="appointment_id"/>
+                        </group>
+                        <group string="Context">
+                            <field name="staff_member_id"/>
+                            <field name="service_id"/>
+                            <field name="branch_id"/>
+                            <field name="state"/>
+                            <field name="submitted_date"/>
+                            <field name="reward_promo_id"/>
+                        </group>
+                    </group>
+                    <group string="Ratings">
+                        <field name="staff_rating"/>
+                        <field name="service_rating"/>
+                        <field name="recommend_score"/>
+                        <field name="cleanliness_rating"/>
+                        <field name="comfort_rating"/>
+                        <field name="value_rating"/>
+                    </group>
+                    <group string="Comments">
+                        <field name="comments" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="feedback_action" model="ir.actions.act_window">
+        <field name="name">Feedback</field>
+        <field name="res_model">custom.appointment.feedback</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="feedback_search_view"/>
+        <field name="context">{'search_default_submitted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No feedback yet</p>
+        </field>
+    </record>
+
+    <menuitem id="feedback_menu"
+              name="Feedback"
+              parent="appointments_main_menu"
+              action="feedback_action"
+              sequence="40"/>
+</odoo>
