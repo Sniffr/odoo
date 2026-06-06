@@ -58,7 +58,6 @@ class TestAppointmentSource(TransactionCase):
         self.assertEqual(appt.source_id, call_in)
 
     def test_group_by_source(self):
-        from datetime import datetime
         call_in = self.env.ref('custom_appointments.appointment_source_call_in')
         self._make_appointment()                       # Online (default)
         self._make_appointment(                        # Call-in, non-overlapping slot
@@ -71,5 +70,6 @@ class TestAppointmentSource(TransactionCase):
         # Odoo 18 lazy read_group uses '<field>_count' key for single groupby
         count_key = 'source_id_count'
         counts = {g['source_id'][1]: g[count_key] for g in groups if g['source_id']}
+        self.assertIn('Online', counts, 'read_group returned no Online bucket — check count key')
         self.assertEqual(counts.get('Online'), 1)
         self.assertEqual(counts.get('Call-in'), 1)
