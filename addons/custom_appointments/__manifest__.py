@@ -37,6 +37,7 @@
         'views/service_category_views.xml',
         'views/appointment_views.xml',
         'views/appointment_settings_views.xml',
+        'views/appointment_source_views.xml',
         'views/promo_code_views.xml',
         'views/customer_views.xml',
         'views/appointment_feedback_views.xml',
